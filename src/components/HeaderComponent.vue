@@ -1,5 +1,5 @@
 <template>
-  <a-menu v-model="current" mode="horizontal">
+  <a-menu v-model="current" mode="horizontal" >
     <a-menu-item key="mail" @click="setLayout('app-layout')">
       <template #icon>
         <mail-outlined />
@@ -37,7 +37,7 @@
 import { defineComponent, ref } from 'vue';
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 export default defineComponent({
-  name: "DashBoard",
+  name: "HeaderComponent",
   components: {
     MailOutlined,
     AppstoreOutlined,

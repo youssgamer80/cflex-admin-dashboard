@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashBoard from '../views/DashBoard.vue'
+import pages from './routes/pages'
 // import Vue from 'vue'
 // import Router from 'vue-router'
 // Vue.use(Router)
@@ -7,11 +7,9 @@ import DashBoard from '../views/DashBoard.vue'
 
 
 const routes = [
-  {
-    path: '/',
-    name: 'DashBoard',
-    component: DashBoard
-  },
+  { path: '/', redirect: { name: 'accueil' } },
+  ...pages,
+
  
 ]
 

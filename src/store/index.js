@@ -5,7 +5,7 @@ import { createStore } from 'vuex'
 
 export  default  createStore({
   state: {
-    layout: 'simple-layout'
+    layout: 'app-layout'
   },
   mutations: {
     SET_LAYOUT (state, payload) {
