@@ -9,7 +9,7 @@
 <template #icon>
 <QqOutlined />
 </template>
-<a-menu-item v-for="(child, i) in item.children" :key="i + 1"> {{child.title}}</a-menu-item>
+<a-menu-item v-for="(child, i) in item.children" :key="item.title+i">  <router-link :to="child.route">{{child.title}}</router-link></a-menu-item>
 </a-menu-item-group>
 </a-sub-menu>
 </template>

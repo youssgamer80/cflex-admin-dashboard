@@ -1,9 +1,7 @@
 <template>
-  <a-layout-sider width="280" style="background: #fff"       breakpoint="lg"
-      collapsed-width="0"
-      @collapse="onCollapse"
-      @breakpoint="onBreakpoint">
-    <a-menu v-model:selectedKeys="selectedKeys2" v-model:openKeys="openKeys" mode="inline"
+  <a-layout-sider width="280" style="background: #fff"        breakpoint="lg"
+      collapsed-width="0">
+    <a-menu v-model:selectedKeys="selectedKeys" mode="inline"
       :style="{ height: '100%', borderRight: 0 }">
       <VerticalNavMenuItems :items="items" />
     </a-menu>

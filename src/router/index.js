@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import pages from './routes/pages'
+import ListeTypeTransport from '../views/typetransport/ListeTypeTransport.vue'
 // import Vue from 'vue'
 // import Router from 'vue-router'
 // Vue.use(Router)
@@ -9,6 +10,7 @@ import pages from './routes/pages'
 const routes = [
   { path: '/', redirect: { name: 'accueil' } },
   ...pages,
+  { path: '/tableau-de-bord/liste-type-transport', name: 'liste-type-transport', component: ListeTypeTransport },
 
  
 ]

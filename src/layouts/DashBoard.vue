@@ -3,19 +3,7 @@
     <HeaderComponent />
     <a-layout>
       <SideBar />
-      <a-layout style="padding: 0 24px 24px">
-        <a-breadcrumb style="margin: 16px 0">
-          <a-breadcrumb-item>Home</a-breadcrumb-item>
-          <a-breadcrumb-item>List</a-breadcrumb-item>
-          <a-breadcrumb-item>App</a-breadcrumb-item>
-        </a-breadcrumb>
-        <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
-          Content
-        </a-layout-content>
-        <a-layout-footer style="text-align: center">
-          Ant Design ©2018 Created by Ant UED
-        </a-layout-footer>
-      </a-layout>
+      <BodyComponent />
     </a-layout>
   </a-layout>
 </template>
@@ -23,12 +11,13 @@
 import { defineComponent, ref } from 'vue';
 import HeaderComponent from '../components/HeaderComponent.vue';
 import SideBar from '../components/SideBar.vue';
+import BodyComponent from '../components/BodyComponent.vue';
 export default defineComponent({
   name: 'DashBoard',
   components: {
-
     HeaderComponent,
     SideBar,
+    BodyComponent,
   },
 
   setup() {

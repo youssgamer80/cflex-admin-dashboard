@@ -13,15 +13,16 @@ export default [
       children: [
         {
           title: 'Liste des demandes',
-          route: 'liste-demandes',
+          route: '/tableau-de-bord/liste-demandes/',
         },
         {
           title: 'Demande annulée',
-          route: 'demande-annulee',
+          route: '/tableau-de-bord/demande-annulee/',
         },
        
       ],
     },
+    
    
     {
       title: 'Type Transport',
@@ -29,11 +30,11 @@ export default [
       children: [
         {
           title: 'Liste des types de transport',
-          route: 'liste-type-transport',
+          route: '/tableau-de-bord/liste-type-transport',
         },
         {
           title: 'supprimer un type de transport',
-          route: 'supprimer-type-transport',
+          route: '/tableau-de-bord/supprimer-type-transport/',
         },
        
       ],
