@@ -1,5 +1,5 @@
 <template>
-    <div :style="{ padding: '24px', background: '#fff', textAlign: 'center', minHeight: '360px'}">
+    <div :style="{ padding: '24px', background: '#fff', textAlign: 'center', minHeight: '360px',}">
         <a-table
     :columns="columns"
     :row-key="record => record.login.uuid"
