@@ -1,15 +1,15 @@
 <template>
-<a-sub-menu key="i + 10">
+<a-sub-menu :key="item.title">
  <template #icon>
 <CarOutlined />
 </template>
-<template #title>Navigation One</template>
+<template #title>{{item.title}}</template>
 
 <a-menu-item-group key="g1">
 <template #icon>
 <QqOutlined />
 </template>
-<a-menu-item v-for="(child, i) in items.children" :key="i + 1"> {{child.title}}</a-menu-item>
+<a-menu-item v-for="(child, i) in item.children" :key="i + 1"> {{child.title}}</a-menu-item>
 </a-menu-item-group>
 </a-sub-menu>
 </template>
@@ -26,7 +26,7 @@ CarOutlined,
 },
 
   props: {
-    items: {
+    item: {
       type: Object,
       required: true,
     },

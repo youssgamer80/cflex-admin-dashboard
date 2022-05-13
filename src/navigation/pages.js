@@ -7,27 +7,35 @@ export default [
       route: 'apps-email',
       icon: 'MailIcon',
     },
-   
     {
-      title: 'Invoice',
+      title: 'Demandes',
       icon: 'FileTextIcon',
       children: [
         {
-          title: 'List',
-          route: 'apps-invoice-list',
+          title: 'Liste des demandes',
+          route: 'liste-demandes',
         },
         {
-          title: 'Preview',
-          route: { name: 'apps-invoice-preview', params: { id: 4987 } },
+          title: 'Demande annulée',
+          route: 'demande-annulee',
+        },
+       
+      ],
+    },
+   
+    {
+      title: 'Type Transport',
+      icon: 'FileTextIcon',
+      children: [
+        {
+          title: 'Liste des types de transport',
+          route: 'liste-type-transport',
         },
         {
-          title: 'Edit',
-          route: { name: 'apps-invoice-edit', params: { id: 4987 } },
+          title: 'supprimer un type de transport',
+          route: 'supprimer-type-transport',
         },
-        {
-          title: 'Add',
-          route: { name: 'apps-invoice-add' },
-        },
+       
       ],
     },
   ]

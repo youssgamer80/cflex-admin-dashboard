@@ -1,27 +1,31 @@
-<template>  
-      <a-layout-sider width="200" style="background: #fff">
-        <a-menu
-          v-model:selectedKeys="selectedKeys2"
-          v-model:openKeys="openKeys"
-          mode="inline"
-          :style="{ height: '100%', borderRight: 0 }"
-        >
-       <vertical-nav-menu-item :items="items"
-       />
-        </a-menu>
-      </a-layout-sider>
+<template>
+  <a-layout-sider width="280" style="background: #fff"       breakpoint="lg"
+      collapsed-width="0"
+      @collapse="onCollapse"
+      @breakpoint="onBreakpoint">
+    <a-menu v-model:selectedKeys="selectedKeys2" v-model:openKeys="openKeys" mode="inline"
+      :style="{ height: '100%', borderRight: 0 }">
+      <VerticalNavMenuItems :items="items" />
+    </a-menu>
+  </a-layout-sider>
 </template>
 <script>
 import { defineComponent, ref } from 'vue';
-import navigationItem from '../navigation';
+import VerticalNavMenuItems from './VerticalNavMenuItems.vue';
+import navigationItem from '../navigation/pages';
+
 export default defineComponent({
   name: 'SideBar',
   components: {
-},
-data() {
-  return {
-    items: navigationItem
- } },
+    VerticalNavMenuItems,
+  },
+
+  data() {
+    return {
+      items: navigationItem
+    }
+  },
+
   setup() {
     return {
       selectedKeys1: ref(['2']),

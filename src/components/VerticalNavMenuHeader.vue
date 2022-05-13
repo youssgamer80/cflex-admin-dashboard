@@ -1,6 +1,6 @@
 <template>
-<a-menu-item key="1">
-      hearder
+<a-menu-item :key="item.header">
+      {{item.header}}
     </a-menu-item>
 </template>
 
