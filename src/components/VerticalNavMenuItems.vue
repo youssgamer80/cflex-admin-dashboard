@@ -1,23 +1,19 @@
 <template>
- <component
-      :is="resolveNavItemComponent(item)"
-      v-for="item in items"
-      :key="item.header || item.title"
-      :item="item"
-    />
+ <a-menu-item v-for="(child, i) in items.children" :key="i + 1"> {{child.title}}</a-menu-item>
 </template>
 
 <script>
 import { resolveVerticalNavMenuItemComponent as resolveNavItemComponent } from '../navigation/utils';
 import { provide, ref } from 'vue'
-import VerticalNavMenuGroup from './VerticalNavMenuGroup.vue';
-import VerticalNavMenuSimpleItem from './VerticaINavMenuSimpleItem.vue';
-import VerticalNavMenuHeader from './VerticalNavMenuHeader.vue';
+// import VerticalNavMenuGroup from './VerticalNavMenuGroup.vue';
+// import VerticalNavMenuSimpleItem from './VerticaINavMenuSimpleItem.vue';
+// import VerticalNavMenuHeader from './VerticalNavMenuHeader.vue';
 export default {
+  name: 'VerticalNavMenuItems',
   components: {
-   VerticalNavMenuHeader,
-   VerticalNavMenuGroup,
-   VerticalNavMenuSimpleItem,
+  //  VerticalNavMenuHeader,
+  //  VerticalNavMenuGroup,
+  //  VerticalNavMenuSimpleItem,
   },
   
   props: {

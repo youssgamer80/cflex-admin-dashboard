@@ -1,5 +1,5 @@
 <template>
-<a-menu-item key="1">
+<a-menu-item :key="items.header">
       hearder
     </a-menu-item>
 </template>

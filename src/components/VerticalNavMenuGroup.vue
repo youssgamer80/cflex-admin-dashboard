@@ -1,11 +1,11 @@
 <template>
-<a-sub-menu key="i + 10">
+<a-sub-menu :key="items.title">
  <template #icon>
 <CarOutlined />
 </template>
 <template #title>Navigation One</template>
 
-<a-menu-item-group key="g1">
+<a-menu-item-group :key="g1">
 <template #icon>
 <QqOutlined />
 </template>

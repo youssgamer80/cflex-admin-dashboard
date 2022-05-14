@@ -6,21 +6,55 @@
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
         >
-       <vertical-nav-menu-item :items="items"
-       />
+       <VerticalNavMenuItems :items="items"/>
         </a-menu>
       </a-layout-sider>
 </template>
 <script>
 import { defineComponent, ref } from 'vue';
-import navigationItem from '../navigation';
+import VerticalNavMenuItems from './VerticalNavMenuItems.vue';
 export default defineComponent({
+
   name: 'SideBar',
   components: {
-},
+    VerticalNavMenuItems,
+  },
+
 data() {
   return {
-    items: navigationItem
+    items: [
+    // {
+    //   header: 'Type vehicule & demandes',
+    // },
+    // {
+    //   title: 'Email',
+    //   route: 'apps-email',
+    //   icon: 'MailIcon',
+    // },
+   
+    {
+      title: 'Invoice',
+      icon: 'FileTextIcon',
+      children: [
+        {
+          title: 'List',
+          route: 'apps-invoice-list',
+        },
+        {
+          title: 'Preview',
+          route: { name: 'apps-invoice-preview', params: { id: 4987 } },
+        },
+        {
+          title: 'Edit',
+          route: { name: 'apps-invoice-edit', params: { id: 4987 } },
+        },
+        {
+          title: 'Add',
+          route: { name: 'apps-invoice-add' },
+        },
+      ],
+    },
+  ]
  } },
   setup() {
     return {

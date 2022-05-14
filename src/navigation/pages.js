@@ -1,12 +1,12 @@
 export default [
-    {
-      header: 'Type vehicule & demandes',
-    },
-    {
-      title: 'Email',
-      route: 'apps-email',
-      icon: 'MailIcon',
-    },
+    // {
+    //   header: 'Type vehicule & demandes',
+    // },
+    // {
+    //   title: 'Email',
+    //   route: 'apps-email',
+    //   icon: 'MailIcon',
+    // },
    
     {
       title: 'Invoice',

@@ -1,5 +1,5 @@
 <template>
-<a-menu-item key="1">
+<a-menu-item >
       <template #icon>
         <CarOutlined />
       </template>
