@@ -1,5 +1,5 @@
 <template>
-  <a-menu v-model="current" mode="horizontal" >
+  <a-menu v-model="current" mode="horizontal">
     <a-menu-item key="mail" @click="setLayout('app-layout')">
       <template #icon>
         <mail-outlined />
@@ -10,7 +10,7 @@
       <template #icon>
         <appstore-outlined />
       </template>
-     Text Button
+      Text Button
     </a-menu-item>
     <a-sub-menu key="sub1">
       <template #icon>
@@ -50,8 +50,8 @@ export default defineComponent({
       current,
     };
   },
-methods: {
-    setLayout (layout) {
+  methods: {
+    setLayout(layout) {
       this.$store.commit('SET_LAYOUT', layout)
     }
   }

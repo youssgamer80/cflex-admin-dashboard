@@ -3,7 +3,7 @@
       <template #icon>
         <CarOutlined />
       </template>
-      Navigation One
+      {{item.title}}
     </a-menu-item>
 </template>
 
@@ -24,6 +24,9 @@ CarOutlined,
       required: true,
     },
   },
+  mounted() {
+    console.log(this.item)
+   }
 
 });
 </script>

@@ -1,6 +1,7 @@
 <template>
-<a-menu-item :key="items.header">
-      hearder
+<a-menu-item :key="item.header">
+      
+      <a-typography-text type="secondary">{{item.header}}</a-typography-text>
     </a-menu-item>
 </template>
 
