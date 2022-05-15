@@ -1,6 +1,5 @@
 <template>
   <a-layout>
-    <HeaderComponent />
     <a-layout>
       <SideBar />
       <BodyComponent />
@@ -9,14 +8,12 @@
 </template>
 <script>
 import { defineComponent, ref } from 'vue';
-import HeaderComponent from '../components/HeaderComponent.vue';
-import SideBar from '../components/SideBar.vue';
+ import SideBar from '../components/SideBar.vue';
 import BodyComponent from '../components/BodyComponent.vue';
 export default defineComponent({
   name: 'DashBoard',
   components: {
-    HeaderComponent,
-    SideBar,
+     SideBar,
     BodyComponent,
   },
 

@@ -1,6 +1,6 @@
 <template>
   <a-layout-sider width="280" style="background: #fff"        breakpoint="lg"
-      collapsed-width="0">
+      collapsed-width="0" id="macarte">
     <a-menu v-model:selectedKeys="selectedKeys" mode="inline"
       :style="{ height: '100%', borderRight: 0 }">
       <VerticalNavMenuItems :items="items" />
@@ -45,5 +45,8 @@ export default defineComponent({
 }
 .site-layout-background {
   background: #fff;
+}
+ #macarte {
+  box-shadow: 5px 0px 24px 5px rgba(208, 216, 243, 0.6);
 }
 </style>

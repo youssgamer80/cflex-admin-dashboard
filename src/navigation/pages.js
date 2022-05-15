@@ -3,8 +3,8 @@ export default [
       header: 'Type vehicule & demandes',
     },
     {
-      title: 'Email',
-      route: 'apps-email',
+      title: 'Vehicule',
+      route: '/vehicules',
       icon: 'MailIcon',
     },
     {
@@ -15,6 +15,7 @@ export default [
           title: 'Liste des demandes',
           route: '/tableau-de-bord/liste-demandes',
         },
+        
         {
           title: 'Demande annulée',
           route: '/tableau-de-bord/demande-annulee',

@@ -1,59 +1,63 @@
 <template>
-  <a-menu v-model="current" mode="horizontal">
-    <a-menu-item key="mail" @click="setLayout('app-layout')">
-      <template #icon>
-        <mail-outlined />
-      </template>
-      Navigation One
-    </a-menu-item>
-    <a-menu-item key="app" disabled>
-      <template #icon>
-        <appstore-outlined />
-      </template>
-      Text Button
-    </a-menu-item>
-    <a-sub-menu key="sub1">
-      <template #icon>
-        <setting-outlined />
-      </template>
-      <template #title>Navigation Three - Submenu</template>
-      <a-menu-item-group title="Item 1">
-        <a-menu-item key="setting:1">Option 1</a-menu-item>
-        <a-menu-item key="setting:2">Option 2</a-menu-item>
-      </a-menu-item-group>
-      <a-menu-item-group title="Item 2">
-        <a-menu-item key="setting:3">Option 3</a-menu-item>
-        <a-menu-item key="setting:4">Option 4</a-menu-item>
-      </a-menu-item-group>
-    </a-sub-menu>
-    <a-menu-item key="alipay">
-      <a href="https://antdv.com" target="_blank" rel="noopener noreferrer">
-        Navigation Four - Link
-      </a>
-    </a-menu-item>
-  </a-menu>
+  <div
+    :style="{
+      padding: '24px',
+      background: '#fff',
+      textAlign: 'center',
+      minWidth: windowWidth,
+      minHeight: windowHeight,
+      boxShadow: '0px 8px 24px 5px rgba(208, 216, 243, 0.6)',
+    }"
+    :bordered="false"
+    id="macarte"
+  >
+    <a-row>
+      <a-col :span="8">col-8</a-col>
+      <a-col :span="8" :offset="8">
+        <a-space>
+          <a-avatar size="large">
+            <template #icon><UserOutlined /></template>
+          </a-avatar>
+            <p>Admin</p>
+        </a-space>
+      </a-col>
+    </a-row>
+  </div>
 </template>
 <script>
-import { defineComponent, ref } from 'vue';
-import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import { defineComponent, ref } from "vue";
+import { UserOutlined } from "@ant-design/icons-vue";
+
 export default defineComponent({
   name: "HeaderComponent",
   components: {
-    MailOutlined,
-    AppstoreOutlined,
-    SettingOutlined,
+    UserOutlined,
+  },
+  data() {
+    return {
+      windowWidth: window.innerWidth * 0.7 + "px",
+      windowHeight: window.innerHeight * 0.125 + "px",
+      success: false,
+    };
+  },
+  mounted() {
+    window.onresize = () => {
+      this.windowWidth = window.innerWidth * 0.7 + "px";
+      this.windowHeight = window.innerHeight * 0.125 + "px";
+    };
   },
 
   setup() {
-    const current = ref(['mail']);
+    const current = ref(["mail"]);
     return {
       current,
     };
   },
   methods: {
     setLayout(layout) {
-      this.$store.commit('SET_LAYOUT', layout)
-    }
-  }
+      this.$store.commit("SET_LAYOUT", layout);
+    },
+  },
 });
 </script>
+
