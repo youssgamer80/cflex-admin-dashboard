@@ -16,7 +16,14 @@
       <template v-else-if="['action'].includes(column.dataIndex)">
       <div>
    
-    <eye-outlined :style="{ color: '#26ABFF' }"/>
+   
+    <router-link :to="'/modification-vehicule/id'">
+    
+       <a href="">
+ <eye-outlined :style="{ color: '#26ABFF' }"/>
+    </a>
+    </router-link>
+ 
 
     <a-divider type="vertical" />
     <edit-outlined :style="{ color: '#08f26e' }"/>

@@ -4,8 +4,7 @@
       padding: '24px',
        margin: '24px',
       background: '#fff',
-      width: '816px',
-      height: '1056px',
+  
         textAlign: 'center'
 
     }"

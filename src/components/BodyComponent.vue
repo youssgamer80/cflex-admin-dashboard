@@ -4,7 +4,7 @@
     <HeaderComponent />
     <a-layout-content
       :style="{
-        margin: '120px 24px 0',
+        margin: '24px 24px 0',
         overflow: 'initial',
         minHeight: windowHeight,
       }"

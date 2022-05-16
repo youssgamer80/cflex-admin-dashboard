@@ -7,9 +7,6 @@
 
       boxShadow: '0 8px 24px 5px rgba(208, 216, 243, 0.7)',
       borderRadius: '10px',
-      position: 'fixed',
-      zIndex: 1,
-      width: windowWidth,
     }"
     :bordered="false"
     id="macarte"
@@ -85,15 +82,15 @@ export default defineComponent({
   },
   data() {
     return {
-      windowWidth: window.innerWidth * 0.7 + "px",
-      windowHeight: window.innerHeight * 0.0125 + "px",
+      windowWidth: window.innerWidth * 0.8 + "px",
+      windowHeight: window.innerHeight * 0.125 + "px",
       success: false,
     };
   },
   mounted() {
     window.onresize = () => {
-      this.windowWidth = window.innerWidth * 0.7 + "px";
-      this.windowHeight = window.innerHeight * 0.0125 + "px";
+      this.windowWidth = window.innerWidth * 0.8 + "px";
+      this.windowHeight = window.innerHeight * 0.125 + "px";
     };
   },
 
@@ -110,4 +107,5 @@ export default defineComponent({
   },
 });
 </script>
+
 
