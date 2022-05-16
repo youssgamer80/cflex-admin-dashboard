@@ -4,7 +4,7 @@ export default [
     },
     {
       title: 'Vehicule',
-      route: '/vehicules',
+      route: '/tableau-de-bord/vehicules',
       icon: 'MailIcon',
     },
     {

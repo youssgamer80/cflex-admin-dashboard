@@ -3,7 +3,8 @@
       <template #icon>
         <CarOutlined />
       </template>
-      {{item.title}}
+      
+      <router-link :to="item.route">{{item.title}}</router-link>
     </a-menu-item>
 </template>
 

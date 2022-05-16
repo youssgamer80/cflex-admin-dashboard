@@ -3,6 +3,7 @@
       collapsed-width="0" id="macarte">
     <a-menu v-model:selectedKeys="selectedKeys" mode="inline"
       :style="{ height: '100%', borderRight: 0 }">
+        <div class="log"/>
       <VerticalNavMenuItems :items="items" />
     </a-menu>
   </a-layout-sider>
@@ -48,5 +49,9 @@ export default defineComponent({
 }
  #macarte {
   box-shadow: 5px 0px 24px 5px rgba(208, 216, 243, 0.6);
+
+}
+.log{
+  background: url('../assets/logo.png');
 }
 </style>

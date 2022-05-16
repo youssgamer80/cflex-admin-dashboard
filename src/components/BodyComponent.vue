@@ -1,11 +1,10 @@
 <template>
 <a-layout>
-   <HeaderComponent />
   <a-layout style="padding: 0 24px 24px">
-   
+    <HeaderComponent />
     <a-layout-content
       :style="{
-        margin: '24px 16px 0',
+        margin: '120px 24px 0',
         overflow: 'initial',
         minHeight: windowHeight,
       }"
