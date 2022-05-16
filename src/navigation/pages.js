@@ -40,5 +40,9 @@ export default [
        
       ],
     },
+    {
+      header: 'Ulisateur et permissions',
+    },
+
   ]
   

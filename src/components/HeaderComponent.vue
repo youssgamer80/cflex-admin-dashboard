@@ -4,7 +4,6 @@
       margin: '24px',
       background: '#FB5A00',
       textAlign: 'center',
-
       boxShadow: '0 8px 24px 5px rgba(208, 216, 243, 0.7)',
       borderRadius: '10px',
     }"

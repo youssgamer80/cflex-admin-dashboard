@@ -21,6 +21,7 @@ const routes = [
   { path: '/tableau-de-bord/liste-demandes', name: 'liste-demandes', component: UneDemande },
   { path: '/tableau-de-bord/vehicules', name: 'vehicule', component: VehiculeView },
   { path: '/tableau-de-bord/ajout-vehicule', name: 'ajout-vehicule', component: AjoutVehicule },
+  
 
  
 ]
