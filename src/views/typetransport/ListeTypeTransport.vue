@@ -54,6 +54,7 @@
 <script>
 import { usePagination } from "vue-request";
 import { computed, defineComponent } from "vue";
+import { message } from "ant-design-vue";
 import {
   EyeOutlined,
   EditOutlined,
@@ -122,9 +123,28 @@ export default defineComponent({
       });
     };
 
-    const onDelete = (key) => {
-      dataSource.value = dataSource.value.filter((item) => item.id !== key);
+    const onDelete = (id) => {
+      return axios
+        .delete(
+          `http://localhost:4002/api/typetransport/deletetypetransport/${id}`,
+          {
+            data: {
+              statut: false,
+            },
+          }
+        )
+        .then((resp) => {
+          if (resp.status === 200) {
+            dataSource.value = dataSource.value.filter(
+              (item) => item.id !== id
+            );
+            message.success("Supprimé avec succès!!");
+          } else {
+            message.error("impossible!!");
+          }
+        });
     };
+
     console.log(dataSource);
     return {
       dataSource,
