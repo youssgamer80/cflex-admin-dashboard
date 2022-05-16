@@ -15,7 +15,7 @@
           <a-typography-title :level="5"
             >Formulaire de demande</a-typography-title
           >
-          <a-typography-text>Emis le:12-05-2022</a-typography-text>
+          <a-typography-text>{{date}} /  {{hours}}:{{minutes}}:{{seconds}}</a-typography-text>
         </a-space>
       </a-col>
       <a-col :span="8" :offset="8">
@@ -34,8 +34,8 @@
     </a-row>
 
     <a-divider style="border-color: #000" dashed />
-    <a-row>
-      <a-col :span="8">
+
+      <!-- <a-col :span="8">
         <div class="space-align-container">
           <div class="space-align-block">
             <a-space align="center">
@@ -55,8 +55,8 @@
             </a-space>
           </div>
         </div>
-      </a-col>
-      <a-col :span="8" :offset="8">
+      </a-col> -->
+      <!-- <a-col :span="8" :offset="8">
         <div class="space-align-container">
           <div class="space-align-block">
             <a-space align="center" :size="1">
@@ -77,8 +77,9 @@
             </a-space>
           </div>
         </div>
-      </a-col>
-    </a-row>
+      </a-col> -->
+      <tabs-demande/>
+
     <!-- section 2 -->
   </a-card>
 </template>
@@ -86,10 +87,37 @@
 <script>
 import { defineComponent } from "vue";
 import { UserOutlined } from "@ant-design/icons-vue";
+import TabsDemande from "../../components/TabsDemande.vue";
 export default defineComponent({
   name: "UneDemande",
+   data () {
+    return {
+      date:0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0
+    }
+  },
+  methods: {
+    setTime () {
+      setInterval(() => {
+        const date = new Date()
+        this.date = date.getDate()+'-'+(date.getMonth()+1)+'-'+date.getFullYear();
+        this.hours = date.getHours()
+        this.minutes = this.checkSingleDigit(date.getMinutes())
+        this.seconds = this.checkSingleDigit(date.getSeconds())
+      }, 1000)
+    },
+    checkSingleDigit (digit) {
+      return ('0' + digit).slice(-2)
+    }
+  },
+  mounted () {
+    this.setTime()
+  },
   components: {
     UserOutlined,
+    TabsDemande,
   },
 });
 </script>
