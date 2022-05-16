@@ -14,7 +14,9 @@ export default {
     //   return this.$store.getters.layout
     // }
     layout() {
+      console.log(this.$route.meta.layout)
       if (this.$route.meta.layout === 'simplelayout') return 'simple-layout'
+      else 
       return 'app-layout'
     },
      

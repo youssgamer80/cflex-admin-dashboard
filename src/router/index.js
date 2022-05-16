@@ -5,7 +5,12 @@ import UneDemande from '../views/demandes/UneDemande.vue'
 import VehiculeView from '../views/vehicules/VehiculeView.vue'
 import AjoutVehicule from '../views/vehicules/AjoutVehicule.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
-// import { canNavigate } from '@/acl/routeProtection'
+//import { canNavigate } from '@/acl/routeProtection'
+
+
+
+
+
 // import Vue from 'vue'
 // import Router from 'vue-router'
 // Vue.use(Router)

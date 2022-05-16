@@ -19,17 +19,9 @@
         </a-space>
       </a-col>
       <a-col :span="8" :offset="8">
-        <a-space>
-          <a-avatar
-            shape="square"
-            size="large"
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1200px-Vue.js_Logo_2.svg.png"
-          >
-            <template #icon><UserOutlined /></template>
-          </a-avatar>
-
-          <p>CFLEX</p>
-        </a-space>
+ <img
+    src="../../assets/logo.png" alt="A black, brown, and white dog wearing a kerchief"
+  />
       </a-col>
     </a-row>
 
@@ -39,14 +31,10 @@
         <div class="space-align-container">
           <div class="space-align-block">
             <a-space align="center">
-              <a-avatar
-                :size="{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }"
-                src="https://media-exp1.licdn.com/dms/image/C4E03AQGj_yjx5RPpYQ/profile-displayphoto-shrink_800_800/0/1649073187854?e=1658361600&v=beta&t=1Ti_8HAtVwMlNlGNbg_CHx4OgpLnc6gFbZ2iPezqDxk"
-              >
-                <template #icon>
-                  <UserOutlined />
-                </template>
-              </a-avatar>
+  <a-image
+    :width="200"
+    src="https://img.freepik.com/free-photo/close-up-portrait-cheerful-young-black-man-grey-t-shirt-smiling-broadly_273609-430.jpg?t=st=1652708669~exp=1652709269~hmac=a0fc5376352607cb756d727c9d48078c692112a5456ec6d01ff5d43f9bfcf1eb&w=2000"
+  />
 
               <div class="mock-block">
                 <p>Card content</p>
@@ -108,5 +96,8 @@ export default defineComponent({
 .space-align-block .mock-block {
   display: inline-block;
   padding: 20px 5px 5px;
+}
+img {
+  height: 30px;
 }
 </style>
