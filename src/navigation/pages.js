@@ -33,10 +33,7 @@ export default [
           title: 'Liste des types de transport',
           route: '/tableau-de-bord/liste-type-transport',
         },
-        {
-          title: 'supprimer un type de transport',
-          route: '/tableau-de-bord/supprimer-type-transport',
-        },
+       
        
       ],
     },

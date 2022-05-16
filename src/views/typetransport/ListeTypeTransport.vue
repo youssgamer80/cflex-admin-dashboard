@@ -39,7 +39,7 @@
 
             <a-popconfirm
               v-if="dataSource.length"
-              title="Sure to delete?"
+              title="Voulez vous supprimez?"
               @confirm="onDelete(record.id)"
             >
               <a><delete-outlined :style="{ color: '#f73772' }" /></a>
@@ -54,7 +54,7 @@
 <script>
 import { usePagination } from "vue-request";
 import { computed, defineComponent } from "vue";
-import { message } from "ant-design-vue";
+import { message } from 'ant-design-vue';
 import {
   EyeOutlined,
   EditOutlined,
@@ -81,7 +81,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4002/api/typetransport", {
+  return axios.get("http://localhost:4001/api/typetransport", {
     params,
   });
 };
@@ -124,25 +124,24 @@ export default defineComponent({
     };
 
     const onDelete = (id) => {
-      return axios
-        .delete(
-          `http://localhost:4002/api/typetransport/deletetypetransport/${id}`,
-          {
-            data: {
-              statut: false,
-            },
+      return axios.delete(
+        `http://localhost:4001/api/typetransport/deletetypetransport/${ id }`,
+        {
+          data: {
+            statut: false,
           }
-        )
-        .then((resp) => {
-          if (resp.status === 200) {
-            dataSource.value = dataSource.value.filter(
-              (item) => item.id !== id
-            );
-            message.success("Supprimé avec succès!!");
-          } else {
-            message.error("impossible!!");
-          }
-        });
+        }
+
+        
+      ).then((resp)=>{
+        if(resp.status === 200){
+          dataSource.value = dataSource.value.filter(item => item.id !== id);
+        message.success('Supprimé avec succès!!');
+        } else {
+          message.error('impossible!!');
+        }
+        
+      });
     };
 
     console.log(dataSource);

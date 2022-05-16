@@ -4,6 +4,7 @@ import ListeTypeTransport from '../views/typetransport/ListeTypeTransport.vue'
 import UneDemande from '../views/demandes/UneDemande.vue'
 import VehiculeView from '../views/vehicules/VehiculeView.vue'
 import AjoutVehicule from '../views/vehicules/AjoutVehicule.vue'
+import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 // import { canNavigate } from '@/acl/routeProtection'
 // import Vue from 'vue'
@@ -16,12 +17,14 @@ const routes = [
   { path: '/', redirect: { name: 'accueil' } },
   ...pages,
   { path: '/tableau-de-bord/liste-type-transport', name: 'liste-type-transport', component: ListeTypeTransport },
+  
 
 
   { path: '/tableau-de-bord/liste-demandes', name: 'liste-demandes', component: UneDemande },
   { path: '/tableau-de-bord/vehicules', name: 'vehicule', component: VehiculeView },
   { path: '/tableau-de-bord/ajout-vehicule', name: 'ajout-vehicule', component: AjoutVehicule },
-  
+  { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
+
 
  
 ]

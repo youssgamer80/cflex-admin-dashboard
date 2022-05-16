@@ -14,8 +14,8 @@
         <a-col :span="8" :offset="6">
          
           <a-button type="primary">
-             <router-link :to="'/tableau-de-bord/ajout-vehicule'">
-             Ajouter un vehicule
+             <router-link :to="'/tableau-de-bord/type-transport'">
+             Ajouter un type de transport
           </router-link>
           </a-button>
         </a-col>
