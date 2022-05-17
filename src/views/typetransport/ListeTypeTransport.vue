@@ -30,20 +30,35 @@
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <eye-outlined :style="{ color: '#26ABFF' }" />
+            <!--Début Modale Modifier type Transport-->
+
+            <a-button type="dashed" :size="size" @click="showModal">
+              <template #icon>
+                <edit-outlined :style="{ color: '#08f26e' }" />
+              </template>
+            </a-button>
+            <a-modal
+              v-model:visible="visible"
+              title="Title"
+              @ok="handleOk"
+              width="500px"
+            >
+              <p>TEST</p>
+            </a-modal>
+
+            <!--Début Modale Modifier type Transport-->
 
             <a-divider type="vertical" />
-            <edit-outlined :style="{ color: '#08f26e' }" />
-
-            <a-divider type="vertical" />
-
+            <!--Début popup Supprimer type Transport-->
             <a-popconfirm
               v-if="dataSource.length"
               title="Voulez vous supprimez?"
               @confirm="onDelete(record.id)"
             >
               <a><delete-outlined :style="{ color: '#f73772' }" /></a>
+              <template> <p>test</p></template>
             </a-popconfirm>
+            <!--Fin popup Supprimer type Transport-->
           </div>
         </template>
       </template>
@@ -53,13 +68,9 @@
 
 <script>
 import { usePagination } from "vue-request";
-import { computed, defineComponent } from "vue";
-import { message } from 'ant-design-vue';
-import {
-  EyeOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons-vue";
+import { computed, defineComponent, ref } from "vue";
+import { message } from "ant-design-vue";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
 import SearchHeader from "../../components/SearchHeader.vue";
 import axios from "axios";
@@ -89,15 +100,18 @@ const queryData = (params) => {
 export default defineComponent({
   components: {
     SearchHeader,
-    EyeOutlined,
     EditOutlined,
     DeleteOutlined,
   },
+methods:{
+ 
+},
   setup() {
+    const visible = ref(false);
     const {
       data: dataSource,
       run,
-      loading,
+      loading = ref(false),
       current,
       pageSize,
     } = usePagination(queryData, {
@@ -124,28 +138,38 @@ export default defineComponent({
     };
 
     const onDelete = (id) => {
-      return axios.delete(
-        `http://localhost:4001/api/typetransport/deletetypetransport/${ id }`,
-        {
-          data: {
-            statut: false,
+      return axios
+        .delete(
+          `http://localhost:4001/api/typetransport/deletetypetransport/${id}`,
+          {
+            data: {
+              statut: false,
+            },
           }
-        }
-
-        
-      ).then((resp)=>{
-        if(resp.status === 200){
-          dataSource.value = dataSource.value.filter(item => item.id !== id);
-        message.success('Supprimé avec succès!!');
-        } else {
-          message.error('impossible!!');
-        }
-        
-      }).catch(()=>{
-        message.error('impossible!!');
-      })
+        )
+        .then((resp) => {
+          if (resp.status === 200) {
+            dataSource.value = dataSource.value.filter(
+              (item) => item.id !== id
+            );
+            message.success("Supprimé avec succès!!");
+          } else {
+            message.error("impossible!!");
+          }
+        });
     };
-
+    const showModal = () => {
+      console.log("ok");
+      visible.value = true;
+      console.log(visible.value)
+    };
+    const handleOk = (e) => {
+      console.log(e);
+      visible.value = false;
+    };
+    const handleCancel = () => {
+      visible.value = false;
+    };
     console.log(dataSource);
     return {
       dataSource,
@@ -154,6 +178,9 @@ export default defineComponent({
       columns,
       handleTableChange,
       onDelete,
+      showModal,
+      handleOk,
+      handleCancel,
     };
   },
 });
