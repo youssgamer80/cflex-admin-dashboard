@@ -13,21 +13,21 @@
       <a-col :span="8">
         <a-space direction="vertical">
           <a-typography-title :level="5"
-            >Formulaire de demande</a-typography-title
+            >Gestion de demande</a-typography-title
           >
           <a-typography-text>{{date}} /  {{hours}}:{{minutes}}:{{seconds}}</a-typography-text>
         </a-space>
       </a-col>
       <a-col :span="8" :offset="8">
- <img
+ <!-- <img
     src="../../assets/logo.png" alt="A black, brown, and white dog wearing a kerchief"
-  />
+  /> -->
       </a-col>
     </a-row>
 
     <a-divider style="border-color: #000" dashed />
 
-      <!-- <a-col :span="8">
+      <a-col :span="8">
         <div class="space-align-container">
           <div class="space-align-block">
             <a-space align="center">
@@ -43,7 +43,7 @@
             </a-space>
           </div>
         </div>
-      </a-col> -->
+      </a-col>
       <!-- <a-col :span="8" :offset="8">
         <div class="space-align-container">
           <div class="space-align-block">
@@ -74,7 +74,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { UserOutlined } from "@ant-design/icons-vue";
+// import { UserOutlined } from "@ant-design/icons-vue";
 import TabsDemande from "../../components/TabsDemande.vue";
 export default defineComponent({
   name: "UneDemande",
@@ -104,7 +104,7 @@ export default defineComponent({
     this.setTime()
   },
   components: {
-    UserOutlined,
+    
     TabsDemande,
   },
 });

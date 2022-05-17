@@ -40,92 +40,171 @@
 <script>
 import { DownOutlined } from '@ant-design/icons-vue';
 import { defineComponent } from 'vue';
+import lodash from 'lodash';
+import axios from 'axios';
 const columns = [{
-  title: 'Name',
-  dataIndex: 'name',
-  key: 'name',
+  title: 'Nom',
+  dataIndex: 'nom',
+  key: 'nom',
 }, {
-  title: 'Platform',
-  dataIndex: 'platform',
-  key: 'platform',
+  title: 'Prénoms',
+  dataIndex: 'prenom',
+  key: 'prenom',
 }, {
-  title: 'Version',
-  dataIndex: 'version',
-  key: 'version',
+  title: 'Email',
+  dataIndex: 'email',
+  key: 'email',
 }, {
-  title: 'Upgraded',
-  dataIndex: 'upgradeNum',
-  key: 'upgradeNum',
-}, {
-  title: 'Creator',
-  dataIndex: 'creator',
-  key: 'creator',
-}, {
-  title: 'Date',
-  dataIndex: 'createdAt',
-  key: 'createdAt',
+  title: 'Téléphone',
+  dataIndex: 'telephone',
+  key: 'telephone',
 }, {
   title: 'Action',
-  key: 'operation',
+  key: 'action',
 }];
-const data = [];
+var data = [];
+var donnee = [];
 
-for (let i = 0; i < 3; ++i) {
-  data.push({
-    key: i,
-    name: `Screem ${i + 1}`,
-    platform: 'iOS',
-    version: '10.3.4.5654',
-    upgradeNum: 500,
-    creator: 'Jack',
-    createdAt: '2014-12-24 23:12:00',
-  });
-}
+
+// for (let i = 0; i < 6; ++i) {
+//   data.push({
+//     key: i,
+//     name: `Screem ${i + 1}`,
+//     platform: 'iOS',
+//     version: '10.3.4.5654',
+//     upgradeNum: 500,
+//     creator: 'Jack',
+//     createdAt: '2014-12-24 23:12:00',
+//   });
+// }
+const queryData = async () => {
+  await axios.get(
+    "http://localhost:8080/api/demandes").then(response => {
+      console.log(lodash.chain(response.data.data).groupBy(x => x.idProprietaireFk)
+        .map((value, key) => ({ proprietaire: key, data: value }))
+        .value())
+      donnee = lodash.chain(response.data.data).groupBy(x => x.idProprietaireFk)
+        .map((value, key) => ({ proprietaire: key, data: value }))
+        .value()
+
+      console.log('donnee', donnee)
+
+      let owners = []
+      // initialize vars
+      /* let owners = [
+        '1' []
+      ]; */
+
+      lodash.each (donnee, function(value) {
+        lodash.each(value.data, function(value2) {
+          let singleOwner = {
+            "owner": value2.proprietaire,
+            "orders": [value2]
+          };
+          let ownerWithIndex = {};
+          ownerWithIndex[value2.proprietaire.id] = singleOwner;
+
+          console.log('ownerWithIndex', ownerWithIndex);
+
+          console.log('Test Condition', typeof owners[value2.proprietaire.id]);
+
+          if (typeof owners[value2.proprietaire.id] !== "undefined") {
+            console.log(owners);
+            owners[value2.proprietaire.id].orders.push(value2)
+          } else {
+            owners[value2.proprietaire.id] = singleOwner;
+            console.log('transformation', Object.entries(ownerWithIndex));
+            console.log('owners', owners);
+          }
+          
+        })
+      
+      });
+
+      console.log ('owners', owners);
+
+      for (let i = 0; i < donnee.length; ++i) {
+        data.push(donnee[i].data[0].proprietaire);
+        for (let j = 0; j < donnee[i].data.length; ++j) {
+          if(donnee[i].data[j].idProprietaireFk ==donnee[i].proprietaire){
+            innerData.push(donnee[i].data[j]);
+          }
+        }
+      }
+      // for (let i = 0; i < donnee.length; ++i) {
+      //   for (let j = 0; j < donnee[i].data.length; ++j) {
+      //     if(donnee[i].proprietaire==donnee[i].data[j].proprietaire){
+      //       innerData.push(donnee[i].data[j]);
+      //     }
+      //   }
+      // }
+
+      //  for (let i = 0; i < donnee.length; ++i) {
+      //   innerData.push(donnee[i].data[0].codeDemande);
+      // }
+  // donnee.forEach(element => {
+  //   element.data.forEach(element1 => {
+  //     if (element.proprietaire == element1.id) {
+  //       innerData.push(element1);
+  //     }
+  //   });
+  // })
+
+
+
+    });
+};
+queryData();
+
+
 
 const innerColumns = [{
-  title: 'Date',
+  title: 'Code demande',
+  dataIndex: 'codeDemande',
+  key: 'codeDemande',
+}, {
+  title: 'Immatriculation',
+  dataIndex: 'immatriculation',
+  key: 'immatriculation',
+}, {
+  title: 'Etat',
+  key: 'etat',
+}, {
+  title: 'Date de demande',
   dataIndex: 'date',
   key: 'date',
 }, {
-  title: 'Name',
-  dataIndex: 'name',
-  key: 'name',
-}, {
-  title: 'Status',
-  key: 'state',
-}, {
-  title: 'Upgrade Status',
-  dataIndex: 'upgradeNum',
-  key: 'upgradeNum',
-}, {
   title: 'Action',
-  dataIndex: 'operation',
-  key: 'operation',
+  dataIndex: 'action',
+  key: 'action',
 }];
 const innerData = [];
 
-for (let i = 0; i < 3; ++i) {
-  innerData.push({
-    key: i,
-    date: '2014-12-24 23:12:00',
-    name: `This is production name ${i + 1}`,
-    upgradeNum: 'Upgraded: 56',
-  });
-}
+
 
 export default defineComponent({
   components: {
     DownOutlined,
   },
-
-  setup() {
+  data() {
     return {
-      data,
       columns,
+      data,
       innerColumns,
       innerData,
     };
   },
+  // setup() {
+  //   queryData();
+  //   return {
+  //     data,
+  //     columns,
+  //     innerColumns,
+  //     innerData,
+
+
+  //   };
+  // },
 
 });
 </script>
