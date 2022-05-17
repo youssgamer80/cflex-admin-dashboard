@@ -74,7 +74,6 @@
 
 <script>
 import { defineComponent } from "vue";
-import { UserOutlined } from "@ant-design/icons-vue";
 import TabsDemande from "../../components/TabsDemande.vue";
 export default defineComponent({
   name: "UneDemande",
@@ -104,7 +103,6 @@ export default defineComponent({
     this.setTime()
   },
   components: {
-    UserOutlined,
     TabsDemande,
   },
 });

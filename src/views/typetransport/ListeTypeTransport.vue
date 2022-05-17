@@ -141,7 +141,9 @@ export default defineComponent({
           message.error('impossible!!');
         }
         
-      });
+      }).catch(()=>{
+        message.error('impossible!!');
+      })
     };
 
     console.log(dataSource);
