@@ -24,7 +24,7 @@ export default defineComponent({
 
     const onSubmit = () => {
       return axios
-        .post("http://localhost:4001/api/typetransport/addtypetransport", {
+        .post("http://192.168.252.206:4000/api/typetransport/addtypetransport", {
           libelleTypeTransport: formState.libelle_type_transport,
           statut: true,
         })

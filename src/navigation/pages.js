@@ -38,7 +38,7 @@ export default [
       ],
     },
     {
-      header: 'Ulisateur et permissions',
+      header: 'Utilisateur et permissions',
     },
 
   ]

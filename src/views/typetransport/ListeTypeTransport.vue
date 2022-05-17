@@ -92,7 +92,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.206:4000/api/typetransport", {
+  return axios.get("http://192.168.252.203:8080/api/typetransport", {
     params,
   });
 };
@@ -140,7 +140,7 @@ methods:{
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://localhost:4001/api/typetransport/deletetypetransport/${id}`,
+          `http://192.168.252.203:8080/api/typetransport/deletetypetransport/${id}`,
           {
             data: {
               statut: false,
