@@ -23,6 +23,7 @@ export default defineComponent({
     });
 
     const onSubmit = () => {
+      console.log("showwwwwwwww");
       return axios
         .post("http://localhost:4001/api/typetransport/addtypetransport", {
           libelleTypeTransport: formState.libelle_type_transport,

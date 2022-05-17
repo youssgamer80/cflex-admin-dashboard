@@ -4,21 +4,37 @@
     <div class="components-input-demo-presuffix">
       <a-row>
         <a-col :span="8">
-          <a-input
-            v-model:value="userName"
-            placeholder="Type transport..."
-            style="width: 150%"
-          >
-          </a-input>
+         <a-input-search
+      v-model:value="value"
+      placeholder="Rechercher"
+      enter-button
+      @search="onSearch"
+    />
         </a-col>
+
+        <!-- Début  Modal Ajout Type Transport-->
         <a-col :span="8" :offset="6">
-         
-          <a-button type="primary">
-             <router-link :to="'/tableau-de-bord/type-transport'">
-             Ajouter un type de transport
-          </router-link>
+          <a-button type="primary" @click="showModal">
+            Ajouter un type de transport
           </a-button>
+          <a-modal
+            v-model:visible="visible"
+            width="500px"
+            title="Ajouter type de transport"
+            @ok="onSubmit"
+          >
+            <a-form
+              :model="formState"
+              :label-col="labelCol"
+              :wrapper-col="wrapperCol"
+            >
+              <a-form-item label="Libelle" :rules="[{ required: true }]">
+                <a-input v-model:value="formState.libelle_type_transport" />
+              </a-form-item>
+            </a-form>
+          </a-modal>
         </a-col>
+        <!-- Fin Modal Ajout Type Transport-->
       </a-row>
     </div>
   </a-card>
@@ -26,15 +42,42 @@
 
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, reactive } from "vue";
+import axios from "axios";
+
 export default defineComponent({
   name: "SearchHeader",
   components: {},
 
   setup() {
     const userName = ref("");
+    const visible = ref(false);
+    const showModal = () => {
+      visible.value = true;
+    };
+    const onSubmit = (e) => {
+      console.log(e);
+      visible.value = true;
+      return axios
+        .post("http://localhost:4001/api/typetransport/addtypetransport", {
+          libelleTypeTransport: formState.libelle_type_transport,
+          statut: true,
+        })
+        .then((resp) => {
+          console.log(resp.data);
+        });
+    };
+    const formState = reactive({
+      libelle_type_transport: "",
+      statut: "",
+    });
+
     return {
       userName,
+      visible,
+      showModal,
+      onSubmit,
+      formState,
     };
   },
 });
