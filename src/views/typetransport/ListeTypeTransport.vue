@@ -81,7 +81,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/typetransport", {
+  return axios.get("http://192.168.252.206:4000/api/typetransport", {
     params,
   });
 };

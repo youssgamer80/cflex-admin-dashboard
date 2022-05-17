@@ -51,7 +51,7 @@
           </div>
           <a-avatar
             size="large"
-            src="https://img.freepik.com/free-photo/black-woman-city_1157-17533.jpg?t=st=1652662556~exp=1652663156~hmac=1bc6a18e9e194be9f3a46c36b6382f3a44fdcfcfc5dc00dee56644611eeaf0e5&w=826"
+            src="https://img.freepik.com/free-photo/close-up-portrait-cheerful-young-black-man-grey-t-shirt-smiling-broadly_273609-430.jpg?w=2000&t=st=1652710145~exp=1652710745~hmac=674ff6e4f20b21df442884c67c396f89269dce08d61dfbceaaf329931a68a7fd"
           >
             <template #icon>
               <UserOutlined />
