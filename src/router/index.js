@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import pages from './routes/pages'
 import ListeTypeTransport from '../views/typetransport/ListeTypeTransport.vue'
 import UneDemande from '../views/demandes/UneDemande.vue'
+import DetailDemande from '../views/demandes/DetailDemande.vue'
 import VehiculeView from '../views/vehicules/VehiculeView.vue'
 import AjoutVehicule from '../views/vehicules/AjoutVehicule.vue'
 import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
@@ -26,6 +27,7 @@ const routes = [
 
 
   { path: '/tableau-de-bord/liste-demandes', name: 'liste-demandes', component: UneDemande },
+  { path: '/tableau-de-bord/details-demandes', name: 'details-demandes', component: DetailDemande },
   { path: '/tableau-de-bord/vehicules', name: 'vehicule', component: VehiculeView },
   { path: '/tableau-de-bord/ajout-vehicule', name: 'ajout-vehicule', component: AjoutVehicule },
   { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },

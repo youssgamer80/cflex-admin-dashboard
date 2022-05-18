@@ -33,7 +33,7 @@
               <a-dropdown>
                 <template #overlay>
                   <a-menu>
-                    <a-menu-item>Gerer la demande</a-menu-item>
+                    <a-menu-item><router-link to="/tableau-de-bord/details-demandes">Gerer la demande</router-link></a-menu-item>
                     <a-menu-item>Plus de détails</a-menu-item>
                   </a-menu>
                 </template>
