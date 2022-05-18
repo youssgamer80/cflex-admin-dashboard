@@ -1,7 +1,7 @@
 <template>
 <a-layout>
   <a-layout style="padding: 0 24px 24px">
-    <HeaderComponent />
+    <PageHeader/>
     <a-layout-content
       :style="{
         margin: '24px 24px 0',
@@ -20,12 +20,12 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import HeaderComponent from "./HeaderComponent.vue";
+import PageHeader from "./PageHeader.vue";
 export default defineComponent({
   name: "BodyComponent",
   components: {
-    HeaderComponent,
-  },
+    PageHeader
+},
   data() {
     return {
       windowHeight: window.innerHeight * 0.8 + "px",
