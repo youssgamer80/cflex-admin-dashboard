@@ -1,5 +1,19 @@
 <template>
-  <a-table :columns="columns" :data-source="data" :pagination="true" class="components-table-demo-nested">
+<div>
+    <!-- <a-input-search v-model:value="value" placeholder="input search loading deault" loading /> -->
+    <!-- <br />
+    <br /> -->
+    <a-input-search
+      v-model:value="value"
+      placeholder="input search loading with enterButton"
+      loading
+      enter-button
+    />
+    <br>
+    <br>
+  </div>
+ 
+  <a-table :columns="columns" :data-source="data" :pagination="true" :loading="loading" class="components-table-demo-nested">
     <template #bodyCell="{ column }">
       <template v-if="column.key === 'operation'">
         <a>Publish</a>
@@ -39,7 +53,8 @@
 </template>
 <script>
 import { DownOutlined } from '@ant-design/icons-vue';
-import { defineComponent } from 'vue';
+// import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import lodash from 'lodash';
 import axios from 'axios';
 const columns = [{
@@ -121,7 +136,7 @@ const queryData = async () => {
 
       });
 
-      
+
       for (let i = 1; i < owners.length; i++) {
         var owner = owners[i].owner;
         owner["key"] = `owner${i}`;
@@ -132,9 +147,9 @@ const queryData = async () => {
           order["key"] = `owner${i}`;
           innerData.push(order);
           console.log(`order${i}`, order);
-          
+
         }
-        
+
       }
 
       // for (let i = 0; i < owners.length; ++i) {
@@ -200,25 +215,26 @@ export default defineComponent({
   components: {
     DownOutlined,
   },
-  data() {
-    return {
-      columns,
-      data,
-      innerColumns,
-      innerData,
-    };
-  },
-  // setup() {
-  //   queryData();
+  // data() {
   //   return {
-  //     data,
   //     columns,
+  //     data,
   //     innerColumns,
   //     innerData,
-
-
   //   };
   // },
+  setup() {
+
+    const value = ref('');
+    return {
+      data,
+      columns,
+      innerColumns,
+      innerData,
+      value,
+
+    };
+  },
 
 });
 </script>
