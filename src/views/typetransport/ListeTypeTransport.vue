@@ -31,21 +31,17 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale Modifier type Transport-->
-
-            <a-button type="dashed" :size="size" @click="showModal">
-              <template #icon>
+           
                 <edit-outlined :style="{ color: '#08f26e' }" />
-              </template>
-            </a-button>
-            <a-modal
-              v-model:visible="visible"
-              title="Title"
-              @ok="handleOk"
-              width="500px"
-            >
-              <p>TEST</p>
-            </a-modal>
-
+            
+<div>
+    <a-button type="primary" @click="showModal">Open Modal</a-button>
+    <a-modal v-model:visible="visible" title="Basic Modal" @ok="handleOk">
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </a-modal>
+  </div>
             <!--Début Modale Modifier type Transport-->
 
             <a-divider type="vertical" />
@@ -70,7 +66,7 @@
 import { usePagination } from "vue-request";
 import { computed, defineComponent, ref } from "vue";
 import { message } from "ant-design-vue";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import { EditOutlined, DeleteOutlined  } from "@ant-design/icons-vue";
 
 import SearchHeader from "../../components/SearchHeader.vue";
 import axios from "axios";
@@ -107,7 +103,6 @@ methods:{
  
 },
   setup() {
-    const visible = ref(false);
     const {
       data: dataSource,
       run,
@@ -158,16 +153,15 @@ methods:{
           }
         });
     };
+   
+   const visible = ref(false);
+
     const showModal = () => {
-      console.log("ok");
       visible.value = true;
-      console.log(visible.value)
     };
-    const handleOk = (e) => {
+
+    const handleOk = e => {
       console.log(e);
-      visible.value = false;
-    };
-    const handleCancel = () => {
       visible.value = false;
     };
     console.log(dataSource);
@@ -180,7 +174,6 @@ methods:{
       onDelete,
       showModal,
       handleOk,
-      handleCancel,
     };
   },
 });
