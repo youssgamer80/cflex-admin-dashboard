@@ -13,10 +13,10 @@
     <br>
   </div>
  
-  <a-table :columns="columns" :data-source="data" :pagination="true" :loading="loading" class="components-table-demo-nested">
+  <a-table :columns="columns" :data-source="data" :pagination="true" class="components-table-demo-nested">
     <template #bodyCell="{ column }">
       <template v-if="column.key === 'operation'">
-        <a>Publish</a>
+        <a>Plus de détails</a>
       </template>
     </template>
     <template #expandedRowRender>
@@ -30,17 +30,15 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <span class="table-operation">
-              <a>Pause</a>
-              <a>Stop</a>
               <a-dropdown>
                 <template #overlay>
                   <a-menu>
-                    <a-menu-item>Action 1</a-menu-item>
-                    <a-menu-item>Action 2</a-menu-item>
+                    <a-menu-item>Gerer la demande</a-menu-item>
+                    <a-menu-item>Plus de détails</a-menu-item>
                   </a-menu>
                 </template>
                 <a>
-                  More
+                  Suivre la demande
                   <down-outlined />
                 </a>
               </a-dropdown>
@@ -75,7 +73,7 @@ const columns = [{
   key: 'telephone',
 }, {
   title: 'Action',
-  key: 'action',
+  key: 'operation',
 }];
 var data = [];
 var donnee = [];
@@ -204,8 +202,8 @@ const innerColumns = [{
   key: 'date',
 }, {
   title: 'Action',
-  dataIndex: 'action',
-  key: 'action',
+  dataIndex: 'operation',
+  key: 'operation',
 }];
 let innerData = [];
 
