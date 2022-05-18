@@ -1,5 +1,5 @@
 <template>
-  <a-table :columns="columns" :data-source="data" class="components-table-demo-nested">
+  <a-table :columns="columns" :data-source="data" :pagination="true" class="components-table-demo-nested">
     <template #bodyCell="{ column }">
       <template v-if="column.key === 'operation'">
         <a>Publish</a>
@@ -95,8 +95,8 @@ const queryData = async () => {
         '1' []
       ]; */
 
-      lodash.each (donnee, function(value) {
-        lodash.each(value.data, function(value2) {
+      lodash.each(donnee, function (value) {
+        lodash.each(value.data, function (value2) {
           let singleOwner = {
             "owner": value2.proprietaire,
             "orders": [value2]
@@ -116,21 +116,35 @@ const queryData = async () => {
             console.log('transformation', Object.entries(ownerWithIndex));
             console.log('owners', owners);
           }
-          
+
         })
-      
+
       });
 
-      console.log ('owners', owners);
-
-      for (let i = 0; i < donnee.length; ++i) {
-        data.push(donnee[i].data[0].proprietaire);
-        for (let j = 0; j < donnee[i].data.length; ++j) {
-          if(donnee[i].data[j].idProprietaireFk ==donnee[i].proprietaire){
-            innerData.push(donnee[i].data[j]);
-          }
+      
+      for (let i = 1; i < owners.length; i++) {
+        var owner = owners[i].owner;
+        owner["key"] = `owner${i}`;
+        console.log('owners', owners);
+        data.push(owner);
+        for (let j = 0; j < owners[i].orders.length; j++) {
+          var order = owners[i].orders[j];
+          order["key"] = `owner${i}`;
+          innerData.push(order);
+          console.log(`order${i}`, order);
+          
         }
+        
       }
+
+      // for (let i = 0; i < owners.length; ++i) {
+      //   data.push(owners[i].owner);
+      //   for (let j = 0; j < owners [i].data.length; ++j) {
+      //     if(owners [i].data[j].idProprietaireFk ==owners [i].proprietaire){
+      //       innerData.push(owners [i].data[j]);
+      //     }
+      //   }
+      // }
       // for (let i = 0; i < donnee.length; ++i) {
       //   for (let j = 0; j < donnee[i].data.length; ++j) {
       //     if(donnee[i].proprietaire==donnee[i].data[j].proprietaire){
@@ -142,13 +156,13 @@ const queryData = async () => {
       //  for (let i = 0; i < donnee.length; ++i) {
       //   innerData.push(donnee[i].data[0].codeDemande);
       // }
-  // donnee.forEach(element => {
-  //   element.data.forEach(element1 => {
-  //     if (element.proprietaire == element1.id) {
-  //       innerData.push(element1);
-  //     }
-  //   });
-  // })
+      // donnee.forEach(element => {
+      //   element.data.forEach(element1 => {
+      //     if (element.proprietaire == element1.id) {
+      //       innerData.push(element1);
+      //     }
+      //   });
+      // })
 
 
 
@@ -178,7 +192,7 @@ const innerColumns = [{
   dataIndex: 'action',
   key: 'action',
 }];
-const innerData = [];
+let innerData = [];
 
 
 
