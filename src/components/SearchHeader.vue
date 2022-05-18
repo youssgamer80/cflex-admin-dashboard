@@ -2,21 +2,36 @@
   <a-card :bordered="false" style="margin: 10px 0" id="macarte">
     <a-typography-title :level="5">Recherche</a-typography-title>
     <div class="components-input-demo-presuffix">
+      <!-- Début Champ de recherche Type Transport-->
       <a-row>
         <a-col :span="8">
-         <a-input-search
-      v-model:value="value"
-      placeholder="Rechercher"
-      enter-button
-      @search="onSearch"
-    />
+          <a-input-search
+            v-model="rechercher"
+            type="text"
+            placeholder="Rechercher"
+            @keyup="getAllTypeTransport"
+            enter-button
+            @search="onSearch"
+          />
+          <br />
+          {{ getAllTypeTransport }}
+
+          <!-- Balise ul pour lister l'ensemble des types transport -->
+          <ul>
+            <li
+              v-for="type_transport in libelle_type_transport"
+              :key="type_transport.libelle_type_transport"
+            >
+              {{ type_transport.libelle_type_transport }}
+            </li>
+          </ul>
+          <!-- Balise ul pour lister l'ensemble des types transport -->
         </a-col>
+        <!-- Fin  Champ de recherche Type Transport-->
 
         <!-- Début  Modal Ajout Type Transport-->
         <a-col :span="8" :offset="6">
-          <a-button type="primary" @click="showModal">
-            Ajouter un type de transport
-          </a-button>
+          <a-button type="primary" @click="showModal"> Ajouter </a-button>
           <a-modal
             v-model:visible="visible"
             width="500px"
@@ -59,7 +74,7 @@ export default defineComponent({
       console.log(e);
       visible.value = true;
       return axios
-        .post("http://localhost:4001/api/typetransport/addtypetransport", {
+        .post("http://192.168.252.92:4000/api/typetransport/addtypetransport", {
           libelleTypeTransport: formState.libelle_type_transport,
           statut: true,
         })
@@ -81,18 +96,20 @@ export default defineComponent({
     };
   },
 
-
   computed: {
-    resultQuery(){
-      if(this.searchQuery){
-      return this.resources.filter((item)=>{
-        return this.searchQuery.toLowerCase().split(' ').every(v => item.title.toLowerCase().includes(v))
-      })
-      }else{
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.resources.filter((item) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every((v) => item.title.toLowerCase().includes(v));
+        });
+      } else {
         return this.resources;
       }
-    }
-  }
+    },
+  },
 });
 </script>
 
