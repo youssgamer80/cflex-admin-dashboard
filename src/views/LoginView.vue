@@ -6,10 +6,12 @@
     <a-col :flex="auto"> <img src="../assets/img-accueil.jpg" alt=""
         :style="{ width: windowWidth, height: windowHeight, objectFit: 'cover', }" /></a-col>
     <a-col :flex="200">
-     <a-typography-title :level="2" id="title">Se connecter</a-typography-title>
+      <a-typography-title :level="2" id="title">Se connecter</a-typography-title>
+      <a-typography-title :level="2" id="connect">CFLEX</a-typography-title>
 
-      <a-card :style="{ width: windowWidthForm , 
-}" id ="macarte">
+      <a-card :style="{
+        width: windowWidthForm,
+      }" id="macarte">
         <a-form :model="formState" name="normal_login" class="login-form" @finish="onFinish"
           @finishFailed="onFinishFailed">
           <a-typography-text>
@@ -109,23 +111,40 @@ export default defineComponent({
 
 <style>
 #macarte {
-    
- margin: auto;
+
+  margin: auto;
 
 }
 
-#title{
-    
+#title {
+
   margin-left: auto;
   margin-right: auto;
 
 }
+
 img {
   height: 25px;
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+}
+
+#connect {
+  color: #FB5A00;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#title {
+
+  position: fixed;
+  top: 35%;
+  left: 80%;
+  transform: translate(-50%, -50%);
 }
 </style>
 

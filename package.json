@@ -24,6 +24,7 @@
     "vue-chartjs": "^4.1.0",
     "vue-extend-layout": "^2.0.6",
     "vue-request": "^1.2.4",
+    "vue-responsive": "^1.3.1",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.2"
   },

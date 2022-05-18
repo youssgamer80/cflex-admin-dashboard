@@ -1,5 +1,5 @@
 <template>
-    <component v-bind:is="layout">
+    <component v-bind:is="layout" id="mainapp">
     <slot />
     </component>
     
@@ -28,3 +28,15 @@ export default {
   }
 }
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,700,900');
+
+html, body {
+font-family: 'Poppins', sans-serif;
+}
+#mainapp {
+ font-family: 'Poppins', sans-serif;
+}
+
+</style>
