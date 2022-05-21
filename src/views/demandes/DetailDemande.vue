@@ -1,6 +1,6 @@
 <template>
 
-  <div class="components-page-header-demo-responsive" 
+  <div 
   :style="{
     padding: '24px',
     margin: '24px',

@@ -92,7 +92,7 @@ var donnee = [];
 // }
 const queryData = async () => {
   await axios.get(
-    "http://localhost:8080/api/demandes").then(response => {
+    "http://192.168.252.92:4000/api/demandes").then(response => {
       console.log(lodash.chain(response.data.data).groupBy(x => x.idProprietaireFk)
         .map((value, key) => ({ proprietaire: key, data: value }))
         .value())

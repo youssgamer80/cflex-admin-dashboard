@@ -1,64 +1,69 @@
 <template>
+  <div class="container-fluid">
+    <div class="row no-gutter">
+      <div class="col-md-6 d-none d-md-flex bg-image"></div>
+      <div class="col-md-6 bg-light">
+        <div class="login d-flex align-items-center py-5">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-10 col-xl-7 mx-auto">
+                <h4 class="display-4">Se connecter</h4>
+                <p class="text-muted mb-4">heureux de vous revoir</p>
 
+                <a-card id="macarte">
+                  <a-form :model="formState" name="normal_login" class="login-form" @finish="onFinish"
+                    @finishFailed="onFinishFailed">
+                    <a-form-item label="Username" name="username"
+                      :rules="[{ required: true, message: 'Please input your username!' }]">
+                      <a-input v-model:value="formState.username">
+                        <template #prefix>
+                          <UserOutlined class="site-form-item-icon" />
+                        </template>
+                      </a-input>
+                    </a-form-item>
 
+                    <a-form-item label="Password" name="password"
+                      :rules="[{ required: true, message: 'Please input your password!' }]">
+                      <a-input-password v-model:value="formState.password">
+                        <template #prefix>
+                          <LockOutlined class="site-form-item-icon" />
+                        </template>
+                      </a-input-password>
+                    </a-form-item>
 
-  <a-row type="flex" align="middle">
-    <a-col :flex="auto"> <img src="../assets/img-accueil.jpg" alt=""
-        :style="{ width: windowWidth, height: windowHeight, objectFit: 'cover', }" /></a-col>
-    <a-col :flex="200">
-      <a-typography-title :level="2" id="title">Se connecter</a-typography-title>
-      <a-typography-title :level="2" id="connect">CFLEX</a-typography-title>
+                    <div class="login-form-wrap">
+                      <a-form-item name="remember" no-style>
+                        <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
+                      </a-form-item>
+                      <a class="login-form-forgot" href="">Forgot password</a>
+                    </div>
 
-      <a-card :style="{
-        width: windowWidthForm,
-      }" id="macarte">
-        <a-form :model="formState" name="normal_login" class="login-form" @finish="onFinish"
-          @finishFailed="onFinishFailed">
-          <a-typography-text>
-            Email
-          </a-typography-text>
-          <a-form-item name="username" :rules="[{ required: true, message: 'Please input your username!' }]">
-            <a-input v-model:value="formState.username">
-              <template #prefix>
-                <UserOutlined class="site-form-item-icon" />
-              </template>
-            </a-input>
-          </a-form-item>
-          <a-typography-text>
-            Mot de passe
-          </a-typography-text>
-          <a-form-item name="password" :rules="[{ required: true, message: 'Please input your password!' }]">
-            <a-input-password v-model:value="formState.password">
-              <template #prefix>
-                <LockOutlined class="site-form-item-icon" />
-              </template>
-            </a-input-password>
-          </a-form-item>
+                    <a-form-item>
+                      <a-button :disabled="disabled" type="primary" html-type="submit" class="login-form-button">
+                        Log in
+                      </a-button>
+                      Or
+                      <a href="">register now!</a>
+                    </a-form-item>
+                  </a-form>
 
-          <div class="login-form-wrap">
-            <a-form-item name="remember" no-style>
-              <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
-            </a-form-item>
-            <a class="login-form-forgot" href="">Forgot password</a>
+                </a-card>
+              </div>
+            </div>
           </div>
 
-          <a-form-item>
-            <a-button :disabled="disabled" type="primary" html-type="submit" class="login-form-button">
-              Log in
-            </a-button>
-            Or
-            <a href="">register now!</a>
-          </a-form-item>
-        </a-form>
-      </a-card>
-      <!-- <img src="../assets/logo.png"/> -->
-    </a-col>
-  </a-row>
+        </div>
+      </div>
 
+    </div>
+  </div>
 </template>
 
-
 <script>
+
+//importing bootstrap 5 Modules
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./login.css";
 import { defineComponent, reactive, computed } from 'vue';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 export default defineComponent({
@@ -66,21 +71,7 @@ export default defineComponent({
     UserOutlined,
     LockOutlined,
   },
-  data() {
-    return {
-      windowWidth: window.innerWidth * 0.6 + "px",
-      windowHeight: window.innerHeight + "px",
-      windowWidthForm: window.innerWidth * 0.35 + "px",
-      success: false,
-    };
-  },
-  mounted() {
-    window.onresize = () => {
-      this.windowWidth = window.innerWidth * 0.6 + "px";
-      this.windowHeight = window.innerHeight + "px";
-      //this.windowWidthForm=window.innerWidth * 0.35 + "px";
-    };
-  },
+
   setup() {
     const formState = reactive({
       username: '',
@@ -106,45 +97,25 @@ export default defineComponent({
       disabled,
     };
   },
+
 });
 </script>
-
 <style>
-#macarte {
-
-  margin: auto;
-
+#components-form-demo-normal-login .login-form {
+  max-width: 300px;
 }
 
-#title {
-
-  margin-left: auto;
-  margin-right: auto;
-
+#components-form-demo-normal-login .login-form-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-img {
-  height: 25px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
+#components-form-demo-normal-login .login-form-forgot {
+  margin-bottom: 24px;
 }
 
-#connect {
-  color: #FB5A00;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-#title {
-
-  position: fixed;
-  top: 35%;
-  left: 80%;
-  transform: translate(-50%, -50%);
+#components-form-demo-normal-login .login-form-button {
+  width: 100%;
 }
 </style>
-
