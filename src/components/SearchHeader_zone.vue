@@ -5,8 +5,8 @@
       <!-- Début Champ de recherche Type Transport-->
       <a-row>
         <a-col :span="8">
-          <a-input-search v-model:value="searchQuery" type="text" placeholder="Rechercher" @keyup="getAllTypeTyp"
-            enter-button @search="onSearch" />
+          <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
+            v-model:value="searchText" />
           <br />
         </a-col>
         <!-- Fin  Champ de recherche Type Transport-->
@@ -74,6 +74,11 @@ export default defineComponent({
   name: "SearchHeader",
   components: {},
 
+  data() {
+    return {
+      searchText: "",
+    };
+  },
 
   setup() {
     let selectzoneparent
@@ -85,9 +90,9 @@ export default defineComponent({
     };
 
 
-    const onSearch = searchValue => {
+    // const onSearch = searchValue => {
 
-      console.log('use value', searchValue);
+    //   console.log('use value', searchValue);
       // console.log(this.DataSource)
       // this.DataSource.forEach(element => {
       //   if(element.libelle >=9){
@@ -111,7 +116,7 @@ export default defineComponent({
       //       this.filters = res.result;
       //     }
       //   });
-    };
+    // };
 
     const handleChangeTypezone = value => {
       selecttypezone = value;
@@ -144,9 +149,9 @@ export default defineComponent({
       if (resp.status === 200) {
         visible.value = false;
         message.success("Ajout reussi");
-        formState.libelle=""
-        selecttypezone=0
-        selectzoneparent=0
+        formState.libelle = ""
+        selecttypezone = 0
+        selectzoneparent = 0
       } else {
         message.error("impossible!!");
       }
@@ -173,7 +178,7 @@ export default defineComponent({
       idZoneparentFk: "",
       handleChangeZoneparent,
       handleChangeTypezone,
-      onSearch,
+      // onSearch,
       searchQuery
 
 
@@ -199,31 +204,33 @@ export default defineComponent({
       })
   },
   methods: {
-    onChange: function () {
-      console.log(this.selectzoneparent); //On y accède de n'importe où dans le framework
+    // onChange: function () {
+    //   console.log(this.selectzoneparent); //On y accède de n'importe où dans le framework
 
-      console.log(this.selecttypezone); //On y accède de n'importe où dans le framework
+    //   console.log(this.selecttypezone); //On y accède de n'importe où dans le framework
+    // },
+
+
+    onChange() {
+      this.$emit("search", this.searchText);
     },
 
 
-
-
-
   },
-  computed: {
-    resultQuery() {
-      if (this.searchQuery) {
-        return this.resources.filter((item) => {
-          return this.searchQuery
-            .toLowerCase()
-            .split(" ")
-            .every((v) => item.title.toLowerCase().includes(v));
-        });
-      } else {
-        return this.resources;
-      }
-    },
-  },
+  // computed: {
+  //   resultQuery() {
+  //     if (this.searchQuery) {
+  //       return this.resources.filter((item) => {
+  //         return this.searchQuery
+  //           .toLowerCase()
+  //           .split(" ")
+  //           .every((v) => item.title.toLowerCase().includes(v));
+  //       });
+  //     } else {
+  //       return this.resources;
+  //     }
+  //   },
+  // },
 });
 </script>
 

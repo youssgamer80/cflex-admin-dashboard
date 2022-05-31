@@ -1,7 +1,7 @@
 <template>
   <a-typography-title :level="4">Liste Des Zones</a-typography-title>
 
-  <SearchHeaderZone />
+  <SearchHeaderZone  @search="handleSearch"/>
   <a-card :style="{
     padding: '24px',
     background: '#fff',
@@ -120,6 +120,21 @@ export default defineComponent({
   },
   methods: {
 
+    handleSearch(value){
+      // if(value && value.length > 0) {
+      //   this.filteredData = this.technologyData.filter(i => {
+      //     const val = value.toLowerCase();
+      //     const title = i.title && i.title.toLowerCase();
+      //     if(val && title.indexOf(val) !== -1) {
+      //       return true
+      //     } 
+      //     return false
+      //   })
+      // } else {
+      //   this.filteredData = this.technologyData;
+      // }
+      console.log(value)
+    }
   },
   setup() {
 
@@ -145,7 +160,7 @@ export default defineComponent({
         visible.value = false;
         message.success("Modification reussi");
 
-        
+
       } else {
         message.error("impossible!!");
       }
@@ -160,7 +175,10 @@ export default defineComponent({
       current,
       pageSize,
     } = usePagination(queryData, {
-      formatResult: (res) => res.data.data,
+      formatResult: (res) => {
+
+        return res.data.data
+      },
       pagination: {
         currentKey: "page",
         pageSizeKey: "results",
