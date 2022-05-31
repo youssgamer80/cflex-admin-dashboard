@@ -7,8 +7,8 @@ import 'ant-design-vue/dist/antd.css';
 import router from './router'
 import store from './store'
 import 'ant-design-vue/dist/antd.less'
-import { initAPIClient } from './services/APIClient'
-initAPIClient(store)
+//import { initAPIClient } from './services/APIClient'
+//initAPIClient(store)
   const app = Vue.createApp(App)
   .use(store)
   .use(router)

@@ -1,0 +1,232 @@
+<template>
+  <a-card :bordered="false" style="margin: 10px 0" id="macarte">
+    <a-typography-title :level="5">Recherche</a-typography-title>
+    <div class="components-input-demo-presuffix">
+      <!-- Début Champ de recherche Type Transport-->
+      <a-row>
+        <a-col :span="8">
+          <a-input-search v-model:value="searchQuery" type="text" placeholder="Rechercher" @keyup="getAllTypeTyp"
+            enter-button @search="onSearch" />
+          <br />
+        </a-col>
+        <!-- Fin  Champ de recherche Type Transport-->
+
+        <!-- Début  Modal Ajout Type Transport-->
+        <a-col :span="8" :offset="6">
+          <a-button type="primary" @click="showModal"> Ajouter </a-button>
+          <a-modal v-model:visible="visible" width="500px" title="Ajouter zone" @ok="onSubmit">
+
+            <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
+
+              <a-form-item label="Libelle" :rules="[{ required: true }]">
+                <a-input v-model:value="formState.libelle" />
+              </a-form-item>
+
+
+              <a-form-item label="Type de zone" :rules="[{ required: true }]">
+
+                <a-space>
+                  <a-select ref="select" v-model:value="selecttypezone" style="width: 120px"
+                    @change="handleChangeTypezone">
+                    <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+                    }}
+                    </a-select-option>
+                    <!-- <a-select-option value="zone2">Lucy</a-select-option>
+                  <a-select-option value="zone3">yiminghe</a-select-option> -->
+                  </a-select>
+
+                </a-space>
+
+              </a-form-item>
+
+              <a-form-item label="Zone parent" :rules="[{ required: true }]">
+
+                <a-space>
+                  <a-select ref="select" v-model:value="selectzoneparent" style="width: 120px"
+                    @change="handleChangeZoneparent">
+                    <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
+                        item.zoneparent
+                    }}
+                    </a-select-option>
+
+                  </a-select>
+
+                </a-space>
+              </a-form-item>
+
+            </a-form>
+          </a-modal>
+        </a-col>
+        <!-- Fin Modal Ajout Type Transport-->
+      </a-row>
+    </div>
+  </a-card>
+</template>
+
+
+<script>
+import { defineComponent, ref, reactive } from "vue";
+import axios from "axios";
+import { message } from 'ant-design-vue';
+
+
+export default defineComponent({
+  name: "SearchHeader",
+  components: {},
+
+
+  setup() {
+    let selectzoneparent
+    let selecttypezone
+    const searchQuery = ref('')
+    const handleChangeZoneparent = value => {
+      selectzoneparent = value;
+      console.log(`selected ${selectzoneparent}`);
+    };
+
+
+    const onSearch = searchValue => {
+
+      console.log('use value', searchValue);
+      // console.log(this.DataSource)
+      // this.DataSource.forEach(element => {
+      //   if(element.libelle >=9){
+      //    console.log(element.libelle)
+      //  }
+      // });
+
+      // this.DataSource.filter(element => {
+      //  if(element.libelle >=9){
+      //    element.libelle
+      //  }
+      // })
+
+      // fetch("http://192.168.252.206:4000/api/zones/")
+      //   .then(response => response.json())
+      //   .then(res => {
+      //     console.log(this.searchQuery)
+      //     if (this.searchQuery) {
+      //       this.filters = res.result.filter(filters => filters.libelle.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      //     } else {
+      //       this.filters = res.result;
+      //     }
+      //   });
+    };
+
+    const handleChangeTypezone = value => {
+      selecttypezone = value;
+      console.log(`selected ${selecttypezone}`);
+    };
+
+
+
+    const userName = ref("");
+    const visible = ref(false);
+    const showModal = () => { visible.value = true };
+    //fonction pour enregiqtrer un type de tt
+    const onSubmit = async () => {
+      visible.value = true;
+
+      const resp = await axios
+        .post("http://192.168.252.206:4000/api/zones/addZone", {
+          libelle: formState.libelle,
+
+          idTypeZoneFk: {
+            // "id": 2
+            id: selecttypezone
+          },
+          idZoneparentFk: {
+            // "id": 3
+            id: selectzoneparent
+          },
+          statut: true
+        });
+      if (resp.status === 200) {
+        visible.value = false;
+        message.success("Ajout reussi");
+        formState.libelle=""
+        selecttypezone=0
+        selectzoneparent=0
+      } else {
+        message.error("impossible!!");
+      }
+    };
+    const formState = reactive({
+      libelle: "",
+      statut: "",
+      // idTypeZoneFk: "",
+      // idZoneparentFk: ""
+    });
+
+    return {
+      selectzoneparent,
+      selecttypezone,
+      userName,
+      visible,
+      showModal,
+      onSubmit,
+      formState,
+      filters: [],
+      dataTypeZone: [],
+      dataZoneParent: [],
+      idTypeZoneFk: "",
+      idZoneparentFk: "",
+      handleChangeZoneparent,
+      handleChangeTypezone,
+      onSearch,
+      searchQuery
+
+
+    };
+  },
+  mounted() {
+    console.log("Component mounted");
+
+    fetch("http://192.168.252.206:4000/api/zoneparents")
+      .then(response => response.json())
+      .then(res => {
+        this.dataZoneParent = res.data
+
+        // console.log(this.dataZoneParent[0].zoneparent)
+      })
+
+    fetch("http://192.168.252.206:4000/list")
+      .then(response => response.json())
+      .then(res => {
+        this.dataTypeZone = res
+
+        // console.log(this.dataTypeZone)
+      })
+  },
+  methods: {
+    onChange: function () {
+      console.log(this.selectzoneparent); //On y accède de n'importe où dans le framework
+
+      console.log(this.selecttypezone); //On y accède de n'importe où dans le framework
+    },
+
+
+
+
+
+  },
+  computed: {
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.resources.filter((item) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every((v) => item.title.toLowerCase().includes(v));
+        });
+      } else {
+        return this.resources;
+      }
+    },
+  },
+});
+</script>
+
+
+
+

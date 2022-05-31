@@ -22,9 +22,7 @@ export default [
         },
        
       ],
-    },
-    
-   
+    },   
     {
       title: 'Type Transport',
       icon: 'FileTextIcon',
@@ -34,12 +32,32 @@ export default [
           route: '/tableau-de-bord/liste-type-transport',
         },
        
+      ],
+    },
+    {
+      header: 'Zone et type de zone',
+    },
+    {
+      title: 'Zone',
+      icon: 'FileTextIcon',
+      // route: '/tableau-de-bord/liste-zone'
+      children: [
+        {
+          title: 'Liste des zones',
+          route: '/tableau-de-bord/liste-zone',
+        },
+        
+        {
+          title: 'Liste des types de zone',
+          route: '/tableau-de-bord/type-zone',
+        },
        
       ],
     },
     {
       header: 'Utilisateur et permissions',
     },
+    
 
   ]
   

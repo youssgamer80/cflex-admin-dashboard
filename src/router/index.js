@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import pages from './routes/pages'
 import ListeTypeTransport from '../views/typetransport/ListeTypeTransport.vue'
+import ListeTypeZone from '../views/typezone/ListeTypeZone.vue'
+import ListeZone from '../views/zone/ListeZone.vue'
 import UneDemande from '../views/demandes/UneDemande.vue'
 import DetailDemande from '../views/demandes/DetailDemande.vue'
 import VehiculeView from '../views/vehicules/VehiculeView.vue'
@@ -31,6 +33,8 @@ const routes = [
   { path: '/tableau-de-bord/vehicules', name: 'vehicule', component: VehiculeView },
   { path: '/tableau-de-bord/ajout-vehicule', name: 'ajout-vehicule', component: AjoutVehicule },
   { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
+  { path: '/tableau-de-bord/liste-zone', name: 'liste-zones', component: ListeZone },
+  { path: '/tableau-de-bord/type-zone', name: 'type-zone', component: ListeTypeZone },
 
 
  
