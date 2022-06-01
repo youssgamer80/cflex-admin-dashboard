@@ -34,14 +34,7 @@
            
                 <edit-outlined :style="{ color: '#08f26e' }" />
             
-<div>
-    <a-button type="primary" @click="showModal">Open Modal</a-button>
-    <a-modal v-model:visible="visible" title="Basic Modal" @ok="handleOk">
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-    </a-modal>
-  </div>
+
             <!--Début Modale Modifier type Transport-->
 
             <a-divider type="vertical" />
@@ -88,7 +81,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4000/api/typetransport", {
+  return axios.get("http://192.168.252.223:4000/api/typetransport/", {
     params,
   });
 };
@@ -135,12 +128,7 @@ methods:{
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.252.92:4000/api/typetransport/deletetypetransport/${id}`,
-          {
-            data: {
-              statut: false,
-            },
-          }
+          `http://192.168.252.223:4000/api/typetransport/deletetypetransport/${id}`
         )
         .then((resp) => {
           if (resp.status === 200) {

@@ -1,7 +1,7 @@
 <template>
   <a-typography-title :level="4">Liste Des Zones</a-typography-title>
 
-  <SearchHeaderZone  @search="handleSearch"/>
+  <SearchHeaderZone @search="handleSearch" />
   <a-card :style="{
     padding: '24px',
     background: '#fff',
@@ -120,20 +120,54 @@ export default defineComponent({
   },
   methods: {
 
-    handleSearch(value){
-      // if(value && value.length > 0) {
-      //   this.filteredData = this.technologyData.filter(i => {
-      //     const val = value.toLowerCase();
-      //     const title = i.title && i.title.toLowerCase();
-      //     if(val && title.indexOf(val) !== -1) {
-      //       return true
-      //     } 
-      //     return false
-      //   })
-      // } else {
-      //   this.filteredData = this.technologyData;
-      // }
-      console.log(value)
+    handleSearch(value) {
+      let NewdataSource = []
+      this.oldData = this.dataSource
+      console.log("Old data")
+      console.log(this.oldData)
+      if (value.length > 0) {
+
+        console.log("Test tapé")
+        console.log(value.toLowerCase())
+        console.log("Chaque element")
+        this.dataSource.filter((item) => {
+          if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
+            NewdataSource.push(item);
+          }
+        })
+        this.dataSource = NewdataSource
+
+
+      }
+      else {
+        this.dataSource = this.oldData
+      }
+
+
+
+      // this.dataSource = [
+
+      //   {
+      //     id: 4,
+      //     idTypeZoneFk: {
+      //       id: 1,
+      //       libelle: "ville",
+      //       statut: true
+      //     },
+      //     idZoneparentFk: {
+      //       id: 1,
+      //       statut: true,
+      //       zoneparent: "kljiolkoijo"
+      //     },
+      //     libelle: "Abobo",
+      //     statut: true
+      //   }
+      // ]
+
+      // console.log(this.dataSource.filter(d => value.split(' ').every(v => d.toLowerCase().includes(v.toLowerCase()))))
+
+      // console.log(test);
+
     }
   },
   setup() {
@@ -224,7 +258,7 @@ export default defineComponent({
     };
 
     const visible = ref(false);
-
+    const oldData=[]
     const showModal = (id, libelle, idTypeZoneFk, idZoneparentFk) => {
       formState.id = id;
       formState.libelle = libelle;
@@ -272,7 +306,8 @@ export default defineComponent({
       formState,
       dataZoneParent: [],
       dataTypeZone: [],
-      onSubmit
+      onSubmit,
+      oldData
     };
   },
 
