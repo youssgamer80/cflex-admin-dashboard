@@ -313,7 +313,7 @@ export default defineComponent({
       .then(res => {
        this.dataListZone= res.data
 
-        // console.log(this.dataZoneParent[0].zoneparent)
+        console.log(this.dataListZone)
       })
   },
 });
