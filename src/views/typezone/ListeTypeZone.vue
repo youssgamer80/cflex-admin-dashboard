@@ -92,7 +92,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4000/api/typezone", {
+  return axios.get("http://192.168.252.223:4001/api/typezone", {
     params,
   });
 };
@@ -175,7 +175,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://localhost:4000/api/typezone/deleteTypeZone/${id}`
+          `http://192.168.252.223:4001/api/typezone/deleteTypeZone/${id}`
         )
         .then((resp) => {
           if (resp.status === 200) {
@@ -194,7 +194,7 @@ export default defineComponent({
 
       console.log('Success:', values);
       return axios
-        .put(`http://localhost:4000/api/typezone/updateTypeZone/${formState.id}`, {
+        .put(`http://192.168.252.223:4001/api/typezone/updateTypeZone/${formState.id}`, {
           libelle:formState.libelle,
           statut:true,
         })
@@ -253,7 +253,7 @@ export default defineComponent({
   mounted(){
 
 
-     fetch("http://192.168.252.223:4000/api/typezone")
+     fetch("http://192.168.252.223:4001/api/typezone")
       .then(response => response.json())
       .then(res => {
        this.dataListTypeZone= res.data
