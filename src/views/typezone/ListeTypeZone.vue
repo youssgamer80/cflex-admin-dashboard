@@ -1,7 +1,7 @@
 <template>
   <a-typography-title :level="4">Liste Des Types de zone</a-typography-title>
 
-  <SearchHeaderTypeZone />
+  <SearchHeaderTypeZone @search="handleSearch" />
   <a-card :style="{
     padding: '24px',
     background: '#fff',
@@ -92,7 +92,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4000/api/typezone", {
+  return axios.get("http://192.168.252.223:4000/api/typezone", {
     params,
   });
 };
@@ -104,6 +104,35 @@ export default defineComponent({
     DeleteOutlined,
   },
   methods: {
+
+    handleSearch(value) {
+      let NewdataSource = []
+      
+
+      // console.log("Old data")
+      // console.log(this.oldData)
+
+      // console.log("Test tapé")
+      // console.log(value.length)
+      // console.log("Chaque element")
+
+
+      if (value.length > 0) {
+
+        this.dataSource.filter((item) => {
+          if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
+            NewdataSource.push(item);
+          }
+          
+        })
+        this.dataSource = NewdataSource
+
+      }
+      else {
+        this.dataSource = this.dataListTypeZone
+      }
+
+    }
 
   },
   setup() {
@@ -217,8 +246,21 @@ export default defineComponent({
       visible,
       formState,
       onFinish,
+      dataListTypeZone: []
     };
   },
+
+  mounted(){
+
+
+     fetch("http://192.168.252.223:4000/api/typezone")
+      .then(response => response.json())
+      .then(res => {
+       this.dataListTypeZone= res.data
+        console.log(this.dataListTypeZone)
+        // console.log(this.dataZoneParent[0].zoneparent)
+      })
+  }
 });
 </script>
 

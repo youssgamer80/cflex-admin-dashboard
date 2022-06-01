@@ -5,8 +5,8 @@
       <!-- Début Champ de recherche Type Transport-->
       <a-row>
         <a-col :span="8">
-          <a-input-search v-model.trim="searchQuery" type="text" placeholder="Rechercher" @keyup="getAllTypeTyp"
-            enter-button="Rechercher" @search="onSearch" />
+          <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
+            v-model:value="searchText" />
           <br />
           <!-- Balise  pour lister l'ensemble des types transport -->
           <div v-for="(zone, index) in filters" :key="zone.libelle">
@@ -45,11 +45,15 @@ export default defineComponent({
   name: "SearchHeader",
   components: {},
 
+  data() {
+    return {
+      searchText: "",
+    };
+  },
+
+
   setup() {
    
-
-    
-
     const userName = ref("");
     const visible = ref(false);
     const showModal = () => { visible.value = true };
@@ -96,23 +100,12 @@ export default defineComponent({
   },
   methods: {
    
-
-    getAllTypeZone() {
-      fetch("http://192.168.252.206:4000/list")
-        .then(response => response.json())
-        .then(res => {
-          if (this.searchQuery) {
-            this.filters = res.result.filter(filters => filters.libelle.toLowerCase().includes(this.searchQuery.toLowerCase()))
-          } else {
-            this.filters = res.result;
-          }
-        });
+     onChange() {
+      this.$emit("search", this.searchText);
     },
 
-    created() {
-      this.getAllTypeZone();
-      
-    }
+
+    
   },
   computed: {
     resultQuery() {

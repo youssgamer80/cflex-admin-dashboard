@@ -35,7 +35,7 @@ export default [
       ],
     },
     {
-      header: 'Zone et type de zone',
+      header: 'Zone et Type de zone',
     },
     {
       title: 'Zone',

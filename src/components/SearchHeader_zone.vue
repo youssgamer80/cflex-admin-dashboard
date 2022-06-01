@@ -90,33 +90,7 @@ export default defineComponent({
     };
 
 
-    // const onSearch = searchValue => {
-
-    //   console.log('use value', searchValue);
-      // console.log(this.DataSource)
-      // this.DataSource.forEach(element => {
-      //   if(element.libelle >=9){
-      //    console.log(element.libelle)
-      //  }
-      // });
-
-      // this.DataSource.filter(element => {
-      //  if(element.libelle >=9){
-      //    element.libelle
-      //  }
-      // })
-
-      // fetch("http://192.168.252.206:4000/api/zones/")
-      //   .then(response => response.json())
-      //   .then(res => {
-      //     console.log(this.searchQuery)
-      //     if (this.searchQuery) {
-      //       this.filters = res.result.filter(filters => filters.libelle.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      //     } else {
-      //       this.filters = res.result;
-      //     }
-      //   });
-    // };
+ 
 
     const handleChangeTypezone = value => {
       selecttypezone = value;
@@ -133,7 +107,7 @@ export default defineComponent({
       visible.value = true;
 
       const resp = await axios
-        .post("http://192.168.252.206:4000/api/zones/addZone", {
+        .post("http://192.168.252.223:4000/api/zones/addZone", {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -187,7 +161,7 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://192.168.252.206:4000/api/zoneparents")
+    fetch("http://192.168.252.223:4000/api/zoneparents")
       .then(response => response.json())
       .then(res => {
         this.dataZoneParent = res.data
@@ -195,7 +169,7 @@ export default defineComponent({
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
-    fetch("http://192.168.252.206:4000/list")
+    fetch("http://192.168.252.223:4000/list")
       .then(response => response.json())
       .then(res => {
         this.dataTypeZone = res
@@ -204,11 +178,7 @@ export default defineComponent({
       })
   },
   methods: {
-    // onChange: function () {
-    //   console.log(this.selectzoneparent); //On y accède de n'importe où dans le framework
-
-    //   console.log(this.selecttypezone); //On y accède de n'importe où dans le framework
-    // },
+    
 
 
     onChange() {
@@ -217,20 +187,7 @@ export default defineComponent({
 
 
   },
-  // computed: {
-    resultQuery() {
-      if (this.searchQuery) {
-        return this.resources.filter((item) => {
-          return this.searchQuery
-            .toLowerCase()
-            .split(" ")
-            .every((v) => item.title.toLowerCase().includes(v));
-        });
-      } else {
-        return this.resources;
-      }
-    },
-  // },
+  
 });
 </script>
 

@@ -107,7 +107,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.206:4000/api/zones", {
+  return axios.get("http://192.168.252.223:4000/api/zones", {
     params,
   });
 };
@@ -118,56 +118,36 @@ export default defineComponent({
     EditOutlined,
     DeleteOutlined,
   },
+
+  
   methods: {
 
     handleSearch(value) {
       let NewdataSource = []
-      this.oldData = this.dataSource
-      console.log("Old data")
-      console.log(this.oldData)
+      
+
+      // console.log("Old data")
+      // console.log(this.oldData)
+
+      // console.log("Test tapé")
+      // console.log(value.length)
+      // console.log("Chaque element")
+
+
       if (value.length > 0) {
 
-        console.log("Test tapé")
-        console.log(value.toLowerCase())
-        console.log("Chaque element")
         this.dataSource.filter((item) => {
           if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
+          
         })
         this.dataSource = NewdataSource
 
-
       }
       else {
-        this.dataSource = this.oldData
+        this.dataSource = this.dataListZone
       }
-
-
-
-      // this.dataSource = [
-
-      //   {
-      //     id: 4,
-      //     idTypeZoneFk: {
-      //       id: 1,
-      //       libelle: "ville",
-      //       statut: true
-      //     },
-      //     idZoneparentFk: {
-      //       id: 1,
-      //       statut: true,
-      //       zoneparent: "kljiolkoijo"
-      //     },
-      //     libelle: "Abobo",
-      //     statut: true
-      //   }
-      // ]
-
-      // console.log(this.dataSource.filter(d => value.split(' ').every(v => d.toLowerCase().includes(v.toLowerCase()))))
-
-      // console.log(test);
-
     }
   },
   setup() {
@@ -175,9 +155,9 @@ export default defineComponent({
     const onSubmit = async () => {
 
 
-      console.log(formState)
+
       const resp = await axios
-        .put(`http://192.168.252.206:4000/api/zones/updateZone/${formState.id}`, {
+        .put(`http://192.168.252.223:4000/api/zones/updateZone/${formState.id}`, {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -200,8 +180,9 @@ export default defineComponent({
       }
 
 
-
     };
+
+
     const {
       data: dataSource,
       run,
@@ -210,7 +191,7 @@ export default defineComponent({
       pageSize,
     } = usePagination(queryData, {
       formatResult: (res) => {
-
+        
         return res.data.data
       },
       pagination: {
@@ -237,7 +218,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.252.206:4000/api/zones/deleteZone/${id}`,
+          `http://192.168.252.223:4000/api/zones/deleteZone/${id}`,
           {
             data: {
               statut: false,
@@ -258,26 +239,17 @@ export default defineComponent({
     };
 
     const visible = ref(false);
-    const oldData=[]
+    let notEgal
     const showModal = (id, libelle, idTypeZoneFk, idZoneparentFk) => {
       formState.id = id;
       formState.libelle = libelle;
       formState.idTypeZoneFk = idTypeZoneFk;
       formState.idZoneparentFk = idZoneparentFk;
 
-      // console.log(formState.idZoneparentFk)
       visible.value = true;
     };
 
-    // const resultQuery = () => {
-    //   if (this.searchQuery) {
-    //     return this.resources.filter((item) => {
-    //       return this.searchQuery.toLowerCase().split(' ').every(v => item.title.toLowerCase().includes(v))
-    //     })
-    //   } else {
-    //     return this.resources;
-    //   }
-    // }
+
     const formState = reactive({
       id: '',
       libelle: '',
@@ -306,8 +278,10 @@ export default defineComponent({
       formState,
       dataZoneParent: [],
       dataTypeZone: [],
+      dataListZone: [],
       onSubmit,
-      oldData
+      notEgal
+
     };
   },
 
@@ -317,7 +291,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://192.168.252.206:4000/api/zoneparents")
+    fetch("http://192.168.252.223:4000/api/zoneparents")
       .then(response => response.json())
       .then(res => {
         this.dataZoneParent = res.data
@@ -325,12 +299,21 @@ export default defineComponent({
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
-    fetch("http://192.168.252.206:4000/list")
+    fetch("http://192.168.252.223:4000/list")
       .then(response => response.json())
       .then(res => {
         this.dataTypeZone = res
 
         // console.log(this.dataTypeZone)
+      })
+
+
+      fetch("http://192.168.252.223:4000/api/zones")
+      .then(response => response.json())
+      .then(res => {
+       this.dataListZone= res.data
+
+        // console.log(this.dataZoneParent[0].zoneparent)
       })
   },
 });
