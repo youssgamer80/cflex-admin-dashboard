@@ -55,6 +55,14 @@ export default [
       ],
     },
     {
+      header: 'Point Arrêt',
+    },
+    {
+      title:"Point d'arrêt",
+      icon:'FiletextIcon',
+      route: '/tableau-de-bord/liste-pointarret'
+    },
+    {
       header: 'Utilisateur et permissions',
     },
     

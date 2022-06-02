@@ -63,7 +63,7 @@ export default defineComponent({
       console.log(e); 
       
       return axios
-        .post("http://192.168.252.223:4001/api/typezone/addTypeZone", {
+        .post("http://192.168.1.8:4001/api/typezone/addTypeZone", {
           libelle:formState.libelle,
           statut:true,
           

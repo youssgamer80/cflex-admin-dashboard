@@ -1,7 +1,7 @@
 <template>
-  <a-typography-title :level="4">Liste Des Zones</a-typography-title>
+  <a-typography-title :level="4">Liste Des Points d'arrêts</a-typography-title>
 
-  <SearchHeaderZone @search="handleSearch" />
+  <SearchHeader_PointArret @search="handleSearch" />
   <a-card :style="{
     padding: '24px',
     background: '#fff',
@@ -11,7 +11,7 @@
     <a-table :columns="columns" :row-key="keyZone" :data-source="dataSource" :pagination="pagination" :loading="loading"
       @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'libelle'">{{ record.libelle }}
+        <template v-if="column.dataIndex === 'nom'">{{ record.nom }}
         </template>
         <template v-if="column.dataIndex === 'statut'">
           <h1 v-if="text">Disponible</h1>
@@ -30,23 +30,23 @@
 
                 <a-form-item label="libelle" name="libelle"
                   :rules="[{ required: true, message: 'Please input your libelle!' }]">
-                  <a-input v-model:value="formState.libelle" />
+                  <a-input v-model:value="formState.nom" />
                 </a-form-item>
 
-                <a-form-item label="Type de zone">
+                <!-- <a-form-item label="Type de zone">
                   <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
 
                     <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
                     }}
                     </a-select-option>
                   </a-select>
-                </a-form-item>
+                </a-form-item> -->
 
-                <a-form-item label="Zone parent">
-                  <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
+                <a-form-item label="Zone ">
+                  <a-select v-model:value="formState.idZoneFk" placeholder="please select your zone">
 
-                    <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
-                        item.zoneparent
+                    <a-select-option v-for="item in dataListZone" v-bind:key="item.id" :value="item.id">{{
+                        item.libelle
                     }}
                     </a-select-option>
                   </a-select>
@@ -58,7 +58,7 @@
             </a-modal>
 
             <edit-outlined :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.libelle, record.idTypeZoneFk.id, record.idZoneparentFk.id)" />
+              @click="showModal(record.id, record.nom, record.idZoneFk.id)" />
 
 
 
@@ -88,12 +88,12 @@ import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
-import SearchHeaderZone from "../../components/SearchHeader_zone.vue";
+import SearchHeader_PointArret from "../../components/SearchHeader_PointArret.vue";
 import axios from "axios";
 const columns = [
   {
     title: "Libellé",
-    dataIndex: "libelle",
+    dataIndex: "nom",
     sorter: true,
   },
   {
@@ -107,14 +107,14 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.1.8:4001/api/zones", {
+  return axios.get("http://192.168.1.8:4001/api/pointarrets", {
     params,
   });
 };
 
 export default defineComponent({
   components: {
-    SearchHeaderZone,
+    SearchHeader_PointArret,
     EditOutlined,
     DeleteOutlined,
   },
@@ -136,8 +136,8 @@ export default defineComponent({
 
       if (value.length > 0) {
 
-        this.dataListZone.filter((item) => {
-          if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
+        this.dataListPointArret.filter((item) => {
+          if (item.nom.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
           
@@ -146,7 +146,7 @@ export default defineComponent({
 
       }
       else {
-        this.dataSource = this.dataListZone
+        this.dataSource = this.dataListPointArret
       }
     }
   },
@@ -157,16 +157,13 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://192.168.1.8:4001/api/zones/updateZone/${formState.id}`, {
-          libelle: formState.libelle,
-
-          idTypeZoneFk: {
-            // "id": 2
-            id: formState.idTypeZoneFk
-          },
-          idZoneparentFk: {
-            // "id": 3
-            id: formState.idZoneparentFk
+        .put(`http://192.168.1.8:4001/api/pointarrets/updatePointArret/${formState.id}`, {
+          nom: formState.libelle,
+          longitude: formState.libelle,
+          latitude: formState.libelle,
+          idZoneFk: {
+           
+            id: formState.idZoneFk
           },
           statut: true
         });
@@ -191,7 +188,7 @@ export default defineComponent({
       pageSize,
     } = usePagination(queryData, {
       formatResult: (res) => {
-        
+        // console.log(res.data.data)
         return res.data.data
       },
       pagination: {
@@ -218,12 +215,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.1.8:4001/api/zones/deleteZone/${id}`,
-          {
-            data: {
-              statut: false,
-            },
-          }
+          `http://192.168.1.8:4001/api/pointarrets/deletePointArret/${id}`,
         )
         .then((resp) => {
           if (resp.status === 200) {
@@ -239,22 +231,18 @@ export default defineComponent({
     };
 
     const visible = ref(false);
-    let notEgal
-    const showModal = (id, libelle, idTypeZoneFk, idZoneparentFk) => {
+    const showModal = (id, nom, idZoneFk) => {
       formState.id = id;
-      formState.libelle = libelle;
-      formState.idTypeZoneFk = idTypeZoneFk;
-      formState.idZoneparentFk = idZoneparentFk;
-
+      formState.nom = nom;
+      formState.idZoneFk = idZoneFk;
       visible.value = true;
     };
 
 
     const formState = reactive({
       id: '',
-      libelle: '',
-      idTypeZoneFk: '',
-      idZoneparentFk: '',
+      nom: '',
+      idZoneFk: '',
     });
 
 
@@ -276,11 +264,9 @@ export default defineComponent({
       handleOk,
       visible,
       formState,
-      dataZoneParent: [],
-      dataTypeZone: [],
       dataListZone: [],
+      dataListPointArret: [],
       onSubmit,
-      notEgal
 
     };
   },
@@ -291,29 +277,29 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://192.168.1.8:4001/api/zoneparents")
+    fetch("http://192.168.1.8:4001/api/zones")
       .then(response => response.json())
       .then(res => {
-        this.dataZoneParent = res.data
+        this.dataListZone = res.data
 
-        // console.log(this.dataZoneParent[0].zoneparent)
+        // console.log(this.dataZone[0].zoneparent)
       })
 
-    fetch("http://192.168.1.8:4001/list")
+    // fetch("http://192.168.1.8:4001/list")
+    //   .then(response => response.json())
+    //   .then(res => {
+    //     this.dataTypeZone = res
+
+    //     // console.log(this.dataTypeZone)
+    //   })
+
+
+      fetch("http://192.168.1.8:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
-        this.dataTypeZone = res
+       this.dataListPointArret= res.data
 
-        // console.log(this.dataTypeZone)
-      })
-
-
-      fetch("http://192.168.1.8:4001/api/zones")
-      .then(response => response.json())
-      .then(res => {
-       this.dataListZone= res.data
-
-        console.log(this.dataListZone)
+        console.log(this.dataListPointArret)
       })
   },
 });

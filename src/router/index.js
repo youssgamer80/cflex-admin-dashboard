@@ -3,6 +3,7 @@ import pages from './routes/pages'
 import ListeTypeTransport from '../views/typetransport/ListeTypeTransport.vue'
 import ListeTypeZone from '../views/typezone/ListeTypeZone.vue'
 import ListeZone from '../views/zone/ListeZone.vue'
+import ListePointArret from '../views/pointarret/ListePointArret.vue'
 import UneDemande from '../views/demandes/UneDemande.vue'
 import DetailDemande from '../views/demandes/DetailDemande.vue'
 import VehiculeView from '../views/vehicules/VehiculeView.vue'
@@ -35,6 +36,7 @@ const routes = [
   { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
   { path: '/tableau-de-bord/liste-zone', name: 'liste-zones', component: ListeZone },
   { path: '/tableau-de-bord/type-zone', name: 'type-zone', component: ListeTypeZone },
+  { path: '/tableau-de-bord/liste-pointarret', name: 'liste-pointsarret', component: ListePointArret },
 
 
  
