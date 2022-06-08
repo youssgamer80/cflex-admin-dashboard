@@ -9,6 +9,8 @@ import DetailDemande from '../views/demandes/DetailDemande.vue'
 import VehiculeView from '../views/vehicules/VehiculeView.vue'
 import AjoutVehicule from '../views/vehicules/AjoutVehicule.vue'
 import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
+import ListeLigne from '../views/ligne/ListeLigne.vue'
+import ListeModeDeplacement from '../views/mode_deplacement/ListeModeDeplacement.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 
@@ -37,6 +39,8 @@ const routes = [
   { path: '/tableau-de-bord/liste-zone', name: 'liste-zones', component: ListeZone },
   { path: '/tableau-de-bord/type-zone', name: 'type-zone', component: ListeTypeZone },
   { path: '/tableau-de-bord/liste-pointarret', name: 'liste-pointsarret', component: ListePointArret },
+  { path: '/tableau-de-bord/liste-ligne', name: 'liste-ligne', component: ListeLigne },
+  { path: '/tableau-de-bord/liste-mode-deplacement', name: 'liste-mode-deplacement', component: ListeModeDeplacement },
 
 
  

@@ -11,7 +11,9 @@
     <a-table :columns="columns" :row-key="keyZone" :data-source="dataSource" :pagination="pagination" :loading="loading"
       @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'nom'">{{ record.nom }}
+        <!-- {{ record }} -->
+        <template v-if="column.dataIndex === 'idZoneFk.libelle'">
+          {{ record.idZoneFk.libelle }}
         </template>
         <template v-if="column.dataIndex === 'statut'">
           <h1 v-if="text">Disponible</h1>
@@ -20,7 +22,7 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale Modifier type Transport-->
-            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
+            <a-modal v-model:visible="visible" title="Modification" @ok="onUpdate">
 
 
               <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
@@ -28,9 +30,17 @@
 
 
 
-                <a-form-item label="libelle" name="libelle"
+                <!-- <a-form-item label="libelle" name="libelle"
                   :rules="[{ required: true, message: 'Please input your libelle!' }]">
                   <a-input v-model:value="formState.nom" />
+                </a-form-item> -->
+
+
+                <a-form-item label="Nom" name="nom">
+                  <!-- <a-input v-model:value="formState.nom" /> -->
+                  <a-select v-model:value="formState.nom" show-search placeholder="Cherchez le lieu"
+                    style="width: 200px" :options="options" :filter-option="filterOption" @change="choice"
+                    @search="handleChange"></a-select>
                 </a-form-item>
 
                 <!-- <a-form-item label="Type de zone">
@@ -58,7 +68,26 @@
             </a-modal>
 
             <edit-outlined :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.nom, record.idZoneFk.id)" />
+              @click="showModal(record.id, record.nom, record.idZoneFk.id, record.latitude, record.longitude)" />
+            <a-divider type="vertical" />
+
+            <a-modal v-model:visible="visibleMap" title="Modification" @ok="onUpdate">
+
+
+
+              <p>Text reussi</p>
+
+              <iframe width="600" height="450" style="border:0" loading="lazy" allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ
+    &q=Space+Needle,Seattle+WA">
+              </iframe>
+
+              
+
+
+            </a-modal>
+
+            <pushpin-outlined @click="showMap(record.latitude, record.longitude)" />
 
 
 
@@ -70,9 +99,7 @@
               <a>
                 <delete-outlined :style="{ color: '#f73772' }" />
               </a>
-              <template>
-                <p>test</p>
-              </template>
+
             </a-popconfirm>
             <!--Fin popup Supprimer type Transport-->
           </div>
@@ -80,25 +107,28 @@
       </template>
     </a-table>
   </a-card>
+
 </template>
 
 <script>
 import { usePagination } from "vue-request";
 import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import { EditOutlined, DeleteOutlined, PushpinOutlined } from "@ant-design/icons-vue";
 
 import SearchHeader_PointArret from "../../components/SearchHeader_PointArret.vue";
 import axios from "axios";
+
+
 const columns = [
   {
-    title: "Libellé",
+    title: "Nom",
     dataIndex: "nom",
     sorter: true,
   },
   {
-    title: "Statut",
-    dataIndex: "statut",
+    title: "Zone",
+    dataIndex: "idZoneFk.libelle",
   },
   {
     title: "Action",
@@ -107,7 +137,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.1.8:4001/api/pointarrets", {
+  return axios.get("http://localhost:4001/api/pointarrets", {
     params,
   });
 };
@@ -117,14 +147,56 @@ export default defineComponent({
     SearchHeader_PointArret,
     EditOutlined,
     DeleteOutlined,
+    PushpinOutlined,
   },
 
-  
+
+  data() {
+    return {
+      ready: false, //Add ready:false to stop map from loading, and then when changed to true map will auto load
+      // **GPS** : will trigger geolocation plugin , to find users location by GPS
+      // **geolocation** : will try to find the place by lat, lng
+      // **address**: will try to find the place by address query
+      // **manually**: manually preset values
+
+      // If GPS is selected as a fallbackProcedure and it fails , then address fallback is triggered and if address fails geolocation is triggered
+      fallbackProcedure: "gps", //gps | geolocation | address | manually
+      zoom: 17, //Default Zoom
+      geolocation: {
+        // If GPS and Find by address fails then, map will be positioned by a default geolocation
+        lat: 31.73858,
+        lng: -35.98628,
+        zoom: 2,
+      },
+      address: {
+        query: "Albania, Tirane", //If GPS fails, Find by address is triggered
+        zoom: 10,
+      },
+      manually: {
+        address_description: "21 Dhjetori, Tirana, Albania",
+        city: "Tirana",
+        country: "Albania",
+        lat: 41.3267905,
+        lng: 19.8060475,
+        state: "Tirana County",
+        zip_code: "",
+        zoom: 17,
+      },
+      place: {},
+    };
+  },
+
   methods: {
+
+
+    getMapData(place) {
+      this.place = place;
+    },
+
 
     handleSearch(value) {
       let NewdataSource = []
-      
+
 
       // console.log("Old data")
       // console.log(this.oldData)
@@ -140,7 +212,7 @@ export default defineComponent({
           if (item.nom.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
-          
+
         })
         this.dataSource = NewdataSource
 
@@ -152,17 +224,14 @@ export default defineComponent({
   },
   setup() {
 
-    const onSubmit = async () => {
-
-
+    const onUpdate = async () => {
 
       const resp = await axios
-        .put(`http://192.168.1.8:4001/api/pointarrets/updatePointArret/${formState.id}`, {
-          nom: formState.libelle,
-          longitude: formState.libelle,
-          latitude: formState.libelle,
+        .put(`http://localhost:4001/api/pointarrets/updatePointArret/${formState.id}`, {
+          nom: formState.nom,
+          longitude: formState.lon,
+          latitude: formState.lat,
           idZoneFk: {
-           
             id: formState.idZoneFk
           },
           statut: true
@@ -215,11 +284,11 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.1.8:4001/api/pointarrets/deletePointArret/${id}`,
+          `http://localhost:4001/api/pointarrets/deletePointArret/${id}`,
         )
         .then((resp) => {
           if (resp.status === 200) {
-            console.log(typeof dataSource)
+            // console.log(typeof dataSource)
             dataSource.value = dataSource.value.filter(
               (item) => item.id !== id
             );
@@ -231,26 +300,138 @@ export default defineComponent({
     };
 
     const visible = ref(false);
-    const showModal = (id, nom, idZoneFk) => {
+    const visibleMap = ref(false);
+
+    const showModal = (id, nom, idZoneFk, latitude, longitude) => {
       formState.id = id;
       formState.nom = nom;
       formState.idZoneFk = idZoneFk;
+      formState.latitude = latitude;
+      formState.longitude = longitude;
       visible.value = true;
+
+      // console.log(formState.lat)
     };
 
+    let place_id;
+    // let map
+    const showMap = (lat, lon) => {
+
+
+
+      console.log("Map here lat :", lat, " lon :", lon)
+
+
+      // fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&countrycodes=ci&format=json`)
+      //   .then(response => response.json())
+      //   .then(res => {
+
+
+      //     place_id = res.place_id
+      //     console.log(place_id)
+      //   })
+
+      visibleMap.value = true
+      //  window.location =`https://nominatim.openstreetmap.org/ui/details.html?place_id=${place_id}`
+
+
+
+    }
 
     const formState = reactive({
-      id: '',
-      nom: '',
-      idZoneFk: '',
+      id: "",
+      nom: "",
+      idZoneFk: "",
+      lat: "",
+      lon: ""
+
     });
 
 
-    const handleOk = e => {
-      console.log(e);
+    const handleOk = () => {
+      // console.log(e);
       visible.value = false;
     };
     let searchQuery
+
+
+    // DEBUT DE RECHERCHE POUR LE LIEU
+
+    let options = ref([]);
+    let option = []
+
+    // let options = [];
+
+    const choice = value => {
+      console.log(option);
+      formState.nom = value
+      console.log(formState.nom)
+      option.forEach(element => {
+        if (formState.nom == element.label) {
+          formState.lat = element.value.lat,
+            formState.lon = element.value.lon
+
+        }
+      })
+      console.log("Nom de l'element choisi " + formState.nom + " La latitude :" + formState.lat + " La longitude :" + formState.lon)
+
+    };
+
+
+
+    const handleChange = value => {
+      // console.log(`selected ${value}`);
+
+      fetch(`https://nominatim.openstreetmap.org/?addressdetails=1&q=${value}&countrycodes=ci&format=json`)
+        .then(response => response.json())
+        .then(res => {
+          // console.log("reponse")
+          console.log("label :", res)
+          res.forEach(element => {
+            // console.log(element.display_name)
+            console.log("ELEMENT", element)
+            option.push({
+              value: {
+                lat: element.lat,
+                lon: element.lon
+              },
+              label: element.display_name
+            })
+          });
+
+          // console.log(option.value)
+
+          option.forEach(element => {
+
+            options.value.push({
+              value: element.label,
+              label: element.label
+            })
+            console.log("element")
+            console.log(element.label)
+
+          })
+
+        })
+    };
+
+    // FIN DE RECHERCHE POUR LE LIEU
+
+
+
+    // const handleBlur = () => {
+    //   console.log('blur');
+    // };
+
+    // const handleFocus = () => {
+    //   console.log('focus');
+    // };
+
+    const filterOption = (input, option) => {
+      return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
+
 
     return {
       searchQuery,
@@ -263,10 +444,20 @@ export default defineComponent({
       showModal,
       handleOk,
       visible,
+      visibleMap,
       formState,
       dataListZone: [],
       dataListPointArret: [],
-      onSubmit,
+      onUpdate,
+
+
+      filterOption,
+      handleChange,
+      choice,
+      options,
+      option,
+      showMap,
+      place_id,
 
     };
   },
@@ -277,7 +468,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://192.168.1.8:4001/api/zones")
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataListZone = res.data
@@ -285,21 +476,13 @@ export default defineComponent({
         // console.log(this.dataZone[0].zoneparent)
       })
 
-    // fetch("http://192.168.1.8:4001/list")
-    //   .then(response => response.json())
-    //   .then(res => {
-    //     this.dataTypeZone = res
 
-    //     // console.log(this.dataTypeZone)
-    //   })
-
-
-      fetch("http://192.168.1.8:4001/api/pointarrets")
+    fetch("http://localhost:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
-       this.dataListPointArret= res.data
+        this.dataListPointArret = res.data
 
-        console.log(this.dataListPointArret)
+        // console.log(this.dataListPointArret)
       })
   },
 });
@@ -308,5 +491,10 @@ export default defineComponent({
 <style>
 #macarte {
   box-shadow: 5px 8px 24px 5px rgba(208, 216, 243, 0.6);
+}
+
+
+#map {
+  height: 180px;
 }
 </style>

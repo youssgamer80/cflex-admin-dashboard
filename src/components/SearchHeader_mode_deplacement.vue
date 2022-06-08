@@ -8,24 +8,33 @@
           <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
             v-model:value="searchText" />
           <br />
-          <!-- Balise  pour lister l'ensemble des types transport -->
-          <div v-for="(zone, index) in filters" :key="zone.libelle">
-            {{ index }}. {{ filter.libelle }}
-          </div>
-          <!-- Balise  pour lister l'ensemble des types transport -->
         </a-col>
         <!-- Fin  Champ de recherche Type Transport-->
 
         <!-- Début  Modal Ajout Type Transport-->
         <a-col :span="8" :offset="6">
           <a-button type="primary" @click="showModal"> Ajouter </a-button>
-          <a-modal v-model:visible="visible" width="500px" title="Ajouter un type de zone" @ok="onSubmit">
-            <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
-              <a-form-item label="Libelle" :rules="[{ required: true }]">
-                <a-input v-model:value="formState.libelle" />
+         
+
+          <a-modal v-model:visible="visible" title="Ajout d'un mode de deplacement" @ok="onSubmit">
+
+
+            <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
+              @finish="onFinish">
+
+
+
+             
+
+
+              <a-form-item label="Nom" name="nom">
+                <a-input v-model:value="formState.modeDeplacement" />
               </a-form-item>
 
+
+              
             </a-form>
+
           </a-modal>
         </a-col>
         <!-- Fin Modal Ajout Type Transport-->
@@ -42,7 +51,7 @@ import axios from "axios";
 
 
 export default defineComponent({
-  name: "SearchHeader",
+  name: "SearchHeade_mode_deplacement",
   components: {},
 
   data() {
@@ -53,20 +62,17 @@ export default defineComponent({
 
 
   setup() {
-   
-    const userName = ref("");
+
     const visible = ref(false);
     const showModal = () => { visible.value = true };
     //fonction pour enregiqtrer un type de tt
-    const onSubmit = (e) => {
-  
-      console.log(e); 
-      
+
+    const onSubmit = () => {
+
       return axios
-        .post("http://192.168.252.203:4001/api/typezone/addTypeZone", {
-          libelle:formState.libelle,
-          statut:true,
-          
+        .post("http://localhost:4001/api/v1/ModeDeplacement/addModeDeplacement", {
+          modeDeplacement: formState.modeDeplacement
+
         })
         .then((resp) => {
           if (resp.status === 200) {
@@ -78,49 +84,46 @@ export default defineComponent({
         });
     };
     const formState = reactive({
-      libelle: "",
-      statut: "",
-     
+      modeDeplacement: "",
     });
 
+
+    
+
+
+
+    
+
+   
+  
+
     return {
-      userName,
+
       visible,
       showModal,
       onSubmit,
       formState,
       filters: [],
       searchQuery: "",
- 
+
     };
   },
   mounted() {
     console.log("Component mounted");
 
+    
+
   },
   methods: {
-   
-     onChange() {
+
+    onChange() {
       this.$emit("search", this.searchText);
     },
 
 
-    
+
   },
-  computed: {
-    resultQuery() {
-      if (this.searchQuery) {
-        return this.resources.filter((item) => {
-          return this.searchQuery
-            .toLowerCase()
-            .split(" ")
-            .every((v) => item.title.toLowerCase().includes(v));
-        });
-      } else {
-        return this.resources;
-      }
-    },
-  },
+  
 });
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <a-typography-title :level="4">Liste Des Zones</a-typography-title>
+  <a-typography-title :level="4">Liste Des Lignes</a-typography-title>
 
   <SearchHeaderZone @search="handleSearch" />
   <a-card :style="{
@@ -11,7 +11,9 @@
     <a-table :columns="columns" :row-key="keyZone" :data-source="dataSource" :pagination="pagination" :loading="loading"
       @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'libelle'">{{ record.libelle }}
+        <template v-if="column.dataIndex === 'zone'">{{ record.idZoneFk.libelle }}
+        </template>
+         <template v-if="column.dataIndex === 'type_transport'">{{ record.idTypeTransportFk.libelleTypeTransport }}
         </template>
         <template v-if="column.dataIndex === 'statut'">
           <h1 v-if="text">Disponible</h1>
@@ -36,7 +38,7 @@
                 <a-form-item label="Type de zone">
                   <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
 
-                    <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+                    <a-select-option v-for="item in dataZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
                     }}
                     </a-select-option>
                   </a-select>
@@ -45,7 +47,7 @@
                 <a-form-item label="Zone parent">
                   <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
 
-                    <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
+                    <a-select-option v-for="item in dataTypeTransport" v-bind:key="item.id" :value="item.id">{{
                         item.zoneparent
                     }}
                     </a-select-option>
@@ -88,17 +90,37 @@ import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
-import SearchHeaderZone from "../../components/SearchHeader_zone.vue";
+import SearchHeaderZone from "../../components/SearchHeader_Ligne.vue";
 import axios from "axios";
 const columns = [
   {
-    title: "Libellé",
-    dataIndex: "libelle",
+    title: "Nom",
+    dataIndex: "nom",
     sorter: true,
   },
-  {
-    title: "Statut",
-    dataIndex: "statut",
+   {
+    title: "Depart",
+    dataIndex: "depart",
+    sorter: true,
+  },
+   {
+    title: "Arrivée",
+    dataIndex: "arrivee",
+    sorter: true,
+  },{
+    title: "Zone",
+    dataIndex: "zone",
+    sorter: true,
+  },{
+    title: "Type de transport",
+    dataIndex: "type_transport",
+    sorter: true,
+  },
+  
+   {
+    title: "Tarif",
+    dataIndex: "tarif",
+    sorter: true,
   },
   {
     title: "Action",
@@ -107,7 +129,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/zones", {
+  return axios.get("http://localhost:4001/api/lignes", {
     params,
   });
 };
@@ -124,20 +146,11 @@ export default defineComponent({
 
     handleSearch(value) {
       let NewdataSource = []
-      
-
-      // console.log("Old data")
-      // console.log(this.oldData)
-
-      // console.log("Test tapé")
-      // console.log(value.length)
-      // console.log("Chaque element")
-
 
       if (value.length > 0) {
 
-        this.dataListZone.filter((item) => {
-          if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
+        this.dataListLigne.filter((item) => {
+          if (item.depart.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
           
@@ -146,7 +159,7 @@ export default defineComponent({
 
       }
       else {
-        this.dataSource = this.dataListZone
+        this.dataSource = this.dataListLigne
       }
     }
   },
@@ -157,7 +170,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://localhost:4001/api/zones/updateZone/${formState.id}`, {
+        .put(`http://localhost:4001/api/lignes/updateligne/${formState.id}`, {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -217,17 +230,10 @@ export default defineComponent({
 
     const onDelete = (id) => {
       return axios
-        .delete(
-          `http://localhost:4001/api/zones/deleteZone/${id}`,
-          {
-            data: {
-              statut: false,
-            },
-          }
-        )
+        .delete(`http://localhost:4001/api/lignes/deleteligne/${id}`)
         .then((resp) => {
           if (resp.status === 200) {
-            console.log(typeof dataSource)
+            // console.log(typeof dataSource)
             dataSource.value = dataSource.value.filter(
               (item) => item.id !== id
             );
@@ -239,7 +245,7 @@ export default defineComponent({
     };
 
     const visible = ref(false);
-    let notEgal
+    
     const showModal = (id, libelle, idTypeZoneFk, idZoneparentFk) => {
       formState.id = id;
       formState.libelle = libelle;
@@ -276,11 +282,11 @@ export default defineComponent({
       handleOk,
       visible,
       formState,
-      dataZoneParent: [],
-      dataTypeZone: [],
-      dataListZone: [],
+      dataTypeTransport: [],
+      dataZone: [],
+      dataListLigne: [],
       onSubmit,
-      notEgal
+      
 
     };
   },
@@ -291,29 +297,33 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/zoneparents")
+
+    // Pour la liste des types de transport
+    fetch("http://localhost:4001/api/typetransport")
       .then(response => response.json())
       .then(res => {
-        this.dataZoneParent = res.data
+        this.dataTypeTransport = res.data
 
-        // console.log(this.dataZoneParent[0].zoneparent)
+        // console.log(this.dataTypeTransport[0].zoneparent)
       })
 
-    fetch("http://localhost:4001/list")
+    // Pour la liste des zones
+
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
-        this.dataTypeZone = res
+        this.dataZone = res
 
-        // console.log(this.dataTypeZone)
+        // console.log(this.dataZone)
       })
 
 
-      fetch("http://localhost:4001/api/zones")
+      fetch("http://localhost:4001/api/lignes")
       .then(response => response.json())
       .then(res => {
-       this.dataListZone= res.data
+       this.dataListLigne= res.data
 
-        console.log(this.dataListZone)
+        console.log(this.dataListLigne)
       })
   },
 });

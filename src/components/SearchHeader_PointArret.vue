@@ -28,7 +28,7 @@
             </a-form>
           </a-modal> -->
 
-          <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
+          <a-modal v-model:visible="visible" title="Ajout de point d'arrêt" @ok="onSubmit">
 
 
             <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
@@ -36,11 +36,11 @@
 
 
 
-              <a-form-item label="Nom" name="nom" :rules="[{ required: true, message: 'Please input your libelle!' }]">
+              <a-form-item label="Nom" name="nom">
                 <!-- <a-input v-model:value="formState.nom" /> -->
-                <a-select v-model:value="value" show-search placeholder="Select a person" style="width: 200px"
-                  :options="options" :filter-option="filterOption" @focus="handleFocus" @blur="handleBlur"
-                  @search="handleChange" @change="choice"></a-select>
+                <a-select v-model:value="value" show-search placeholder="Cherchez le lieu" style="width: 200px"
+                  :options="options" :filter-option="filterOption" 
+                  @change="choice" @search="handleChange"></a-select>
               </a-form-item>
 
 
@@ -59,7 +59,7 @@
               </a-form-item> -->
 
               <a-form-item label="Zone">
-                <a-select v-model:value="formState.idZoneFk" placeholder="please select your zone">
+                <a-select v-model:value="formState.idZoneFk" placeholder="please select your zone" >
 
                   <a-select-option v-for="item in dataZone" v-bind:key="item.id" :value="item.id">{{
                       item.libelle
@@ -81,9 +81,9 @@
 
 
 <script>
-// import { message } from "ant-design-vue";
+import { message } from "ant-design-vue";
 import { defineComponent, ref, reactive } from "vue";
-// import axios from "axios";
+import axios from "axios";
 
 
 export default defineComponent({
@@ -103,33 +103,36 @@ export default defineComponent({
     const visible = ref(false);
     const showModal = () => { visible.value = true };
     //fonction pour enregiqtrer un type de tt
+
     const onSubmit = () => {
 
       // let i =0
-      console.log(formState.nom)
-      console.log(formState.idZoneFk)
+      console.log("NOM :"+formState.nom)
+      console.log("ZONE :" + formState.idZoneFk)
+      console.log("LATITUDE :" + formState.lat)
+      console.log("LONGITUDE :" + formState.lon)
+   
 
-      // fetch(`https://nominatim.openstreetmap.org/?addressdetails=1&q=${formState.nom}&countrycodes=ci&format=json`)
-      //   .then(response => response.json())
-      //   .then(res => {
 
-       
-      //   })
+      return axios
+        .post("http://localhost:4001/api/pointarrets/addPointArret", {
+          nom: formState.nom,
+          longitude: formState.lon,
+          latitude: formState.lat,
+          idZoneFk: {
+            id: formState.idZoneFk
+          },
+          statut: true,
 
-      // return axios
-      //   .post("http://192.168.1.8:4001/api/typezone/addTypeZone", {
-      //     libelle: formState.libelle,
-      //     statut: true,
-
-      //   })
-      //   .then((resp) => {
-      //     if (resp.status === 200) {
-      //       visible.value = false;
-      //       message.success("Enregistrement reussi");
-      //     } else {
-      //       message.error("impossible!!");
-      //     }
-      //   });
+        })
+        .then((resp) => {
+          if (resp.status === 200) {
+            visible.value = false;
+            message.success("Enregistrement reussi");
+          } else {
+            message.error("impossible!!");
+          }
+        });
     };
     const formState = reactive({
       nom: "",
@@ -140,69 +143,85 @@ export default defineComponent({
     });
 
 
-    const options = ref([{
-      value: 'jack',
-      label: 'Jack',
-    }, {
-      value: 'lucy',
-      label: 'Lucy',
-    }, {
-      value: 'tom',
-      label: 'Tom',
-    },{
-      value: 'indenie',
-      label: 'Indenie',
-    }]);
+    let options = ref([]);
+    let option = []
+
+    // let options = [];
+
+    const choice = value => {
+      console.log(option);
+      formState.nom = value
+      option.forEach(element =>{
+        if(formState.nom== element.label){
+          formState.lat = element.value.lat,
+          formState.lon = element.value.lon
+
+        }
+      })
+      console.log("Nom de l'element choisi "+formState.nom+" La latitude :"+formState.lat+ " La longitude :"+formState.lon)
+      // options.value.forEach(element =>{
+      //   if(formState.lat == element.value){
+          
+
+      //     formState.nom = element.label
+      //     console.log("Trouvé "+ formState.nom)
+      //   }
+      //   // console.log("Chaque element")
+      //   // console.log(element.value)
+      // })
+      // console.log("Le Label "+ formState.nom)
+      // console.log("La latitude "+ formState.lat)
+    };
+
+
 
     const handleChange = value => {
-      console.log(`selected ${value}`);
 
+      if(value.length){
+      console.log("vide")
+
+      }
+      // console.log(`selected ${value}`);
+      options.value = [];
       fetch(`https://nominatim.openstreetmap.org/?addressdetails=1&q=${value}&countrycodes=ci&format=json`)
       .then(response => response.json())
       .then(res => {
-       
+          
+          
+          console.log('value', value);
           res.forEach(element => {
-           console.log("element")
-           console.log(element.lat)
-           options.value.push({
-             value: element.display_name,
-             label: element.display_name
-           })
-         });
+            console.log("LABEL :",element)
+            option.push({
+              value: {
+                lat:element.lat,
+                lon:  element.lon
+              },
+              label: element.display_name
+            })
+          });
+
+          // console.log(option.value)
+          
+          option.forEach(element =>{
+
+            options.value.push({
+              value:element.label,
+              label: element.label
+            })
+            console.log("element1")
+            console.log(option),
+             console.log("element2")
+            console.log(options)
+
+          })
           
       })
     };
 
-    const choice = value => {
-      console.log(`selected ${value}`);
-
-      // fetch(`https://nominatim.openstreetmap.org/?addressdetails=1&q=${value}&countrycodes=ci&format=json`)
-      // .then(response => response.json())
-      // .then(res => {
-       
-      //     res.forEach(element => {
-      //      console.log("element")
-      //      console.log(element.display_name)
-      //      options.value.push({
-      //        value: element.display_name,
-      //        label: element.display_name
-      //      })
-      //    });
-          
-      // })
+   
+    const filterOption = (input, options) => {
+      return options.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
-
-    const handleBlur = () => {
-      console.log('blur');
-    };
-
-    const handleFocus = () => {
-      console.log('focus');
-    };
-
-    // const filterOption = (input, option) => {
-    //   return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    // };
 
     return {
       userName,
@@ -216,12 +235,11 @@ export default defineComponent({
 
 
 
-      value: ref(undefined),
-      // filterOption,
-      handleBlur,
-      handleFocus,
+      // value: ref(undefined),
+      filterOption,
       handleChange,
       options,
+      option,
       choice
 
     };
@@ -229,11 +247,11 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://192.168.1.8:4001/api/zones")
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataZone = res.data
-        console.log(res.data)
+        // console.log(res.data)
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
@@ -247,20 +265,7 @@ export default defineComponent({
 
 
   },
-  // computed: {
-  //   resultQuery() {
-  //     if (this.searchQuery) {
-  //       return this.resources.filter((item) => {
-  //         return this.searchQuery
-  //           .toLowerCase()
-  //           .split(" ")
-  //           .every((v) => item.title.toLowerCase().includes(v));
-  //       });
-  //     } else {
-  //       return this.resources;
-  //     }
-  //   },
-  // },
+  
 });
 </script>
 

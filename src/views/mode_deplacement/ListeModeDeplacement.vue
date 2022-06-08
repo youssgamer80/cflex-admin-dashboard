@@ -1,7 +1,7 @@
 <template>
-  <a-typography-title :level="4">Liste Des Types de zone</a-typography-title>
+  <a-typography-title :level="4">Liste Des Modes de deplacement</a-typography-title>
 
-  <SearchHeaderTypeZone @search="handleSearch" />
+  <SearchHeader_mode_deplacement @search="handleSearch" />
   <a-card :style="{
     padding: '24px',
     background: '#fff',
@@ -20,33 +20,49 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale Modifier type Transport-->
-            <a-modal v-model:visible="visible" title="Modification">
+            <a-modal v-model:visible="visible" title="Modification" @ok="onUpdate">
 
-              <!-- <a-input v-model:value="formState.username" placeholder="Basic usage" />
-               <a-input v-model:value="formState.password" placeholder="Basic usage" />
-              -->
-              <a-form :model="formState" name="basic" autocomplete="off" :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }" @finish="onFinish">
 
-                <!-- <a-form-item label="Username" name="username"
-                  :rules="[{ required: true, message: 'Please input your username!' }]">
-                  <a-input v-model:value="formState.id" />
-                </a-form-item> -->
+              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
+                >
 
-                <a-form-item label="libelle" name="libelle"
-                  :rules="[{ required: true, message: 'Please input your libelle!' }]">
+
+
+                <a-form-item label="libelle" name="modedeplacement"
+                 >
                   <a-input v-model:value="formState.libelle" />
                 </a-form-item>
 
-                <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-                  <a-button type="primary" html-type="submit">Submit</a-button>
-                </a-form-item>
+                <!-- <a-form-item label="Type de zone">
+                  <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
+
+                    <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+                    }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item> -->
+
+                <!-- <a-form-item label="Zone parent">
+                  <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
+
+                    <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
+                        item.zoneparent
+                    }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item> -->
+
+
               </a-form>
 
             </a-modal>
-            <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.libelle)" />
+
+            <edit-outlined :style="{ color: '#08f26e' }"
+              @click="showModal(record.id, record.modeDeplacement)" />
 
 
+
+            <!--Début Modale Modifier type Transport-->
 
             <a-divider type="vertical" />
             <!--Début popup Supprimer type Transport-->
@@ -54,9 +70,9 @@
               <a>
                 <delete-outlined :style="{ color: '#f73772' }" />
               </a>
-              <!-- <template>
+              <template>
                 <p>test</p>
-              </template> -->
+              </template>
             </a-popconfirm>
             <!--Fin popup Supprimer type Transport-->
           </div>
@@ -72,55 +88,43 @@ import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
-import SearchHeaderTypeZone from "../../components/SearchHeader_typezone.vue";
+import SearchHeader_mode_deplacement from "../../components/SearchHeader_mode_deplacement.vue";
 import axios from "axios";
 const columns = [
   {
-    title: "Libellé",
-    dataIndex: "libelle",
+    title: "Nom",
+    dataIndex: "modeDeplacement",
     sorter: true,
   },
-
   {
-    title: "Statut",
-    dataIndex: "statut",
-  },
-  {
-    title: "Action",
+    title: "Actions",
     dataIndex: "action",
   },
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/typezone", {
+  return axios.get("http://localhost:4001/api/v1/ModeDeplacement/getModeDeplacements", {
     params,
   });
 };
 
 export default defineComponent({
   components: {
-    SearchHeaderTypeZone,
+    SearchHeader_mode_deplacement,
     EditOutlined,
     DeleteOutlined,
   },
+
+  
   methods: {
 
     handleSearch(value) {
       let NewdataSource = []
       
-
-      // console.log("Old data")
-      // console.log(this.oldData)
-
-      // console.log("Test tapé")
-      // console.log(value.length)
-      // console.log("Chaque element")
-
-
       if (value.length > 0) {
 
-        this.dataListTypeZone.filter((item) => {
-          if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
+        this.dataListModeDeplacement.filter((item) => {
+          if (item.modeDeplacement.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
           
@@ -129,13 +133,31 @@ export default defineComponent({
 
       }
       else {
-        this.dataSource = this.dataListTypeZone
+        this.dataSource = this.dataListModeDeplacement
       }
-
     }
-
   },
   setup() {
+
+    const onUpdate = async () => {
+
+
+
+      const resp = await axios
+        .put(`http://localhost:4001/api/v1/ModeDeplacement/updateModeDeplacement/${formState.id}`, {
+          modeDeplacement: formState.libelle,
+        });
+      if (resp.status === 200) {
+        visible.value = false;
+        message.success("Modification reussi");
+
+
+      } else {
+        message.error("impossible!!");
+      }
+
+
+    };
 
 
     const {
@@ -146,16 +168,14 @@ export default defineComponent({
       pageSize,
     } = usePagination(queryData, {
       formatResult: (res) => {
-        console.log(res.data.data)
-        return res.data.data
         
+        return res.data.data
       },
       pagination: {
         currentKey: "page",
         pageSizeKey: "results",
       },
     });
-
     const pagination = computed(() => ({
       total: 200,
       current: current.value,
@@ -175,10 +195,16 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://localhost:4001/api/typezone/deleteTypeZone/${id}`
+          `http://localhost:4001/api/v1/ModeDeplacement/deleteModeDeplacement/${id}`,
+          {
+            data: {
+              statut: false,
+            },
+          }
         )
         .then((resp) => {
           if (resp.status === 200) {
+            // console.log(typeof dataSource)
             dataSource.value = dataSource.value.filter(
               (item) => item.id !== id
             );
@@ -189,52 +215,29 @@ export default defineComponent({
         });
     };
 
-    const onFinish = values => {
-      
-
-      console.log('Success:', values);
-      return axios
-        .put(`http://localhost:4001/api/typezone/updateTypeZone/${formState.id}`, {
-          libelle:formState.libelle,
-          statut:true,
-        })
-        .then((resp) => {
-          if (resp.status === 200) {
-            visible.value = false;
-            message.success("Modification reussi");
-          } else {
-            message.error("impossible!!");
-          }
-        });
-
-
-
-    };
-
-    // const onFinishFailed = errorInfo => {
-    //   console.log('Failed:', errorInfo);
-    // };
     const visible = ref(false);
-
     const showModal = (id, libelle) => {
       formState.id = id;
       formState.libelle = libelle;
-      visible.value = true;
-    };
 
-    const handleOk = e => {
-      console.log(e);
-      visible.value = false;
+      visible.value = true;
     };
 
 
     const formState = reactive({
       id: '',
       libelle: '',
-
     });
 
+
+    const handleOk = e => {
+      console.log(e);
+      visible.value = false;
+    };
+    let searchQuery
+
     return {
+      searchQuery,
       dataSource,
       pagination,
       loading,
@@ -245,22 +248,45 @@ export default defineComponent({
       handleOk,
       visible,
       formState,
-      onFinish,
-      dataListTypeZone: []
+
+      dataListModeDeplacement: [],
+      onUpdate,
+
+
     };
   },
 
-  mounted(){
+
+  mounted() {
 
 
-     fetch("http://localhost:4001/api/typezone")
+    console.log("Component mounted");
+
+    // fetch("http://localhost:4001/api/zoneparents")
+    //   .then(response => response.json())
+    //   .then(res => {
+    //     this.dataZoneParent = res.data
+
+    //     // console.log(this.dataZoneParent[0].zoneparent)
+    //   })
+
+    // fetch("http://localhost:4001/list")
+    //   .then(response => response.json())
+    //   .then(res => {
+    //     this.dataTypeZone = res
+
+    //     // console.log(this.dataTypeZone)
+    //   })
+
+
+      fetch("http://localhost:4001/api/v1/ModeDeplacement/getModeDeplacements")
       .then(response => response.json())
       .then(res => {
-       this.dataListTypeZone= res.data
-        console.log(this.dataListTypeZone)
-        // console.log(this.dataZoneParent[0].zoneparent)
+       this.dataListModeDeplacement= res.data
+
+        console.log(this.dataListModeDeplacement)
       })
-  }
+  },
 });
 </script>
 

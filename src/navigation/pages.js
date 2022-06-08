@@ -63,6 +63,16 @@ export default [
       route: '/tableau-de-bord/liste-pointarret'
     },
     {
+      title:"Ligne",
+      icon:"",
+      route:'/tableau-de-bord/liste-ligne'
+    },
+    {
+      title:"Mode de Deplacement",
+      icon:"",
+      route:"/tableau-de-bord/liste-mode-deplacement"
+    },
+    {
       header: 'Utilisateur et permissions',
     },
     

@@ -107,7 +107,7 @@ export default defineComponent({
       visible.value = true;
 
       const resp = await axios
-        .post("http://192.168.1.8:4001/api/zones/addZone", {
+        .post("http://192.168.252.203:4001/api/zones/addZone", {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -161,20 +161,26 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://192.168.1.8:4001/api/zoneparents")
+    fetch("http://192.168.252.203:4001/api/zoneparents")
       .then(response => response.json())
       .then(res => {
         this.dataZoneParent = res.data
 
+          console.log("ZONE PARENT")
+        console.log(this.dataZoneParent)
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
-    fetch("http://192.168.1.8:4001/list")
+    fetch("http://192.168.252.203:4001/api/typezone")
       .then(response => response.json())
       .then(res => {
-        this.dataTypeZone = res
+        this.dataTypeZone = res.data
 
-        // console.log(this.dataTypeZone)
+        console.log("TYPE ZONE")
+        console.log(this.dataTypeZone)
+      })
+      .catch(err=>{
+        console.log(err)
       })
   },
   methods: {
