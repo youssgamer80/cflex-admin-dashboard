@@ -13,15 +13,13 @@
       <template #bodyCell="{ column, text, record }">
         <template v-if="column.dataIndex === 'zone'">{{ record.idZoneFk.libelle }}
         </template>
-         <template v-if="column.dataIndex === 'type_transport'">{{ record.idTypeTransportFk.libelleTypeTransport }}
-        </template>
         <template v-if="column.dataIndex === 'statut'">
           <h1 v-if="text">Disponible</h1>
           <h1 v-else>Indisponible</h1>
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <!--Début Modale Modifier type Transport-->
+            <!--Début Modale de modification d'une la ligne-->
             <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
 
 
@@ -72,9 +70,7 @@
               <a>
                 <delete-outlined :style="{ color: '#f73772' }" />
               </a>
-              <template>
-                <p>test</p>
-              </template>
+             
             </a-popconfirm>
             <!--Fin popup Supprimer type Transport-->
           </div>
@@ -98,26 +94,21 @@ const columns = [
     dataIndex: "nom",
     sorter: true,
   },
-   {
+  {
     title: "Depart",
     dataIndex: "depart",
     sorter: true,
   },
-   {
+  {
     title: "Arrivée",
     dataIndex: "arrivee",
     sorter: true,
-  },{
+  }, {
     title: "Zone",
     dataIndex: "zone",
     sorter: true,
-  },{
-    title: "Type de transport",
-    dataIndex: "type_transport",
-    sorter: true,
   },
-  
-   {
+  {
     title: "Tarif",
     dataIndex: "tarif",
     sorter: true,
@@ -129,7 +120,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/lignes", {
+  return axios.get("http://192.168.252.223:4001/api/lignes", {
     params,
   });
 };
@@ -141,7 +132,7 @@ export default defineComponent({
     DeleteOutlined,
   },
 
-  
+
   methods: {
 
     handleSearch(value) {
@@ -153,7 +144,7 @@ export default defineComponent({
           if (item.depart.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
-          
+
         })
         this.dataSource = NewdataSource
 
@@ -170,7 +161,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://localhost:4001/api/lignes/updateligne/${formState.id}`, {
+        .put(`http://192.168.252.223:4001/api/lignes/updateligne/${formState.id}`, {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -204,7 +195,7 @@ export default defineComponent({
       pageSize,
     } = usePagination(queryData, {
       formatResult: (res) => {
-        
+
         return res.data.data
       },
       pagination: {
@@ -230,7 +221,7 @@ export default defineComponent({
 
     const onDelete = (id) => {
       return axios
-        .delete(`http://localhost:4001/api/lignes/deleteligne/${id}`)
+        .delete(`http://192.168.252.223:4001/api/lignes/deleteligne/${id}`)
         .then((resp) => {
           if (resp.status === 200) {
             // console.log(typeof dataSource)
@@ -245,7 +236,7 @@ export default defineComponent({
     };
 
     const visible = ref(false);
-    
+
     const showModal = (id, libelle, idTypeZoneFk, idZoneparentFk) => {
       formState.id = id;
       formState.libelle = libelle;
@@ -286,7 +277,7 @@ export default defineComponent({
       dataZone: [],
       dataListLigne: [],
       onSubmit,
-      
+
 
     };
   },
@@ -299,7 +290,7 @@ export default defineComponent({
 
 
     // Pour la liste des types de transport
-    fetch("http://localhost:4001/api/typetransport")
+    fetch("http://192.168.252.223:4001/api/typetransport")
       .then(response => response.json())
       .then(res => {
         this.dataTypeTransport = res.data
@@ -309,7 +300,7 @@ export default defineComponent({
 
     // Pour la liste des zones
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataZone = res
@@ -318,12 +309,12 @@ export default defineComponent({
       })
 
 
-      fetch("http://localhost:4001/api/lignes")
+    fetch("http://192.168.252.223:4001/api/lignes")
       .then(response => response.json())
       .then(res => {
-       this.dataListLigne= res.data
+        this.dataListLigne = res.data
 
-        console.log(this.dataListLigne)
+        // console.log(this.dataListLigne)
       })
   },
 });

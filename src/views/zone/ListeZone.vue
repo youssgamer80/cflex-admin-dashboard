@@ -10,12 +10,11 @@
   }" :bordered="false" id="macarte">
     <a-table :columns="columns" :row-key="keyZone" :data-source="dataSource" :pagination="pagination" :loading="loading"
       @change="handleTableChange">
-      <template #bodyCell="{ column, text, record }">
+      <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'libelle'">{{ record.libelle }}
         </template>
-        <template v-if="column.dataIndex === 'statut'">
-          <h1 v-if="text">Disponible</h1>
-          <h1 v-else>Indisponible</h1>
+        <template v-if="column.dataIndex === 'id_type_zone_fk '">
+          {{ record.idTypeZoneFk.libelle }}
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
@@ -97,8 +96,8 @@ const columns = [
     sorter: true,
   },
   {
-    title: "Statut",
-    dataIndex: "statut",
+    title: "Type Zone",
+    dataIndex: "id_type_zone_fk ",
   },
   {
     title: "Action",
@@ -107,7 +106,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/zones", {
+  return axios.get("http://192.168.252.223:4001/api/zones", {
     params,
   });
 };
@@ -157,7 +156,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://localhost:4001/api/zones/updateZone/${formState.id}`, {
+        .put(`http://192.168.252.223:4001/api/zones/updateZone/${formState.id}`, {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -218,7 +217,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://localhost:4001/api/zones/deleteZone/${id}`,
+          `http://192.168.252.223:4001/api/zones/deleteZone/${id}`,
           {
             data: {
               statut: false,
@@ -291,7 +290,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/zoneparents")
+    fetch("http://192.168.252.223:4001/api/zoneparents")
       .then(response => response.json())
       .then(res => {
         this.dataZoneParent = res.data
@@ -299,7 +298,7 @@ export default defineComponent({
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
-    fetch("http://localhost:4001/list")
+    fetch("http://192.168.252.223:4001/list")
       .then(response => response.json())
       .then(res => {
         this.dataTypeZone = res
@@ -308,7 +307,7 @@ export default defineComponent({
       })
 
 
-      fetch("http://localhost:4001/api/zones")
+      fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
        this.dataListZone= res.data

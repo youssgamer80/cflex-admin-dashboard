@@ -70,7 +70,7 @@ export default defineComponent({
     const onSubmit = () => {
 
       return axios
-        .post("http://localhost:4001/api/v1/ModeDeplacement/addModeDeplacement", {
+        .post("http://192.168.252.223:4001/api/v1/ModeDeplacement/addModeDeplacement", {
           modeDeplacement: formState.modeDeplacement
 
         })

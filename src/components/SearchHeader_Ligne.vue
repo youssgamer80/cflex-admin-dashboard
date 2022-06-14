@@ -2,19 +2,21 @@
   <a-card :bordered="false" style="margin: 10px 0" id="macarte">
     <a-typography-title :level="5">Recherche</a-typography-title>
     <div class="components-input-demo-presuffix">
-      <!-- Début Champ de recherche Type Transport-->
+      <!-- Début Champ de recherche : DEBUT-->
       <a-row>
         <a-col :span="8">
           <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
             v-model:value="searchText" />
           <br />
         </a-col>
-        <!-- Fin  Champ de recherche Type Transport-->
+        <!-- Fin  Champ de recherche : FIN-->
 
-        <!-- Début  Modal Ajout Type Transport-->
+
         <a-col :span="8" :offset="6">
           <a-button type="primary" @click="showModal"> Ajouter </a-button>
 
+
+          <!-- 1RE modal pour l'ajout de la ligne : DEBUT -->
           <a-modal v-model:visible="visible" width="500px" title="Ajouter Ligne" @ok="onSubmitLigne">
 
             <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -78,42 +80,33 @@
 
               </a-form-item>
 
-
-              <a-form-item label="Type de transport" :rules="[{ required: true }]">
-
-                <a-space>
-                  <a-select ref="select" v-model:value="formState.idTypeTransportFk" style="width: 120px"
-                    @change="handleChangeTypeTransport">
-                    <a-select-option v-for="item in dataTypeTransport" v-bind:key="item.id" :value="item.id">{{
-                        item.libelleTypeTransport
-                    }}
-                    </a-select-option>
-
-                  </a-select>
-
-                </a-space>
-              </a-form-item>
-
-
             </a-form>
           </a-modal>
+          <!-- 1RE modal pour l'ajout de la ligne : FIN -->
 
 
-          <!-- Deuxieme modal pour l'ajout des points d'arrêt -->
+          <!-- Deuxieme modal pour l'ajout des points d'arrêt : DEBUT -->
           <a-modal v-model:visible="visibleAddPoint" width="500px" title="Ajouter les points d'arrêt"
             @ok="onSubmitAddingCheckbox">
 
             <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
 
-              <p>Liste des points d'arrêt</p>
-              <div v-for="item in dataPointArret" v-bind:key="item.id">
-                <input type="checkbox" :id="item.id" :value="item.id" v-model="formState.PointArretName">
-                
-                <label :for="item.id">{{ item.nom }}</label>
+              <p>Choisir les points par ordre</p>
+              <!-- <p>{{formState.PointArretZone  }}</p> -->
+              <div v-if="formState.PointArretZone.length > 0">
+                <div v-for="item in formState.PointArretZone" v-bind:key="item.id">
+                  <input type="checkbox" :id="item.id" :value="item.id" v-model="formState.PointArretName">
+                  <label :for="item.id">{{ item.nom }}</label>
+                </div>
+
+              </div>
+              <div v-else>
+                <p>Aucun point d'arrêt</p>
               </div>
 
             </a-form>
           </a-modal>
+          <!-- Deuxieme modal pour l'ajout des points d'arrêt : FIN -->
 
         </a-col>
         <!-- Fin Modal Ajout Type Transport-->
@@ -142,10 +135,7 @@ export default defineComponent({
   setup() {
 
     const searchQuery = ref('')
-    const handleChangeTypeTransport = value => {
-      formState.idTypeTransportFk = value;
-      console.log(`selected type de transport ${formState.idTypeTransportFk}`);
-    };
+
 
 
 
@@ -168,7 +158,7 @@ export default defineComponent({
 
 
 
-
+    // let PointArretZone = [];
     const userName = ref("");
     const visible = ref(false);
     const visibleAddPoint = ref(false);
@@ -178,7 +168,7 @@ export default defineComponent({
     //fonction pour enregiqtrer une ligne
 
     const onSubmitLigne = async () => {
-      visible.value = false;
+
 
 
 
@@ -206,25 +196,9 @@ export default defineComponent({
 
 
 
-      console.log({
-        nom: formState.nom,
-        depart: formState.depart,
-        arrivee: formState.arrivee,
-        tarif: formState.tarif,
-        depart_longitude: formState.depart_longitude,
-        depart_latitude: formState.depart_latitude,
-        arrivee_longitude: formState.arrivee_longitude,
-        arrivee_latitude: formState.arrivee_latitude,
-        idTypeTransportFk: formState.idTypeTransportFk,
-        idZoneFk: formState.idZoneFk
-
-      })
-
-      // console.log("DONNEE DEPART : "+ formState.depart_latitude)
-      // console.log("DONNEE ARRIVEE : "+ formState.arrivee_latitude)
 
       const resp = await axios
-        .post("http://localhost:4001/api/lignes/addLigne", {
+        .post("http://192.168.252.223:4001/api/lignes/addLigne", {
           nom: formState.nom,
           depart: formState.depart,
           arrivee: formState.arrivee,
@@ -233,7 +207,6 @@ export default defineComponent({
           depart_latitude: formState.depart_latitude,
           arrivee_longitude: formState.arrivee_longitude,
           arrivee_latitude: formState.arrivee_latitude,
-          idTypeTransportFk: formState.idTypeTransportFk,
           idZoneFk: formState.idZoneFk
 
         });
@@ -242,10 +215,11 @@ export default defineComponent({
       // console.log(resp)
       if (resp.status === 200) {
 
-        console.log(resp)
+        // console.log(resp)
         visible.value = false;
         formState.id = resp.data.data.id
         message.success("Ligne ajouté");
+        visibleAddPoint.value = true
         // formState.nom = ""
         // formState.idTypeTransportFk = 0
         // formState.idZoneFk = 0
@@ -254,81 +228,62 @@ export default defineComponent({
 
         console.log(`Identifiant de la ligne crée : ${formState.id}`)
       } else {
+        visible.value = true
         message.error("Erreur rencontré lors de l'ajout de la ligne !!");
       }
 
-      visibleAddPoint.value = true
+
+
+      fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
+        .then(response => response.json())
+        .then(res => {
+
+          formState.PointArretZone = res.data
+          console.log("PAR ZONE")
+          console.log(formState.PointArretZone)
+
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+
 
     };
 
 
+    const onSubmitAddingCheckbox = async () => {
+
+
+      console.log("liste des point d'arrêt : ", formState.PointArretName)
+      console.log(formState.PointArretName)
+
+
+      const resp = await axios
+        .post("http://192.168.252.223:4001/api/lignespointarret/addLignePointArret", {
+          idLigneFk: formState.id,
+          idPointArretFk: formState.PointArretName
+        });
+
+
+      console.log(resp)
+      if (resp.status === 200) {
+
+        console.log(resp)
+        visibleAddPoint.value = false;
+        message.success("Point arrêt ajouté");
+
+      } else {
+        console.log(resp)
+        message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
+      }
 
 
 
-    const onSubmitAddingCheckbox= async () => {
-      visibleAddPoint.value = false;
 
-
-
-      console.log("liste des point d'arrêt : ",formState.PointArretName)
-
-
-
-      // console.log({
-      //   nom: formState.nom,
-      //   depart: formState.depart,
-      //   arrivee: formState.arrivee,
-      //   tarif: formState.tarif,
-      //   depart_longitude: formState.depart_longitude,
-      //   depart_latitude: formState.depart_latitude,
-      //   arrivee_longitude: formState.arrivee_longitude,
-      //   arrivee_latitude: formState.arrivee_latitude,
-      //   idTypeTransportFk: formState.idTypeTransportFk,
-      //   idZoneFk: formState.idZoneFk
-
-      // })
-
-      // console.log("DONNEE DEPART : "+ formState.depart_latitude)
-      // console.log("DONNEE ARRIVEE : "+ formState.arrivee_latitude)
-
-      // const resp = await axios
-      //   .post("http://localhost:4001/api/lignes/addLigne", {
-      //     nom: formState.nom,
-      //     depart: formState.depart,
-      //     arrivee: formState.arrivee,
-      //     tarif: formState.tarif,
-      //     depart_longitude: formState.depart_longitude,
-      //     depart_latitude: formState.depart_latitude,
-      //     arrivee_longitude: formState.arrivee_longitude,
-      //     arrivee_latitude: formState.arrivee_latitude,
-      //     idTypeTransportFk: formState.idTypeTransportFk,
-      //     idZoneFk: formState.idZoneFk
-
-      //   });
-
-
-      // console.log(resp)
-      // if (resp.status === 200) {
-
-      //   console.log(resp)
-      //   visible.value = false;
-      //   formState.id = resp.data.data.id
-      //   message.success("Ligne ajouté");
-      //   // formState.nom = ""
-      //   // formState.idTypeTransportFk = 0
-      //   // formState.idZoneFk = 0
-      //   // formState.arrivee = "",
-      //   // formState.depart = ""
-
-      //   console.log(`Identifiant de la ligne crée : ${formState.id}`)
-      // } else {
-      //   message.error("Erreur rencontré lors de l'ajout de la ligne !!");
-      // }
-
-      visibleAddPoint.value = false
 
     };
-
 
 
 
@@ -347,7 +302,8 @@ export default defineComponent({
       idZoneFk: "",
 
       ListPointArret: [],
-      PointArretName:[]
+      PointArretName: [],
+      PointArretZone: []
       // idZoneparentFk: ""
     });
 
@@ -367,13 +323,15 @@ export default defineComponent({
       dataPointArret: [],
       idTypeZoneFk: "",
       idZoneparentFk: "",
-      handleChangeTypeTransport,
+      // handleChangeTypeTransport,
       handleChangeZone,
       // onSearch,
       searchQuery,
 
       handleChangeDepart,
-      handleChangeArrivee
+      handleChangeArrivee,
+
+      // PointArretZone
 
 
     };
@@ -381,7 +339,7 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/typetransport")
+    fetch("http://192.168.252.223:4001/api/typetransport")
       .then(response => response.json())
       .then(res => {
         this.dataTypeTransport = res.data
@@ -391,12 +349,12 @@ export default defineComponent({
         // console.log(this.dataTypeTransport[0].zoneparent)
       })
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataZone = res.data
 
-        console.log("TYPE ZONE")
+
         // console.log(this.dataZone)
       })
       .catch(err => {
@@ -404,7 +362,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://localhost:4001/api/pointarrets")
+    fetch("http://192.168.252.223:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataPointArret = res.data

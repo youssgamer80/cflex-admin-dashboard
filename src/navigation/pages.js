@@ -40,7 +40,6 @@ export default [
     {
       title: 'Zone',
       icon: 'FileTextIcon',
-      // route: '/tableau-de-bord/liste-zone'
       children: [
         {
           title: 'Liste des zones',
@@ -55,21 +54,18 @@ export default [
       ],
     },
     {
-      header: 'Point Arrêt',
-    },
-    {
       title:"Point d'arrêt",
       icon:'FiletextIcon',
       route: '/tableau-de-bord/liste-pointarret'
     },
     {
       title:"Ligne",
-      icon:"",
+      icon:"FiletextIcon",
       route:'/tableau-de-bord/liste-ligne'
     },
     {
       title:"Mode de Deplacement",
-      icon:"",
+      icon:"FiletextIcon",
       route:"/tableau-de-bord/liste-mode-deplacement"
     },
     {

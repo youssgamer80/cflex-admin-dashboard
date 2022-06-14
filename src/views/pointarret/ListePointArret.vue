@@ -71,18 +71,13 @@
               @click="showModal(record.id, record.nom, record.idZoneFk.id, record.latitude, record.longitude)" />
             <a-divider type="vertical" />
 
+
             <a-modal v-model:visible="visibleMap" title="Modification" @ok="onUpdate">
 
-
-
-              <p>Text reussi</p>
-
-              <iframe width="600" height="450" style="border:0" loading="lazy" allowfullscreen
-                referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ
-    &q=Space+Needle,Seattle+WA">
-              </iframe>
-
               
+
+
+
 
 
             </a-modal>
@@ -111,6 +106,7 @@
 </template>
 
 <script>
+/*   eslint-disable no-undef */
 import { usePagination } from "vue-request";
 import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
@@ -137,7 +133,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/pointarrets", {
+  return axios.get("http://192.168.252.223:4001/api/pointarrets", {
     params,
   });
 };
@@ -151,59 +147,10 @@ export default defineComponent({
   },
 
 
-  data() {
-    return {
-      ready: false, //Add ready:false to stop map from loading, and then when changed to true map will auto load
-      // **GPS** : will trigger geolocation plugin , to find users location by GPS
-      // **geolocation** : will try to find the place by lat, lng
-      // **address**: will try to find the place by address query
-      // **manually**: manually preset values
-
-      // If GPS is selected as a fallbackProcedure and it fails , then address fallback is triggered and if address fails geolocation is triggered
-      fallbackProcedure: "gps", //gps | geolocation | address | manually
-      zoom: 17, //Default Zoom
-      geolocation: {
-        // If GPS and Find by address fails then, map will be positioned by a default geolocation
-        lat: 31.73858,
-        lng: -35.98628,
-        zoom: 2,
-      },
-      address: {
-        query: "Albania, Tirane", //If GPS fails, Find by address is triggered
-        zoom: 10,
-      },
-      manually: {
-        address_description: "21 Dhjetori, Tirana, Albania",
-        city: "Tirana",
-        country: "Albania",
-        lat: 41.3267905,
-        lng: 19.8060475,
-        state: "Tirana County",
-        zip_code: "",
-        zoom: 17,
-      },
-      place: {},
-    };
-  },
-
   methods: {
-
-
-    getMapData(place) {
-      this.place = place;
-    },
-
 
     handleSearch(value) {
       let NewdataSource = []
-
-
-      // console.log("Old data")
-      // console.log(this.oldData)
-
-      // console.log("Test tapé")
-      // console.log(value.length)
-      // console.log("Chaque element")
 
 
       if (value.length > 0) {
@@ -224,10 +171,12 @@ export default defineComponent({
   },
   setup() {
 
+
+
     const onUpdate = async () => {
 
       const resp = await axios
-        .put(`http://localhost:4001/api/pointarrets/updatePointArret/${formState.id}`, {
+        .put(`http://192.168.252.223:4001/api/pointarrets/updatePointArret/${formState.id}`, {
           nom: formState.nom,
           longitude: formState.lon,
           latitude: formState.lat,
@@ -281,28 +230,26 @@ export default defineComponent({
       });
     };
 
-    const onDelete = (id) => {
-      return axios
+    const onDelete = async (id) => {
+      const resp = await axios
         .delete(
-          `http://localhost:4001/api/pointarrets/deletePointArret/${id}`,
-        )
-        .then((resp) => {
-          if (resp.status === 200) {
-            // console.log(typeof dataSource)
-            dataSource.value = dataSource.value.filter(
-              (item) => item.id !== id
-            );
-            message.success("Supprimé avec succès!!");
-          } else {
-            message.error("impossible!!");
-          }
-        });
+          `http://192.168.252.223:4001/api/pointarrets/deletePointArret/${id}`);
+      if (resp.status === 200) {
+        // console.log(typeof dataSource)
+        dataSource.value = dataSource.value.filter(
+          (item) => item.id !== id
+        );
+        message.success("Supprimé avec succès!!");
+      } else {
+        message.error("impossible!!");
+      }
     };
 
     const visible = ref(false);
     const visibleMap = ref(false);
 
     const showModal = (id, nom, idZoneFk, latitude, longitude) => {
+
       formState.id = id;
       formState.nom = nom;
       formState.idZoneFk = idZoneFk;
@@ -310,13 +257,12 @@ export default defineComponent({
       formState.longitude = longitude;
       visible.value = true;
 
-      // console.log(formState.lat)
+
     };
 
     let place_id;
     // let map
     const showMap = (lat, lon) => {
-
 
 
       console.log("Map here lat :", lat, " lon :", lon)
@@ -329,10 +275,15 @@ export default defineComponent({
 
       //     place_id = res.place_id
       //     console.log(place_id)
+      //     window.open(`https://nominatim.openstreetmap.org/ui/details.html?place_id=${place_id}`, '_blank')
+
       //   })
 
+      // router.push("/")
       visibleMap.value = true
-      //  window.location =`https://nominatim.openstreetmap.org/ui/details.html?place_id=${place_id}`
+
+
+      //  window.location =`https://nominatim.openstreetmap.org/ui/details.html?place_id=${this.place_id}`
 
 
 
@@ -419,17 +370,14 @@ export default defineComponent({
 
 
 
-    // const handleBlur = () => {
-    //   console.log('blur');
-    // };
-
-    // const handleFocus = () => {
-    //   console.log('focus');
-    // };
-
     const filterOption = (input, option) => {
       return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
+
+
+    // Affichage de la carte map
+    
+
 
 
 
@@ -459,6 +407,9 @@ export default defineComponent({
       showMap,
       place_id,
 
+      // Gestion de la Map
+     
+
     };
   },
 
@@ -468,7 +419,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataListZone = res.data
@@ -477,7 +428,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://localhost:4001/api/pointarrets")
+    fetch("http://192.168.252.223:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataListPointArret = res.data
@@ -496,5 +447,14 @@ export default defineComponent({
 
 #map {
   height: 180px;
+}
+
+
+
+.overlay-content {
+  background: #efefef;
+  box-shadow: 0 5px 10px rgb(2 2 2 / 20%);
+  padding: 10px 20px;
+  font-size: 16px;
 }
 </style>
