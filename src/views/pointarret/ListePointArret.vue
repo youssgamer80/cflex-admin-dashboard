@@ -21,36 +21,27 @@
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <!--Début Modale Modifier type Transport-->
-            <a-modal v-model:visible="visible" title="Modification" @ok="onUpdate">
+
+            <edit-outlined :style="{ color: '#08f26e' }"
+              @click="showModal(record.id, record.nom, record.idZoneFk.id, record.latitude, record.longitude)" />
+            <a-divider type="vertical" />
+            <pushpin-outlined @click="showMap(record.latitude, record.longitude)" />
+
+            <!--Début Modale Modifier Point arrêt: DEBUT -->
+
+            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
 
 
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
-                @finish="onFinish">
-
-
-
-                <!-- <a-form-item label="libelle" name="libelle"
-                  :rules="[{ required: true, message: 'Please input your libelle!' }]">
-                  <a-input v-model:value="formState.nom" />
-                </a-form-item> -->
+              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
 
 
                 <a-form-item label="Nom" name="nom">
-                  <!-- <a-input v-model:value="formState.nom" /> -->
                   <a-select v-model:value="formState.nom" show-search placeholder="Cherchez le lieu"
                     style="width: 200px" :options="options" :filter-option="filterOption" @change="choice"
                     @search="handleChange"></a-select>
                 </a-form-item>
 
-                <!-- <a-form-item label="Type de zone">
-                  <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
 
-                    <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item> -->
 
                 <a-form-item label="Zone ">
                   <a-select v-model:value="formState.idZoneFk" placeholder="please select your zone">
@@ -67,23 +58,24 @@
 
             </a-modal>
 
-            <edit-outlined :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.nom, record.idZoneFk.id, record.latitude, record.longitude)" />
-            <a-divider type="vertical" />
+            <!--Début Modale Modifier Point arrêt: FIN -->
+
+            <!--Début Modale Modifier Point arrêt: DEBUT -->
+
+            <a-modal v-model:visible="visibleMap" title="Modification" @ok="onSubmitMap">
 
 
-            <a-modal v-model:visible="visibleMap" title="Modification" @ok="onUpdate">
 
-              
+              <div id="mapid">
 
+                
 
+              </div>
 
 
 
             </a-modal>
-
-            <pushpin-outlined @click="showMap(record.latitude, record.longitude)" />
-
+            <!--Début Modale Modifier Point arrêt: FIN -->
 
 
             <!--Début Modale Modifier type Transport-->
@@ -111,6 +103,10 @@ import { usePagination } from "vue-request";
 import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
 import { EditOutlined, DeleteOutlined, PushpinOutlined } from "@ant-design/icons-vue";
+
+//  Leaflet & MAP 
+
+import leaflet from "leaflet"
 
 import SearchHeader_PointArret from "../../components/SearchHeader_PointArret.vue";
 import axios from "axios";
@@ -159,6 +155,12 @@ export default defineComponent({
           if (item.nom.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
+          else {
+            if (item.idZoneFk.libelle.toLowerCase().includes(value.toLowerCase())) {
+              NewdataSource.push(item);
+            }
+
+          }
 
         })
         this.dataSource = NewdataSource
@@ -171,9 +173,10 @@ export default defineComponent({
   },
   setup() {
 
+    let mymap
 
 
-    const onUpdate = async () => {
+    const onSubmit = async () => {
 
       const resp = await axios
         .put(`http://192.168.252.223:4001/api/pointarrets/updatePointArret/${formState.id}`, {
@@ -280,11 +283,20 @@ export default defineComponent({
       //   })
 
       // router.push("/")
+
       visibleMap.value = true
 
 
       //  window.location =`https://nominatim.openstreetmap.org/ui/details.html?place_id=${this.place_id}`
 
+
+      mymap = leaflet.map('mapid').setView([51.505, -0.09], 13);
+
+
+      leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(mymap);
 
 
     }
@@ -376,7 +388,7 @@ export default defineComponent({
 
 
     // Affichage de la carte map
-    
+
 
 
 
@@ -396,7 +408,7 @@ export default defineComponent({
       formState,
       dataListZone: [],
       dataListPointArret: [],
-      onUpdate,
+      onSubmit,
 
 
       filterOption,
@@ -408,7 +420,7 @@ export default defineComponent({
       place_id,
 
       // Gestion de la Map
-     
+  
 
     };
   },
@@ -443,7 +455,6 @@ export default defineComponent({
 #macarte {
   box-shadow: 5px 8px 24px 5px rgba(208, 216, 243, 0.6);
 }
-
 
 #map {
   height: 180px;

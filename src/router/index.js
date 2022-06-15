@@ -11,6 +11,7 @@ import AjoutVehicule from '../views/vehicules/AjoutVehicule.vue'
 import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
 import ListeLigne from '../views/ligne/ListeLigne.vue'
 import ListeModeDeplacement from '../views/mode_deplacement/ListeModeDeplacement.vue'
+import CarteMap_PointArret from '../views/carteMap/CarteMap_PointArret.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 
@@ -41,6 +42,7 @@ const routes = [
   { path: '/tableau-de-bord/liste-pointarret', name: 'liste-pointsarret', component: ListePointArret },
   { path: '/tableau-de-bord/liste-ligne', name: 'liste-ligne', component: ListeLigne },
   { path: '/tableau-de-bord/liste-mode-deplacement', name: 'liste-mode-deplacement', component: ListeModeDeplacement },
+  { path: '/tableau-de-bord/afficahgeCarteMap', name: 'affichageCarteMap', component: CarteMap_PointArret },
 
 
  
