@@ -1,61 +1,29 @@
 <template>
-  <a-typography-title :level="4">Liste Des Lignes</a-typography-title>
 
-  <SearchHeader_Carte @search="handleSearch" />
+  <SearchHeader_Carte @change="handleSearch" />
   <a-card :style="{
     padding: '24px',
     background: '#fff',
     textAlign: 'center',
     minHeight: '360px',
   }" :bordered="false" id="macarte">
-  
+
+
+    <div id="map"></div>
+
   </a-card>
 </template>
 
 <script>
-// import { usePagination } from "vue-request";
-import {  defineComponent } from "vue";
-// import { message } from "ant-design-vue";
-// import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
+import { defineComponent, onMounted, } from "vue";
+
+import leaflet from "leaflet"
+import { message } from "ant-design-vue";
+
+// import mapboxgl from 'mapbox-gl';
 import SearchHeader_Carte from "../../components/SearchHeader_Carte.vue";
-// import axios from "axios";
-// const columns = [
-//   {
-//     title: "Nom",
-//     dataIndex: "nom",
-//     sorter: true,
-//   },
-//   {
-//     title: "Depart",
-//     dataIndex: "depart",
-//     sorter: true,
-//   },
-//   {
-//     title: "Arrivée",
-//     dataIndex: "arrivee",
-//     sorter: true,
-//   }, {
-//     title: "Zone",
-//     dataIndex: "zone",
-//     sorter: true,
-//   },
-//   {
-//     title: "Tarif",
-//     dataIndex: "tarif",
-//     sorter: true,
-//   },
-//   {
-//     title: "Action",
-//     dataIndex: "action",
-//   },
-// ];
 
-// const queryData = (params) => {
-//   return axios.get("http://192.168.252.223:4001/api/lignes", {
-//     params,
-//   });
-// };
 
 export default defineComponent({
   components: {
@@ -65,150 +33,94 @@ export default defineComponent({
   },
 
 
-  methods: {
 
-    // handleSearch(value) {
-    //   let NewdataSource = []
-
-    //   if (value.length > 0) {
-
-    //     this.dataListLigne.filter((item) => {
-    //       if (item.depart.toLowerCase().includes(value.toLowerCase())) {
-    //         NewdataSource.push(item);
-    //       }
-
-    //     })
-    //     this.dataSource = NewdataSource
-
-    //   }
-    //   else {
-    //     this.dataSource = this.dataListLigne
-    //   }
-    // }
-  },
   setup() {
-
-    // const onSubmit = async () => {
-
+    let map
 
 
-    //   const resp = await axios
-    //     .put(`http://192.168.252.223:4001/api/lignes/updateligne/${formState.id}`, {
-    //       libelle: formState.libelle,
 
-    //       idTypeZoneFk: {
-    //         // "id": 2
-    //         id: formState.idTypeZoneFk
-    //       },
-    //       idZoneparentFk: {
-    //         // "id": 3
-    //         id: formState.idZoneparentFk
-    //       },
-    //       statut: true
-    //     });
-    //   if (resp.status === 200) {
-    //     visible.value = false;
-    //     message.success("Modification reussi");
+    // const handleSearch(value) {
 
 
-    //   } else {
-    //     message.error("impossible!!");
-    //   }
+    // },
 
 
-    // };
+    const handleSearch = (value) => {
+      console.log("PARENT :", value)
+      
+
+       map.eachLayer(function (layer) {
+        
+        console.log( layer.options.pane)
+        if (typeof layer.options.pane !== undefined && layer.options.pane === "markerPane") {
+
+          console.log("FEATURE")
+          console.log(typeof layer.feature)
+          
+          map.removeLayer(layer)
+          // leaflet.map('mapid').setView([5.3532642, -3.9779868], 15);
+
+        }
 
 
-    // const {
-    //   data: dataSource,
-    //   run,
-    //   loading = ref(false),
-    //   current,
-    //   pageSize,
-    // } = usePagination(queryData, {
-    //   formatResult: (res) => {
-
-    //     return res.data.data
-    //   },
-    //   pagination: {
-    //     currentKey: "page",
-    //     pageSizeKey: "results",
-    //   },
-    // });
-    // const pagination = computed(() => ({
-    //   total: 200,
-    //   current: current.value,
-    //   pageSize: pageSize.value,
-    // }));
-
-    // const handleTableChange = (pag, filters, sorter) => {
-    //   run({
-    //     results: pag.pageSize,
-    //     page: pag?.current,
-    //     sortField: sorter.field,
-    //     sortOrder: sorter.order,
-    //     ...filters,
-    //   });
-    // };
-
-    // const onDelete = (id) => {
-    //   return axios
-    //     .delete(`http://192.168.252.223:4001/api/lignes/deleteligne/${id}`)
-    //     .then((resp) => {
-    //       if (resp.status === 200) {
-    //         // console.log(typeof dataSource)
-    //         dataSource.value = dataSource.value.filter(
-    //           (item) => item.id !== id
-    //         );
-    //         message.success("Supprimé avec succès!!");
-    //       } else {
-    //         message.error("impossible!!");
-    //       }
-    //     });
-    // };
-
-    // const visible = ref(false);
-
-    // const showModal = (id, libelle, idTypeZoneFk, idZoneparentFk) => {
-    //   formState.id = id;
-    //   formState.libelle = libelle;
-    //   formState.idTypeZoneFk = idTypeZoneFk;
-    //   formState.idZoneparentFk = idZoneparentFk;
-
-    //   visible.value = true;
-    // };
+        // console.log(layer)
+      })
 
 
-    // const formState = reactive({
-    //   id: '',
-    //   libelle: '',
-    //   idTypeZoneFk: '',
-    //   idZoneparentFk: '',
-    // });
+      // leaflet.marker.
+      fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${value}`)
+        .then(response => response.json())
+        .then(res => {
+
+          
+          console.log(res.data)
+          // console.log(res.data)
+
+          if (res.data.length > 0) {
+
+            message.success(`${ res.data.length } Point d'arrêt dans cette zone`)
+            res.data.forEach(element => {
+              console.log("LATITUDE :", element.latitude, " LONGITUDE :", element.longitude)
+              leaflet.marker([element.latitude, element.longitude]).bindPopup('<b>LIEU :</b><br>' + element.nom).openPopup().addTo(map)
+              // leaflet.marker="";
+            });
+          }
+          else {
+            message.info("Aucun Point d'arrêt dans cette zone")
+
+          }
 
 
-    // const handleOk = e => {
-    //   console.log(e);
-    //   visible.value = false;
-    // };
-    // let searchQuery
+        })
+    };
+
+    onMounted(() => {
+
+
+      map = leaflet.map('map').setView([5.3434534, -4.026047], 8);
+
+
+
+      leaflet.tileLayer(
+        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w0Zm51M2FxMDAzczNqbXM3c2VkMGZ1MCJ9.waYmvLmGKXV_oKqSOL7cLg', {
+        tileSize: 512,
+        zoomOffset: -1,
+        attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
+
+
+
+
+
+
+
+
+
+    })
 
     return {
-      // searchQuery,
-      // dataSource,
-      // pagination,
-      // loading,
-      // columns,
-      // handleTableChange,
-      // onDelete,
-      // showModal,
-      // handleOk,
-      // visible,
-      // formState,
-      // dataTypeTransport: [],
-      // dataZone: [],
-      // dataListLigne: [],
-      // onSubmit,
+      map,
+      handleSearch
 
 
     };
@@ -221,38 +133,17 @@ export default defineComponent({
     console.log("Component mounted");
 
 
-    // Pour la liste des types de transport
-    fetch("http://192.168.252.223:4001/api/typetransport")
-      .then(response => response.json())
-      .then(res => {
-        this.dataTypeTransport = res.data
 
-        // console.log(this.dataTypeTransport[0].zoneparent)
-      })
-
-    // Pour la liste des zones
-
-    fetch("http://192.168.252.223:4001/api/zones")
-      .then(response => response.json())
-      .then(res => {
-        this.dataZone = res
-
-        // console.log(this.dataZone)
-      })
-
-
-    fetch("http://192.168.252.223:4001/api/lignes")
-      .then(response => response.json())
-      .then(res => {
-        this.dataListLigne = res.data
-
-        // console.log(this.dataListLigne)
-      })
   },
 });
 </script>
 
 <style>
+#map {
+  height: 500px;
+}
+
+
 #macarte {
   box-shadow: 5px 8px 24px 5px rgba(208, 216, 243, 0.6);
 }

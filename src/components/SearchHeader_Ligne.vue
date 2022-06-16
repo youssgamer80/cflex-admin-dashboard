@@ -17,7 +17,7 @@
 
 
           <!-- 1RE modal pour l'ajout de la ligne : DEBUT -->
-          <a-modal v-model:visible="visible" width="1000px"  height="1000px" title="Ajouter Ligne" @ok="onSubmitLigne">
+          <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Ajouter Ligne" @ok="onSubmitLigne">
 
             <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
 
@@ -87,7 +87,7 @@
 
           <!-- Deuxieme modal pour l'ajout des points d'arrêt : DEBUT -->
           <a-modal v-model:visible="visibleAddPoint" width="500px" title="Ajouter les points d'arrêt"
-            @ok="onSubmitAddingCheckbox" >
+            @ok="onSubmitAddingCheckbox">
 
             <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
 
@@ -107,6 +107,21 @@
             </a-form>
           </a-modal>
           <!-- Deuxieme modal pour l'ajout des points d'arrêt : FIN -->
+
+
+
+          <!-- Troisième modal pour l'affichage sur la carte Map : DEBUT -->
+
+
+
+          <a-modal v-model:visible="visibleMap" title="Basic Modal" width="100px" height="200" wrap-class-name="full-modal"
+            @ok="handleOk">
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </a-modal>
+
+          <!-- Troisième modal pour l'affichage sur la carte Map : FIN -->
 
 
 
@@ -165,6 +180,7 @@ export default defineComponent({
     const userName = ref("");
     const visible = ref(false);
     const visibleAddPoint = ref(false);
+    const visibleMap = ref(false);
     const showModal = () => { visible.value = true };
 
 
@@ -281,7 +297,8 @@ export default defineComponent({
         console.log(resp)
         message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
       }
-
+        // visibleAddPoint.value= false
+        // visibleMap.value= true
 
 
 
@@ -316,6 +333,7 @@ export default defineComponent({
       userName,
       visible,
       visibleAddPoint,
+      visibleMap,
       showModal,
       onSubmitLigne,
       onSubmitAddingCheckbox,

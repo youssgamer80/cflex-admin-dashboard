@@ -1,10 +1,19 @@
 <template>
   <a-card :bordered="false" style="margin: 10px 0" id="macarte">
-    <a-typography-title :level="5">Affichage Par</a-typography-title>
+    <a-typography-title :level="5">Affichage Par Zone</a-typography-title>
     <a-col :span="8">
-      <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
-        v-model:value="searchText" />
 
+    
+      <a-space>
+        <a-select ref="select" v-model:value="formState.id" style="width: 150px" @change="onChange">
+          <a-select-option v-for="item in formState.dataCarte" v-bind:key="item.id" :value="item.id">{{
+              item.libelle
+          }}
+          </a-select-option>
+
+        </a-select>
+
+      </a-space>
 
     </a-col>
   </a-card>
@@ -12,190 +21,57 @@
 
 
 <script>
-import { message } from "ant-design-vue";
-import { defineComponent, ref, reactive } from "vue";
-import axios from "axios";
+
+import { defineComponent, reactive } from "vue";
 
 
 export default defineComponent({
   name: "SearchHeader",
   components: {},
 
-  data() {
-    return {
-      searchText: "",
-    };
-  },
+
 
 
   setup() {
 
-    const userName = ref("");
-    const visible = ref(false);
-    const showModal = () => { visible.value = true };
-    //fonction pour enregiqtrer un type de tt
-
-    const onSubmit = () => {
-
-      // let i =0
-      console.log("NOM :" + formState.nom)
-      console.log("ZONE :" + formState.idZoneFk)
-      console.log("LATITUDE :" + formState.lat)
-      console.log("LONGITUDE :" + formState.lon)
 
 
-
-      return axios
-        .post("http://192.168.252.223:4001/api/pointarrets/addPointArret", {
-          nom: formState.nom,
-          longitude: formState.lon,
-          latitude: formState.lat,
-          idZoneFk: {
-            id: formState.idZoneFk
-          },
-          statut: true,
-
-        })
-        .then((resp) => {
-          if (resp.status === 200) {
-            visible.value = false;
-            message.success("Enregistrement reussi");
-          } else {
-            message.error("impossible!!");
-          }
-        });
-    };
     const formState = reactive({
-      nom: "",
-      idZoneFk: "",
-      lat: "",
-      lon: ""
-
+      id: "",
+      dataCarte: [],
     });
 
-
-    let options = ref([]);
-    let option = []
-
-    // let options = [];
-
-    const choice = value => {
-      console.log(option);
-      formState.nom = value
-      option.forEach(element => {
-        if (formState.nom == element.label) {
-          formState.lat = element.value.lat,
-            formState.lon = element.value.lon
-
-        }
-      })
-      console.log("Nom de l'element choisi " + formState.nom + " La latitude :" + formState.lat + " La longitude :" + formState.lon)
-      // options.value.forEach(element =>{
-      //   if(formState.lat == element.value){
-
-
-      //     formState.nom = element.label
-      //     console.log("Trouvé "+ formState.nom)
-      //   }
-      //   // console.log("Chaque element")
-      //   // console.log(element.value)
-      // })
-      // console.log("Le Label "+ formState.nom)
-      // console.log("La latitude "+ formState.lat)
-    };
-
-
-
-    const handleChange = value => {
-
-      if (value.length) {
-        console.log("vide")
-
-      }
-      // console.log(`selected ${value}`);
-      options.value = [];
-      fetch(`https://nominatim.openstreetmap.org/?addressdetails=1&q=${value}&countrycodes=ci&format=json`)
-        .then(response => response.json())
-        .then(res => {
-
-
-          console.log('value', value);
-          res.forEach(element => {
-            console.log("LABEL :", element)
-            option.push({
-              value: {
-                lat: element.lat,
-                lon: element.lon
-              },
-              label: element.display_name
-            })
-          });
-
-          // console.log(option.value)
-
-          option.forEach(element => {
-
-            options.value.push({
-              value: element.label,
-              label: element.label
-            })
-            console.log("element1")
-            console.log(option),
-              console.log("element2")
-            console.log(options)
-
-          })
-
-        })
-    };
-
-
-    const filterOption = (input, options) => {
-      return options.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    };
-
     return {
-      userName,
-      visible,
-      showModal,
-      onSubmit,
       formState,
-      filters: [],
-      searchQuery: "",
-      dataZone: [],
+      
 
 
-
-      // value: ref(undefined),
-      filterOption,
-      handleChange,
-      options,
-      option,
-      choice
 
     };
   },
+
+  methods: {
+
+    onChange() {
+
+      console.log("ENFANT :",this.formState.id)
+      this.$emit("change", this.formState.id);
+    },
+  },
+
   mounted() {
     console.log("Component mounted");
 
     fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
-        this.dataZone = res.data
-        // console.log(res.data)
+        this.formState.dataCarte = res.data
+        console.log(this.formState.dataCarte)
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
   },
-  methods: {
 
-    onChange() {
-      this.$emit("search", this.searchText);
-    },
-
-
-
-  },
 
 });
 </script>

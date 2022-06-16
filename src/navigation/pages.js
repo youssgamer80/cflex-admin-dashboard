@@ -54,7 +54,7 @@ export default [
     ],
   },
   {
-    title: "Point d'arrêt et Affichage sur la carte",
+    title: "Point d'arrêt",
     icon: 'FiletextIcon',
     children: [
       {

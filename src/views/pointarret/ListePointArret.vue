@@ -25,7 +25,7 @@
             <edit-outlined :style="{ color: '#08f26e' }"
               @click="showModal(record.id, record.nom, record.idZoneFk.id, record.latitude, record.longitude)" />
             <a-divider type="vertical" />
-            <pushpin-outlined @click="showMap(record.latitude, record.longitude)" />
+            <pushpin-outlined @click="AffectMap(record.latitude, record.longitude, record.nom)" />
 
             <!--Début Modale Modifier Point arrêt: DEBUT -->
 
@@ -60,22 +60,7 @@
 
             <!--Début Modale Modifier Point arrêt: FIN -->
 
-            <!--Début Modale Modifier Point arrêt: DEBUT -->
 
-            <a-modal v-model:visible="visibleMap" title="Modification" @ok="onSubmitMap">
-
-
-
-              <div id="mapid">
-
-                
-
-              </div>
-
-
-
-            </a-modal>
-            <!--Début Modale Modifier Point arrêt: FIN -->
 
 
             <!--Début Modale Modifier type Transport-->
@@ -93,6 +78,28 @@
         </template>
       </template>
     </a-table>
+
+
+
+    <!--Début Modale Carte Point arrêt: DEBUT -->
+
+    <a-modal v-model:visible="visibleMap" title="Modification" @ok="onSubmitMap">
+
+
+
+
+
+
+
+
+
+    </a-modal>
+
+
+    <div id="mapid"></div>
+    <!--Début Modale Carte Point arrêt: FIN -->
+
+
   </a-card>
 
 </template>
@@ -100,13 +107,14 @@
 <script>
 /*   eslint-disable no-undef */
 import { usePagination } from "vue-request";
-import { computed, defineComponent, ref, reactive } from "vue";
+import { computed, defineComponent, ref, reactive, onMounted } from "vue";
 import { message } from "ant-design-vue";
 import { EditOutlined, DeleteOutlined, PushpinOutlined } from "@ant-design/icons-vue";
 
 //  Leaflet & MAP 
-
 import leaflet from "leaflet"
+// import 'leaflet.markercluster';
+
 
 import SearchHeader_PointArret from "../../components/SearchHeader_PointArret.vue";
 import axios from "axios";
@@ -173,8 +181,76 @@ export default defineComponent({
   },
   setup() {
 
-    let mymap
 
+
+
+
+    onMounted(() => {
+
+      formState.map = leaflet.map('mapid').setView([5.3532642, -3.9779868], 15);
+
+
+
+      leaflet.tileLayer(
+        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w0Zm51M2FxMDAzczNqbXM3c2VkMGZ1MCJ9.waYmvLmGKXV_oKqSOL7cLg', {
+        tileSize: 512,
+        zoomOffset: -1,
+        // attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(formState.map);
+
+
+
+    })
+
+    const AffectMap = (lat, lon, nom) => {
+
+      
+
+      formState.map.eachLayer(function (layer) {
+        
+        console.log( layer.options.pane)
+        if (typeof layer.options.pane !== undefined && layer.options.pane === "markerPane") {
+
+          console.log("FEATURE")
+          console.log(typeof layer.feature)
+          
+          formState.map.removeLayer(layer)
+          // leaflet.map('mapid').setView([5.3532642, -3.9779868], 15);
+
+        }
+
+
+        // console.log(layer)
+      })
+
+
+      coordonnée.lat = lat;
+      coordonnée.lon = lon;
+
+
+      console.log("Map here lat :", coordonnée.lat, " lon :", coordonnée.lon, "Nom :", nom)
+
+      // visibleMap.value = true
+
+      // setup a marker group
+      // var markers = leaflet.layerGroup();
+
+      // create the marker
+      // markers.removeLayer();
+
+      // var marker = leaflet.marker([coordonnée.lat, coordonnée.lon]);
+
+
+      // add marker
+      // markers.addLayer(marker);
+
+      // map.addLayer(markers);
+      leaflet.marker([coordonnée.lat, coordonnée.lon]).bindPopup('<b>LIEU :</b><br>' + nom).openPopup().addTo(formState.map)
+
+      formState.map.panTo(new L.LatLng(coordonnée.lat,coordonnée.lon));
+
+
+    }
 
     const onSubmit = async () => {
 
@@ -263,48 +339,23 @@ export default defineComponent({
 
     };
 
-    let place_id;
-    // let map
-    const showMap = (lat, lon) => {
 
 
-      console.log("Map here lat :", lat, " lon :", lon)
 
-
-      // fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&countrycodes=ci&format=json`)
-      //   .then(response => response.json())
-      //   .then(res => {
-
-
-      //     place_id = res.place_id
-      //     console.log(place_id)
-      //     window.open(`https://nominatim.openstreetmap.org/ui/details.html?place_id=${place_id}`, '_blank')
-
-      //   })
-
-      // router.push("/")
-
-      visibleMap.value = true
-
-
-      //  window.location =`https://nominatim.openstreetmap.org/ui/details.html?place_id=${this.place_id}`
-
-
-      mymap = leaflet.map('mapid').setView([51.505, -0.09], 13);
-
-
-      leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }).addTo(mymap);
-
-
-    }
 
     const formState = reactive({
       id: "",
       nom: "",
       idZoneFk: "",
+      lat: "",
+      lon: "",
+      map: ""
+
+    });
+
+
+
+    const coordonnée = reactive({
       lat: "",
       lon: ""
 
@@ -416,11 +467,11 @@ export default defineComponent({
       choice,
       options,
       option,
-      showMap,
-      place_id,
+      AffectMap,
+
 
       // Gestion de la Map
-  
+      coordonnée
 
     };
   },
@@ -456,8 +507,8 @@ export default defineComponent({
   box-shadow: 5px 8px 24px 5px rgba(208, 216, 243, 0.6);
 }
 
-#map {
-  height: 180px;
+#mapid {
+  height: 300px;
 }
 
 
