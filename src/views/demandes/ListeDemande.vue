@@ -1,77 +1,70 @@
 <template>
   <a-typography-title :level="4">Liste Type Transport</a-typography-title>
 
-<SearchHeader/>
-    <a-card :style="{ padding: '24px', background: '#fff', textAlign: 'center', minHeight: '360px',}" :bordered="false" id="macarte">
-        <a-table
-    :columns="columns"
-    :row-key="record => record.login.uuid"
-    :data-source="dataSource"
-    :pagination="pagination"
-    :loading="loading"
-    @change="handleTableChange"
-  >
-    <template #bodyCell="{ column, text,record }">
-      <template v-if="column.dataIndex === 'name'">{{ text.first }} {{ text.last }}</template>
-      <template v-else-if="['action'].includes(column.dataIndex)">
-      <div>
-   
-    <eye-outlined :style="{ color: '#26ABFF' }"/>
+  <SearchHeader />
+  <a-card :style="{ padding: '24px', background: '#fff', textAlign: 'center', minHeight: '360px', }" :bordered="false"
+    id="macarte">
+    <a-table :columns="columns" :row-key="record => record.login.uuid" :data-source="dataSource"
+      :pagination="pagination" :loading="loading" @change="handleTableChange">
+      <template #bodyCell="{ column, text, record }">
+        <template v-if="column.dataIndex === 'name'">{{ text.first }} {{ text.last }}</template>
+        <template v-else-if="['action'].includes(column.dataIndex)">
+          <div>
 
-    <a-divider type="vertical" />
-    <edit-outlined :style="{ color: '#08f26e' }"/>
-    
-    <a-divider type="vertical" />
-    
-     <a-popconfirm
-          v-if="dataSource.length"
-          title="Sure to delete?"
-          @confirm="onDelete(record.email)"
-        >
-          <a><delete-outlined :style="{ color: '#f73772' }"/></a>
-        </a-popconfirm>
-  </div>
+            <eye-outlined :style="{ color: '#26ABFF' }" />
+
+            <a-divider type="vertical" />
+            <edit-outlined :style="{ color: '#08f26e' }" />
+
+            <a-divider type="vertical" />
+
+            <a-popconfirm v-if="dataSource.length" title="Sure to delete?" @confirm="onDelete(record.email)">
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
+            </a-popconfirm>
+          </div>
+        </template>
       </template>
-    </template>
-  </a-table>
-    </a-card>
+    </a-table>
+  </a-card>
 </template>
 
 <script>
 import { usePagination } from 'vue-request';
 import { computed, defineComponent } from 'vue';
-import { EyeOutlined,EditOutlined,DeleteOutlined} from '@ant-design/icons-vue';
+import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 
-import  SearchHeader  from '../../components/SearchHeader.vue';
+import SearchHeader from '../../components/SearchHeader.vue';
 import axios from 'axios';
 const columns = [
-{
-  title: 'N°',
-  dataIndex: 'name',
-  sorter: true,
-  width: '20%',
-}, 
-{
-  title: 'Gender',
-  dataIndex: 'gender',
-  filters: [{
-    text: 'Male',
-    value: 'male',
-  }, {
-    text: 'Female',
-    value: 'female',
-  }],
-  width: '20%',
-},
+  {
+    title: 'N°',
+    dataIndex: 'name',
+    sorter: true,
+    width: '20%',
+  },
+  {
+    title: 'Gender',
+    dataIndex: 'gender',
+    filters: [{
+      text: 'Male',
+      value: 'male',
+    }, {
+      text: 'Female',
+      value: 'female',
+    }],
+    width: '20%',
+  },
 
-{
-  title: 'Email',
-  dataIndex: 'email',
-},
-{
-  title: 'Action',
-  dataIndex: 'action',
-}
+  {
+    title: 'Email',
+    dataIndex: 'email',
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action',
+  }
 ];
 
 const queryData = params => {
@@ -81,7 +74,7 @@ const queryData = params => {
 };
 
 export default defineComponent({
-  components : {
+  components: {
     SearchHeader,
     EyeOutlined,
     EditOutlined,
@@ -135,7 +128,7 @@ export default defineComponent({
 </script>
 
 <style>
- #macarte {
+#macarte {
   box-shadow: 5px 8px 24px 5px rgba(208, 216, 243, 0.6);
 }
 </style>

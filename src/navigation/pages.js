@@ -29,6 +29,7 @@ export default [
     children: [
       {
         title: 'Liste des types de transport',
+        icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-type-transport',
       },
 
@@ -43,11 +44,13 @@ export default [
     children: [
       {
         title: 'Liste des zones',
+        icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-zone',
       },
 
       {
         title: 'Liste des types de zone',
+        icon: 'FileTextIcon',
         route: '/tableau-de-bord/type-zone',
       },
 
@@ -58,11 +61,13 @@ export default [
     icon: 'FiletextIcon',
     children: [
       {
-        title: "Liste des Points d'arrêt",
+        title: "Liste des Points d'arrêts",
+        icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-pointarret'
       },
       {
         title: "Affichage sur la carte ",
+        icon: 'FileTextIcon',
         route: '/tableau-de-bord/afficahgeCarteMap'
       }
     ]

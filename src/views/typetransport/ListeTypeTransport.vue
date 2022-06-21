@@ -81,7 +81,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4000/api/typetransport/", {
+  return axios.get("http://localhost:4000/api/typetransport/", {
     params,
   });
 };
@@ -128,7 +128,7 @@ methods:{
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.252.223:4000/api/typetransport/deletetypetransport/${id}`
+          `http://localhost:4000/api/typetransport/deletetypetransport/${id}`
         )
         .then((resp) => {
           if (resp.status === 200) {

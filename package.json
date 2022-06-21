@@ -17,6 +17,7 @@
     "core-js": "^3.8.3",
     "gulp-cli": "^2.3.0",
     "leaflet": "^1.8.0",
+    "leaflet-routing-machine": "^3.2.12",
     "less-loader": "^6.0.0",
     "lodash": "^4.17.21",
     "mapbox-gl": "^2.8.2",

@@ -17,19 +17,19 @@
 
 
           <!-- 1RE modal pour l'ajout de la ligne : DEBUT -->
-          <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Ajouter Ligne" @ok="onSubmitLigne">
+          <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Modification de la ligne Ligne" @ok="onSubmitLigne">
 
             <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
 
               <a-form-item label="Nom" :rules="[{ required: true }]">
-                <a-input v-model:value="formState.nom" />
+                <a-input v-model:value="formState.nom" style="width: 120px" />
               </a-form-item>
 
 
               <a-form-item label="Depart" :rules="[{ required: true }]">
 
                 <a-space>
-                  <a-select ref="select" v-model:value="formState.depart" style="width: 120px"
+                  <a-select ref="select" v-model:value="formState.depart" style="width: 220px"
                     @change="handleChangeDepart">
                     <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
                         item.nom
@@ -46,7 +46,7 @@
               <a-form-item label="Arrivee" :rules="[{ required: true }]">
 
                 <a-space>
-                  <a-select ref="select" v-model:value="formState.arrivee" style="width: 120px"
+                  <a-select ref="select" v-model:value="formState.arrivee" style="width: 220px"
                     @change="handleChangeArrivee">
                     <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
                         item.nom
@@ -59,8 +59,8 @@
 
               </a-form-item>
 
-              <a-form-item label="Tarif" :rules="[{ required: true }]">
-                <a-input v-model:value="formState.tarif" />
+              <a-form-item label="Tarif" :rules="[{ required: true }]" >
+                <a-input v-model:value="formState.tarif"  style="width: 120px" />
               </a-form-item>
 
 
@@ -86,42 +86,12 @@
 
 
           <!-- Deuxieme modal pour l'ajout des points d'arrêt : DEBUT -->
-          <a-modal v-model:visible="visibleAddPoint" width="500px" title="Ajouter les points d'arrêt"
-            @ok="onSubmitAddingCheckbox">
-
-            <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
-
-              <p>Choisir les points par ordre</p>
-              <!-- <p>{{formState.PointArretZone  }}</p> -->
-              <div v-if="formState.PointArretZone.length > 0">
-                <div v-for="item in formState.PointArretZone" v-bind:key="item.id">
-                  <input type="checkbox" :id="item.id" :value="item.id" v-model="formState.PointArretName">
-                  <label :for="item.id">{{ item.nom }}</label>
-                </div>
-
-              </div>
-              <div v-else>
-                <p>Aucun point d'arrêt</p>
-              </div>
-
-            </a-form>
-          </a-modal>
+          
           <!-- Deuxieme modal pour l'ajout des points d'arrêt : FIN -->
 
 
 
-          <!-- Troisième modal pour l'affichage sur la carte Map : DEBUT -->
-
-
-
-          <a-modal v-model:visible="visibleMap" title="Basic Modal" width="100px" height="200" wrap-class-name="full-modal"
-            @ok="handleOk">
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-          </a-modal>
-
-          <!-- Troisième modal pour l'affichage sur la carte Map : FIN -->
+          
 
 
 
@@ -138,6 +108,7 @@
 import { defineComponent, ref, reactive } from "vue";
 import axios from "axios";
 import { message } from 'ant-design-vue';
+import { useRouter } from "vue-router";
 
 
 export default defineComponent({
@@ -151,6 +122,10 @@ export default defineComponent({
   },
 
   setup() {
+
+
+    const router = useRouter()
+
 
     const searchQuery = ref('')
 
@@ -217,7 +192,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .post("http://192.168.252.223:4001/api/lignes/addLigne", {
+        .post("http://localhost:4001/api/lignes/addLigne", {
           nom: formState.nom,
           depart: formState.depart,
           arrivee: formState.arrivee,
@@ -238,14 +213,29 @@ export default defineComponent({
         visible.value = false;
         formState.id = resp.data.data.id
         message.success("Ligne ajouté");
-        visibleAddPoint.value = true
+        // visibleAddPoint.value = true
+
+
         // formState.nom = ""
         // formState.idTypeTransportFk = 0
         // formState.idZoneFk = 0
         // formState.arrivee = "",
         // formState.depart = ""
 
+        // let data ={
+        //   idligne: 2,
+        //   idzone: 3
+        // }
+
+        // const data = {
+        //   id: 
+        // }
+      
+        router.push(`/tableau-de-bord/lignepointarret/Add&${formState.id}&${formState.idZoneFk}`)
+        // console.log("router", router)
         console.log(`Identifiant de la ligne crée : ${formState.id}`)
+
+
       } else {
         visible.value = true
         message.error("Erreur rencontré lors de l'ajout de la ligne !!");
@@ -253,7 +243,7 @@ export default defineComponent({
 
 
 
-      fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
+      fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
         .then(response => response.json())
         .then(res => {
 
@@ -272,38 +262,7 @@ export default defineComponent({
     };
 
 
-    const onSubmitAddingCheckbox = async () => {
-
-
-      console.log("liste des point d'arrêt : ", formState.PointArretName)
-      console.log(formState.PointArretName)
-
-
-      const resp = await axios
-        .post("http://192.168.252.223:4001/api/lignespointarret/addLignePointArret", {
-          idLigneFk: formState.id,
-          idPointArretFk: formState.PointArretName
-        });
-
-
-      console.log(resp)
-      if (resp.status === 200) {
-
-        console.log(resp)
-        visibleAddPoint.value = false;
-        message.success("Point arrêt ajouté");
-
-      } else {
-        console.log(resp)
-        message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
-      }
-        // visibleAddPoint.value= false
-        // visibleMap.value= true
-
-
-
-
-    };
+    
 
 
 
@@ -336,11 +295,10 @@ export default defineComponent({
       visibleMap,
       showModal,
       onSubmitLigne,
-      onSubmitAddingCheckbox,
       formState,
       filters: [],
       dataZone: [],
-      dataTypeTransport: [],
+ 
       dataPointArret: [],
       idTypeZoneFk: "",
       idZoneparentFk: "",
@@ -360,17 +318,9 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://192.168.252.223:4001/api/typetransport")
-      .then(response => response.json())
-      .then(res => {
-        this.dataTypeTransport = res.data
+    
 
-        // console.log("ZONE PARENT")
-        // console.log(this.dataTypeTransport)
-        // console.log(this.dataTypeTransport[0].zoneparent)
-      })
-
-    fetch("http://192.168.252.223:4001/api/zones")
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataZone = res.data
@@ -383,7 +333,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://192.168.252.223:4001/api/pointarrets")
+    fetch("http://localhost:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataPointArret = res.data
@@ -397,6 +347,11 @@ export default defineComponent({
       .catch(err => {
         console.log(err)
       })
+
+
+
+
+
   },
   methods: {
 

@@ -137,7 +137,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4001/api/pointarrets", {
+  return axios.get("http://localhost:4001/api/pointarrets", {
     params,
   });
 };
@@ -187,33 +187,57 @@ export default defineComponent({
 
     onMounted(() => {
 
-      formState.map = leaflet.map('mapid').setView([5.3532642, -3.9779868], 15);
+      formState.map = leaflet.map('mapid').setView([5.3532642, -3.9779868], 13);
 
 
 
       leaflet.tileLayer(
         'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w0Zm51M2FxMDAzczNqbXM3c2VkMGZ1MCJ9.waYmvLmGKXV_oKqSOL7cLg', {
+         maxZoom: 19,
         tileSize: 512,
         zoomOffset: -1,
         // attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(formState.map);
 
 
+      // leaflet.tileLayer(
+      //   'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+      //     maxZoom: 19,
+      //   tileSize: 512,
+      //   zoomOffset: -1,
+      //   // attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      // }).addTo(formState.map);
+
 
     })
 
     const AffectMap = (lat, lon, nom) => {
 
+      const acard = document.getElementById('macarte');
+
+      console.log("HAUTEUR: ",acard.scrollHeight)
+      // acard.scrollTo({
+      //   top: 1000000,
+      //   left: 100,
+      //   behavior: 'smooth'
+      // });
+
+
+      // console.log("CARD ", acard);
+
+      // console.log("WINDOWS :", window.innerHeight)
       
+      window.scrollTo({
+        top: acard.scrollHeight,
+        // left: 100,
+        behavior: 'smooth'
+      });
 
       formState.map.eachLayer(function (layer) {
-        
-        console.log( layer.options.pane)
+
+
         if (typeof layer.options.pane !== undefined && layer.options.pane === "markerPane") {
 
-          console.log("FEATURE")
-          console.log(typeof layer.feature)
-          
           formState.map.removeLayer(layer)
           // leaflet.map('mapid').setView([5.3532642, -3.9779868], 15);
 
@@ -247,7 +271,7 @@ export default defineComponent({
       // map.addLayer(markers);
       leaflet.marker([coordonnée.lat, coordonnée.lon]).bindPopup('<b>LIEU :</b><br>' + nom).openPopup().addTo(formState.map)
 
-      formState.map.panTo(new L.LatLng(coordonnée.lat,coordonnée.lon));
+      formState.map.panTo(new L.LatLng(coordonnée.lat, coordonnée.lon));
 
 
     }
@@ -255,7 +279,7 @@ export default defineComponent({
     const onSubmit = async () => {
 
       const resp = await axios
-        .put(`http://192.168.252.223:4001/api/pointarrets/updatePointArret/${formState.id}`, {
+        .put(`http://localhost:4001/api/pointarrets/updatePointArret/${formState.id}`, {
           nom: formState.nom,
           longitude: formState.lon,
           latitude: formState.lat,
@@ -312,7 +336,7 @@ export default defineComponent({
     const onDelete = async (id) => {
       const resp = await axios
         .delete(
-          `http://192.168.252.223:4001/api/pointarrets/deletePointArret/${id}`);
+          `http://localhost:4001/api/pointarrets/deletePointArret/${id}`);
       if (resp.status === 200) {
         // console.log(typeof dataSource)
         dataSource.value = dataSource.value.filter(
@@ -482,7 +506,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://192.168.252.223:4001/api/zones")
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataListZone = res.data
@@ -491,7 +515,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://192.168.252.223:4001/api/pointarrets")
+    fetch("http://localhost:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataListPointArret = res.data

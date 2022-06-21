@@ -20,47 +20,84 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale de modification d'une la ligne-->
-            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
+            <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Ajouter Ligne" @ok="onUpdateLigne">
 
+              <a-button :style="{
+                marginBottom: '24px'
+              }" type="primary" @click="ListPointArret">
+                <template #icon>
+                  <SearchOutlined />
+                </template>
+                Liste des Points d'arrêt
+              </a-button>
+              <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
 
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
-                @finish="onFinish">
-
-
-
-                <a-form-item label="libelle" name="libelle"
-                  :rules="[{ required: true, message: 'Please input your libelle!' }]">
-                  <a-input v-model:value="formState.libelle" />
+                <a-form-item label="Nom" :rules="[{ required: true }]">
+                  <a-input v-model:value="formState.nom" />
                 </a-form-item>
 
-                <a-form-item label="Type de zone">
-                  <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
 
-                    <a-select-option v-for="item in dataZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
-                    }}
-                    </a-select-option>
-                  </a-select>
+                <a-form-item label="Depart" :rules="[{ required: true }]">
+
+                  <a-space>
+                    <a-select ref="select" v-model:value="formState.depart" style="width: 120px"
+                      @change="handleChangeDepart">
+                      <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
+                          item.nom
+                      }}
+                      </a-select-option>
+
+                    </a-select>
+
+                  </a-space>
+
                 </a-form-item>
 
-                <a-form-item label="Zone parent">
-                  <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
 
-                    <a-select-option v-for="item in dataTypeTransport" v-bind:key="item.id" :value="item.id">{{
-                        item.zoneparent
-                    }}
-                    </a-select-option>
-                  </a-select>
+                <a-form-item label="Arrivee" :rules="[{ required: true }]">
+
+                  <a-space>
+                    <a-select ref="select" v-model:value="formState.arrivee" style="width: 120px"
+                      @change="handleChangeArrivee">
+                      <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
+                          item.nom
+                      }}
+                      </a-select-option>
+
+                    </a-select>
+
+                  </a-space>
+
                 </a-form-item>
 
+                <a-form-item label="Tarif" :rules="[{ required: true }]">
+                  <a-input v-model:value="formState.tarif" />
+                </a-form-item>
+
+
+
+                <a-form-item label="Zone" :rules="[{ required: true }]">
+
+                  <a-space>
+                    <a-select ref="select" v-model:value="formState.idZoneFk" style="width: 120px"
+                      @change="handleChangeZone">
+                      <a-select-option v-for="item in dataZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+                      }}
+                      </a-select-option>
+
+                    </a-select>
+
+                  </a-space>
+
+                </a-form-item>
 
               </a-form>
-
             </a-modal>
 
             <edit-outlined :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.libelle, record.idTypeZoneFk.id, record.idZoneparentFk.id)" />
+              @click="showModal(record.id, record.nom, record.depart, record.depart_longitude, record.depart_latitude, record.arrivee, record.arrivee_longitude, record.arrivee_latitude, record.tarif, record.idZoneFk.id)" />
 
-
+            <!--FIN Modale Modifier LIGNE -->
 
             <!--Début Modale Modifier type Transport-->
 
@@ -70,7 +107,7 @@
               <a>
                 <delete-outlined :style="{ color: '#f73772' }" />
               </a>
-             
+
             </a-popconfirm>
             <!--Fin popup Supprimer type Transport-->
           </div>
@@ -84,6 +121,8 @@
 import { usePagination } from "vue-request";
 import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
+import { useRouter } from "vue-router";
+
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
 import SearchHeaderZone from "../../components/SearchHeader_Ligne.vue";
@@ -120,7 +159,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4001/api/lignes", {
+  return axios.get("http://localhost:4001/api/lignes", {
     params,
   });
 };
@@ -156,22 +195,28 @@ export default defineComponent({
   },
   setup() {
 
-    const onSubmit = async () => {
+    const router = useRouter()
 
+    const ListPointArret = () => {
+
+      console.log("idligne", formState.id, "idzone :", formState.idZoneFk)
+      router.push(`/tableau-de-bord/lignepointarret/Update&${formState.id}&${formState.idZoneFk}`)
+    }
+
+    const onUpdateLigne = async () => {
 
 
       const resp = await axios
-        .put(`http://192.168.252.223:4001/api/lignes/updateligne/${formState.id}`, {
-          libelle: formState.libelle,
-
-          idTypeZoneFk: {
-            // "id": 2
-            id: formState.idTypeZoneFk
-          },
-          idZoneparentFk: {
-            // "id": 3
-            id: formState.idZoneparentFk
-          },
+        .put(`http://localhost:4001/api/lignes/updateligne/${formState.id}`, {
+          nom: formState.nom,
+          depart: formState.depart,
+          tarif: formState.tarif,
+          arrivee: formState.arrivee,
+          depart_longitude: formState.depart_longitude,
+          depart_latitude: formState.depart_latitude,
+          arrivee_longitude: formState.arrivee_longitude,
+          arrivee_latitude: formState.arrivee_latitude,
+          idZoneFk: formState.idZoneFk,
           statut: true
         });
       if (resp.status === 200) {
@@ -221,7 +266,7 @@ export default defineComponent({
 
     const onDelete = (id) => {
       return axios
-        .delete(`http://192.168.252.223:4001/api/lignes/deleteligne/${id}`)
+        .delete(`http://localhost:4001/api/lignes/deleteligne/${id}`)
         .then((resp) => {
           if (resp.status === 200) {
             // console.log(typeof dataSource)
@@ -237,22 +282,55 @@ export default defineComponent({
 
     const visible = ref(false);
 
-    const showModal = (id, libelle, idTypeZoneFk, idZoneparentFk) => {
+    const showModal = (id, nom, depart, depart_longitude, depart_latitude, arrivee, arrivee_longitude, arrivee_latitude, tarif, idZoneFk) => {
       formState.id = id;
-      formState.libelle = libelle;
-      formState.idTypeZoneFk = idTypeZoneFk;
-      formState.idZoneparentFk = idZoneparentFk;
+      formState.nom = nom;
+      formState.depart = depart;
+      formState.depart_longitude = depart_longitude;
+      formState.depart_latitude = depart_latitude;
+      formState.arrivee = arrivee;
+      formState.arrivee_longitude = arrivee_longitude;
+      formState.arrivee_latitude = arrivee_latitude;
+      formState.tarif = tarif;
+      formState.idZoneFk = idZoneFk;
 
       visible.value = true;
+
+      console.log("ID LIGNE:", formState.id)
+      console.log("ID ZONE:", formState.idZoneFk)
     };
 
 
     const formState = reactive({
       id: '',
-      libelle: '',
-      idTypeZoneFk: '',
-      idZoneparentFk: '',
+      nom: '',
+      depart: '',
+      depart_longitude: '',
+      depart_latitude: '',
+      arrivee: '',
+      arrivee_longitude: '',
+      arrivee_latitude: '',
+      tarif: '',
+      idZoneFk: ''
     });
+
+
+
+    const handleChangeZone = value => {
+      formState.idZoneFk = value;
+      console.log(`selected zone : ${formState.idZoneFk}`);
+    };
+
+    const handleChangeDepart = value => {
+      formState.depart = value;
+      console.log(`selected depart : ${formState.depart}`);
+    };
+
+
+    const handleChangeArrivee = value => {
+      formState.arrivee = value;
+      console.log(`selected arrivee : ${formState.arrivee}`);
+    };
 
 
     const handleOk = e => {
@@ -273,10 +351,19 @@ export default defineComponent({
       handleOk,
       visible,
       formState,
-      dataTypeTransport: [],
+
       dataZone: [],
       dataListLigne: [],
-      onSubmit,
+      onUpdateLigne,
+
+      dataPointArret: [],
+
+      handleChangeZone,
+      handleChangeDepart,
+      handleChangeArrivee,
+
+
+      ListPointArret
 
 
     };
@@ -288,33 +375,37 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-
-    // Pour la liste des types de transport
-    fetch("http://192.168.252.223:4001/api/typetransport")
+    fetch("http://localhost:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
-        this.dataTypeTransport = res.data
+        this.dataPointArret = res.data
 
-        // console.log(this.dataTypeTransport[0].zoneparent)
+        this.formState.ListPointArret = this.dataPointArret
+
       })
+      .catch(err => {
+        console.log(err)
+      })
+
+
 
     // Pour la liste des zones
 
-    fetch("http://192.168.252.223:4001/api/zones")
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
-        this.dataZone = res
 
-        // console.log(this.dataZone)
+        this.dataZone = res.data
+
       })
 
 
-    fetch("http://192.168.252.223:4001/api/lignes")
+    fetch("http://localhost:4001/api/lignes")
       .then(response => response.json())
       .then(res => {
         this.dataListLigne = res.data
 
-        // console.log(this.dataListLigne)
+
       })
   },
 });

@@ -8,10 +8,11 @@ import UneDemande from '../views/demandes/UneDemande.vue'
 import DetailDemande from '../views/demandes/DetailDemande.vue'
 import VehiculeView from '../views/vehicules/VehiculeView.vue'
 import AjoutVehicule from '../views/vehicules/AjoutVehicule.vue'
-import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
+// import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
 import ListeLigne from '../views/ligne/ListeLigne.vue'
 import ListeModeDeplacement from '../views/mode_deplacement/ListeModeDeplacement.vue'
 import CarteMap_PointArret from '../views/carteMap/CarteMap_PointArret.vue'
+import LignePointArretMap from '../views/LignePointArretMap/LignePointArretMap.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 
@@ -36,13 +37,14 @@ const routes = [
   { path: '/tableau-de-bord/details-demandes', name: 'details-demandes', component: DetailDemande },
   { path: '/tableau-de-bord/vehicules', name: 'vehicule', component: VehiculeView },
   { path: '/tableau-de-bord/ajout-vehicule', name: 'ajout-vehicule', component: AjoutVehicule },
-  { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
+  // { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
   { path: '/tableau-de-bord/liste-zone', name: 'liste-zones', component: ListeZone },
   { path: '/tableau-de-bord/type-zone', name: 'type-zone', component: ListeTypeZone },
   { path: '/tableau-de-bord/liste-pointarret', name: 'liste-pointsarret', component: ListePointArret },
   { path: '/tableau-de-bord/liste-ligne', name: 'liste-ligne', component: ListeLigne },
   { path: '/tableau-de-bord/liste-mode-deplacement', name: 'liste-mode-deplacement', component: ListeModeDeplacement },
   { path: '/tableau-de-bord/afficahgeCarteMap', name: 'affichageCarteMap', component: CarteMap_PointArret },
+  { path: '/tableau-de-bord/lignepointarret/:data', name: 'liasionLignePointAret', component: LignePointArretMap },
 
 
  

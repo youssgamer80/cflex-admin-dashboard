@@ -54,7 +54,7 @@ export default defineComponent({
 
     onChange() {
 
-      console.log("ENFANT :",this.formState.id)
+      // console.log("ENFANT :",this.formState.id)
       this.$emit("change", this.formState.id);
     },
   },
@@ -62,7 +62,7 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://192.168.252.223:4001/api/zones")
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.formState.dataCarte = res.data
