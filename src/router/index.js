@@ -6,13 +6,19 @@ import ListeZone from '../views/zone/ListeZone.vue'
 import ListePointArret from '../views/pointarret/ListePointArret.vue'
 import UneDemande from '../views/demandes/UneDemande.vue'
 import DetailDemande from '../views/demandes/DetailDemande.vue'
-import VehiculeView from '../views/vehicules/VehiculeView.vue'
-import AjoutVehicule from '../views/vehicules/AjoutVehicule.vue'
+import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
 // import AjoutTypeTransport from '../views/typetransport/AjoutTypeTransport.vue'
 import ListeLigne from '../views/ligne/ListeLigne.vue'
 import ListeModeDeplacement from '../views/mode_deplacement/ListeModeDeplacement.vue'
 import CarteMap_PointArret from '../views/carteMap/CarteMap_PointArret.vue'
+import ListeProprietaire from '../views/proprietaire/ListeProprietaire.vue'
+import ListeVehicule from '../views/vehicules/ListeVehicule.vue'
+import ListeTrackersGps from '../views/trackers_gps/ListeTrackersGps.vue'
+import ListeBorne from '../views/borne/ListeBorne.vue'
+// import AjoutBorne from '../views/borne/AjoutBorne.vue'
+import ListeTroncon from '../views/tronçon/ListeTroncon.vue'
 import LignePointArretMap from '../views/LignePointArretMap/LignePointArretMap.vue'
+
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 
@@ -32,12 +38,17 @@ const routes = [
   { path: '/tableau-de-bord/liste-type-transport', name: 'liste-type-transport', component: ListeTypeTransport },
   
 
-
+  { path: '/tableau-de-bord/liste-proprietaires', name: 'liste-proprietaire', component: ListeProprietaire },
   { path: '/tableau-de-bord/liste-demandes', name: 'liste-demandes', component: UneDemande },
   { path: '/tableau-de-bord/details-demandes', name: 'details-demandes', component: DetailDemande },
-  { path: '/tableau-de-bord/vehicules', name: 'vehicule', component: VehiculeView },
-  { path: '/tableau-de-bord/ajout-vehicule', name: 'ajout-vehicule', component: AjoutVehicule },
-  // { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
+  
+  { path: '/tableau-de-bord/liste-trackers_gps', name: 'liste-trackers_gps', component: ListeTrackersGps},
+  { path: '/tableau-de-bord/liste-borne', name: 'liste-borne', component: ListeBorne },
+  // { path: '/tableau-de-bord/ajout-borne', name: 'liste-proprietaire', component: AjoutBorne },
+  { path: '/tableau-de-bord/liste-troncon', name: 'liste-troncon', component: ListeTroncon},
+ 
+  { path: '/tableau-de-bord/liste-vehicule', name: 'liste-vehicule', component: ListeVehicule},
+  { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
   { path: '/tableau-de-bord/liste-zone', name: 'liste-zones', component: ListeZone },
   { path: '/tableau-de-bord/type-zone', name: 'type-zone', component: ListeTypeZone },
   { path: '/tableau-de-bord/liste-pointarret', name: 'liste-pointsarret', component: ListePointArret },

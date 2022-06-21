@@ -27,7 +27,27 @@
             <a-divider type="vertical" />
             <pushpin-outlined @click="AffectMap(record.latitude, record.longitude, record.nom)" />
 
-            <!--Début Modale Modifier Point arrêt: DEBUT -->
+           
+
+
+
+
+            <!--Début Modale Modifier type Transport-->
+
+            <a-divider type="vertical" />
+            <!--Début popup Supprimer type Transport-->
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
+
+            </a-popconfirm>
+            <!--Fin popup Supprimer type Transport-->
+          </div>
+        </template>
+      </template>
+    </a-table>
+     <!--Début Modale Modifier Point arrêt: DEBUT -->
 
             <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
 
@@ -59,26 +79,6 @@
             </a-modal>
 
             <!--Début Modale Modifier Point arrêt: FIN -->
-
-
-
-
-            <!--Début Modale Modifier type Transport-->
-
-            <a-divider type="vertical" />
-            <!--Début popup Supprimer type Transport-->
-            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
-              <a>
-                <delete-outlined :style="{ color: '#f73772' }" />
-              </a>
-
-            </a-popconfirm>
-            <!--Fin popup Supprimer type Transport-->
-          </div>
-        </template>
-      </template>
-    </a-table>
-
 
 
     <!--Début Modale Carte Point arrêt: DEBUT -->

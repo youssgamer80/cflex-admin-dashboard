@@ -20,7 +20,29 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale de modification d'une la ligne-->
-            <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Ajouter Ligne" @ok="onUpdateLigne">
+            
+
+            <edit-outlined :style="{ color: '#08f26e' }"
+              @click="showModal(record.id, record.nom, record.depart, record.depart_longitude, record.depart_latitude, record.arrivee, record.arrivee_longitude, record.arrivee_latitude, record.tarif, record.idZoneFk.id)" />
+
+            <!--FIN Modale Modifier LIGNE -->
+
+            <!--Début Modale Modifier type Transport-->
+
+            <a-divider type="vertical" />
+            <!--Début popup Supprimer type Transport-->
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
+
+            </a-popconfirm>
+            <!--Fin popup Supprimer type Transport-->
+          </div>
+        </template>
+      </template>
+    </a-table>
+    <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Ajouter Ligne" @ok="onUpdateLigne">
 
               <a-button :style="{
                 marginBottom: '24px'
@@ -93,27 +115,6 @@
 
               </a-form>
             </a-modal>
-
-            <edit-outlined :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.nom, record.depart, record.depart_longitude, record.depart_latitude, record.arrivee, record.arrivee_longitude, record.arrivee_latitude, record.tarif, record.idZoneFk.id)" />
-
-            <!--FIN Modale Modifier LIGNE -->
-
-            <!--Début Modale Modifier type Transport-->
-
-            <a-divider type="vertical" />
-            <!--Début popup Supprimer type Transport-->
-            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
-              <a>
-                <delete-outlined :style="{ color: '#f73772' }" />
-              </a>
-
-            </a-popconfirm>
-            <!--Fin popup Supprimer type Transport-->
-          </div>
-        </template>
-      </template>
-    </a-table>
   </a-card>
 </template>
 

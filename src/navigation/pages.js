@@ -8,6 +8,24 @@ export default [
     icon: 'MailIcon',
   },
   {
+    title: 'Proprietaire',
+    route: '/tableau-de-bord/liste-proprietaires',
+    icon: 'MailIcon',
+  },
+  {
+    title: 'Bornes',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'Gestion des Bornes',
+        route: '/tableau-de-bord/liste-borne',
+      },
+
+
+    ],
+  },
+
+  {
     title: 'Demandes',
     icon: 'FileTextIcon',
     children: [
@@ -81,6 +99,16 @@ export default [
     title: "Mode de Deplacement",
     icon: "FiletextIcon",
     route: "/tableau-de-bord/liste-mode-deplacement"
+  },
+  {
+    title: "Tracker Gps",
+    
+    route: '/tableau-de-bord/liste-trackers_gps'
+  },
+  {
+    title: "Tronçon ",
+    
+    route: '/tableau-de-bord/liste-troncon'
   },
   {
     header: 'Utilisateur et permissions',

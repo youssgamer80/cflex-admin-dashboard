@@ -14,8 +14,8 @@
         <template v-if="column.dataIndex === 'libelle'">{{ record.libelle }}
         </template>
         <template v-if="column.dataIndex === 'statut'">
-          <h1 v-if="text">Disponible</h1>
-          <h1 v-else>Indisponible</h1>
+          <p v-if="text">Disponible</p>
+          <p v-else>Indisponible</p>
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
@@ -38,9 +38,9 @@
                   <a-input v-model:value="formState.libelle" />
                 </a-form-item>
 
-                <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+                <!-- <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
                   <a-button type="primary" html-type="submit">Submit</a-button>
-                </a-form-item>
+                </a-form-item> -->
               </a-form>
 
             </a-modal>
