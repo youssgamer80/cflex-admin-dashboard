@@ -85,14 +85,6 @@
 
     <a-modal v-model:visible="visibleMap" title="Modification" @ok="onSubmitMap">
 
-
-
-
-
-
-
-
-
     </a-modal>
 
 
