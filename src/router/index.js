@@ -20,6 +20,7 @@ import ListeTroncon from '../views/tronçon/ListeTroncon.vue'
 import LignePointArretMap from '../views/LignePointArretMap/LignePointArretMap.vue'
 import ListeClientC from '../views/clientele/ListeClient.vue'
 import ListeUtilisateur from '../views/administration/ListeUtilisateur.vue'
+import Role from '../views/administration/listeRole.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 
@@ -59,6 +60,8 @@ const routes = [
   { path: '/tableau-de-bord/lignepointarret/:data', name: 'liasionLignePointAret', component: LignePointArretMap },
   { path: '/tableau-de-bord/liste-client', name: 'listeclient', component: ListeClientC },
   { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: ListeUtilisateur },
+  { path: '/tableau-de-bord/liste-role', name: 'listeUtilisateur', component: Role },
+
 
 
 

@@ -190,6 +190,11 @@ export default [
         icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-utilisateur'
       },
+      {
+        title: "Role",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-role'
+      },
     ]
 
 

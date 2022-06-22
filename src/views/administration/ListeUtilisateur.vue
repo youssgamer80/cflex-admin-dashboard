@@ -1,5 +1,5 @@
 <template>
-    <a-typography-title :level="4">Administrateurs</a-typography-title>
+    <a-typography-title :level="4">utilisateurs </a-typography-title>
 
     <!-- <SearchHeaderBorne @search="handleSearch" /> -->
     <a-card :style="{
@@ -62,7 +62,7 @@
 
                 </a-form-item>
                 <a-form-item label="point d arret"
-                    :rules="[{ required: true, message: 'entrez le point d arret SVP!' }]">
+                    :rules="[{ required: true, message: 'entrez le nom de l utilisateur SVP !!' }]">
                     <a-select v-model:value="formState.idPointArretFk">
 
                         <a-select-option v-for="point in pointarret" v-bind:key="point.id" :value="point.id">{{
@@ -110,10 +110,7 @@ const columns = [
         title: "role",
         dataIndex: "role",
     },
-    // {
-    //     title: "Statut",
-    //     dataIndex: "statut",
-    // },
+
     {
         title: "Action",
         dataIndex: "action",

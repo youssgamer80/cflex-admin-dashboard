@@ -1,5 +1,5 @@
 <template>
-    <a-typography-title :level="4">Administrateurs</a-typography-title>
+    <a-typography-title :level="4">gestion des roles</a-typography-title>
 
     <!-- <SearchHeaderBorne @search="handleSearch" /> -->
     <a-card :style="{
@@ -8,34 +8,48 @@
         textAlign: 'center',
         minHeight: '360px',
     }" :bordered="false" id="macarte">
-        <a-table :columns="columns" :row-key="keyBornes" :data-source="dataSource" :pagination="pagination"
+
+        <!-- ajout -->
+
+
+
+
+
+
+        <!--  -->
+        <a-col :span="5" :style="{ padding: '24px' }">
+
+            <a-button type="primary" @click="showModale" :style="{ textAlign: 'center' }"> Ajouter
+            </a-button>
+
+        </a-col>
+
+        <a-table :columns="columns" :row-key="keyRole" :data-source="dataSource" :pagination="pagination"
             :loading="loading" @change="handleTableChange">
-            <template #bodyCell="{ column, text, record }">
-                <template v-if="column.dataIndex === 'id'">{{ text }}
+            <template #bodyCell="{ column, record }">
+                <template v-if="column.dataIndex === 'id'">{{ record.id }}
                 </template>
-                <template v-if="column.dataIndex === 'libelle'">{{ text }}
+                <template v-if="column.dataIndex === 'role'">{{ record.role }}
                 </template>
 
-                <template v-if="column.dataIndex === 'idPointArretFk'">{{ text.nom }}
-                </template>
+
+
                 <!-- <template v-if="column.dataIndex === 'statut'">
-                    <h1 v-if="text">en fonction</h1>
-                    <h1 v-else>pas en fonction</h1>
+                    <h1 v-if="text">actif</h1>
+                    <h1 v-else>inactif</h1>
                 </template> -->
                 <template v-else-if="['action'].includes(column.dataIndex)">
                     <div>
 
 
                         <!-- modification borne ( config sur icon widget ) -->
-                        <edit-outlined :style="{ color: '#08f26e' }"
-                            @click="showModal(record.id, record.libelle, record.idPointArretFk.nom)" />
+                        <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.role)" />
 
 
                         <a-divider type="vertical" />
                         <!-- popup modification  -->
                         <a-popconfirm v-if="dataSource.length"
-                            title="Voulez vous supprimez les information de cette borne?"
-                            @confirm="onDelete(record.id)">
+                            title="Voulez vous supprimez les information de ce role ?" @confirm="onDelete(record.id)">
                             <a>
 
                                 <delete-outlined :style="{ color: '#f73772' }" />
@@ -48,34 +62,70 @@
                     </div>
                 </template>
             </template>
+
         </a-table>
-        <a-modal v-model:visible="visible" title="Modification iinfo utilisateur" @ok="modifborne">
+
+        <a-modal v-model:visible="visible" title="Modification role" @ok="modifRole">
 
 
             <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
 
 
 
-                <a-form-item label="libelle" name="libelle" :rules="[{ required: true }]">
+                <a-form-item label="role" name="role" :rules="[{ required: true }]">
 
-                    <a-input v-model:value="formState.libelle" />
+                    <a-input v-model:value="formState.role" />
 
                 </a-form-item>
-                <a-form-item label="point d arret"
-                    :rules="[{ required: true, message: 'entrez le point d arret SVP!' }]">
-                    <a-select v-model:value="formState.idPointArretFk">
 
-                        <a-select-option v-for="point in pointarret" v-bind:key="point.id" :value="point.id">{{
-                                point.nom
-                        }}
-                        </a-select-option>
-                    </a-select>
-                </a-form-item>
 
 
             </a-form>
 
         </a-modal>
+        <!-- modal ajout de role -->
+
+        <!-- <a-modal v-model:visibles="visibles" title="Ajout de role" @ok="onSubmit">
+
+
+            <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+
+
+
+                <a-form-item label="role" name="role" :rules="[{ required: true }]">
+
+                    <a-input v-model:value="formState.role" />
+
+                </a-form-item>
+
+
+
+            </a-form>
+
+        </a-modal> -->
+
+        <!-- test -->
+
+        <a-modal v-model:visible="visibles" title="ajout de role" @ok="onSubmit">
+
+
+            <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+
+
+
+                <a-form-item label="role" name="role" :rules="[{ required: true }]">
+
+                    <a-input v-model:value="formState.role" />
+
+                </a-form-item>
+
+
+
+            </a-form>
+
+        </a-modal>
+
+        <!-- tester -->
 
     </a-card>
 
@@ -93,27 +143,16 @@ import axios from "axios";
 const columns = [
 
     {
-        title: "id ",
+        title: "reference",
         dataIndex: "id",
         sorter: true,
     },
-    {
-        title: "nom",
-        dataIndex: "libelle",
-        sorter: true,
-    },
-    {
-        title: "prenom",
-        dataIndex: "idPointArretFk",
-    },
+
+
     {
         title: "role",
         dataIndex: "role",
     },
-    // {
-    //     title: "Statut",
-    //     dataIndex: "statut",
-    // },
     {
         title: "Action",
         dataIndex: "action",
@@ -123,7 +162,7 @@ const columns = [
 
 
 const queryData = (params) => {
-    return axios.get("http://192.168.252.206:4000/api/::::", {
+    return axios.get("http://192.168.252.132:4000/api/roles", {
         params,
     });
 };
@@ -145,11 +184,11 @@ export default defineComponent({
             if (value.length > 0) {
 
                 this.dataListBorne.filter((item) => {
-                    if (item.idPointArretFk.nom.toLowerCase().includes(value.toLowerCase()) || item.libelle.toLowerCase().includes(value.toLowerCase())) {
+                    if (item.idPointArretFk.nom.toLowerCase().includes(value.toLowerCase()) || item.role.toLowerCase().includes(value.toLowerCase())) {
                         console.log(item)
                         NewdataSource.push(item);
                     }
-                    console.log(item.libelle)
+                    console.log(item.role)
 
                 })
                 this.dataSource = NewdataSource
@@ -162,23 +201,45 @@ export default defineComponent({
     },
     setup() {
 
-        const modifborne = async () => {
+
+
+        const onSubmit = (e) => {
+            console.log(e);
+
+
+            return axios
+                .post("http://192.168.252.132:4000/api/roles/addRole", {
+
+                    role: formState.role,
+                    statut: true
+
+                })
+                .then((resp) => {
+
+                    if (resp.status === 200) {
+
+
+                        visibles.value = false;
+                        message.success("insertion du role effectuée avec succes");
+
+                    } else {
+                        message.error("echec d insertion des données !!");
+                    }
+
+                    console.log(resp);
+                });
+        };
+
+
+
+        const modifRole = async () => {
 
 
 
             const resp = await axios
-                .put(`http://192.168.252.206:4000/api/:::::/${formState.id}`, {
-                    libelle: formState.libelle,
-                    idPointArretFk: formState.idPointArretFk
+                .put(`http://192.168.252.132:4000/api/roles/updateRole/${formState.id}`, {
 
-                    // libele: {
-
-                    //     id: formState.libelle
-                    // },
-                    // idZoneparentFk: {
-
-                    //     id: formState.libel
-                    // },
+                    role: formState.role
 
                 });
             if (resp.status === 200) {
@@ -219,14 +280,14 @@ export default defineComponent({
             current: current.value,
             pageSize: pageSize.value,
 
-            // reglage du changemenet d etat de la table apres recherche  d une borne
-            filteredList() {
-                return this.dataListBorne.filter((post) => {
-                    return post.libelle
-                        .toLowerCase()
-                        .includes(this.rechercheBorne.toLowerCase());
-                });
-            },
+
+            // filteredList() {
+            //     return this.dataListBorne.filter((post) => {
+            //         return post.role
+            //             .toLowerCase()
+            //             .includes(this.rechercheBorne.toLowerCase());
+            //     });
+            // },
 
         }));
 
@@ -242,7 +303,7 @@ export default defineComponent({
 
         const onDelete = (id) => {
             return axios
-                .delete(`http://192.168.252.206:4000/:::::/${id}`,
+                .delete(`http://192.168.252.206:4000/api/roles/deleteRole/${id}`,
                     {
                         data: {
                             statut: false,
@@ -263,20 +324,25 @@ export default defineComponent({
         };
 
         const visible = ref(false);
+        const visibles = ref(false);
         let notEgal
 
-        const showModal = (id, libelle, idPointArretFk) => {
+        const showModal = (id, role) => {
             formState.id = id;
-            formState.libelle = libelle;
-            formState.idPointArretFk = idPointArretFk;
+            formState.role = role;
             visible.value = true;
+        };
+        const showModale = (id, role) => {
+            formState.id = id;
+            formState.role = role;
+            visibles.value = true;
         };
 
 
         const formState = reactive({
             id: '',
-            libelle: '',
-            idPointArretFk: '',
+            role: '',
+
 
         });
 
@@ -293,11 +359,14 @@ export default defineComponent({
             handleTableChange,
             onDelete,
             showModal,
+            showModale,
+            onSubmit,
+            visibles,
 
             visible,
             formState,
             pointarret: [],
-            modifborne,
+            modifRole,
             notEgal
 
         };
@@ -309,19 +378,12 @@ export default defineComponent({
 
 
 
-        fetch("http://192.168.252.206:4000/api/::::")
-            .then(response => response.json())
-            .then(res => {
-                this.pointarret = res.data
-
-            })
-
-        fetch("http://192.168.252.206:4000/api/::::")
+        fetch("http://192.168.252.132:4000/api/roles")
             .then((response) => response.json())
             .then((res) => {
-                this.dataListBorne = res.data;
+                this.dataListRole = res.data;
 
-                console.log(this.dataListBorne);
+                console.log(this.dataListRole);
             });
 
 
