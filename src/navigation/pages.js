@@ -4,26 +4,17 @@ export default [
   },
   {
     title: 'Vehicule',
-    route: '/tableau-de-bord/vehicules',
     icon: 'MailIcon',
-  },
-  {
-    title: 'Proprietaire',
-    route: '/tableau-de-bord/liste-proprietaires',
-    icon: 'MailIcon',
-  },
-  {
-    title: 'Bornes',
-    icon: 'FileTextIcon',
     children: [
       {
-        title: 'Gestion des Bornes',
-        route: '/tableau-de-bord/liste-borne',
+        title: 'Liste des vehicules',
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-vehicule',
       },
-
 
     ],
   },
+
 
   {
     title: 'Demandes',
@@ -53,6 +44,35 @@ export default [
 
     ],
   },
+  {
+    header: 'proprietaire',
+  },
+  {
+    title: 'Proprietaire',
+    children: [
+      {
+        title: 'Liste des proprietaires',
+        icon: 'MailIcon',
+        route: '/tableau-de-bord/liste-proprietaires',
+
+      },
+    ],
+
+  },
+  {
+    title: "client usager",
+    icon: "FiletextIcon",
+    children: [
+
+      {
+        title: "Liste des clients usagers",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-client'
+      },
+    ]
+
+  },
+
   {
     header: 'Zone et Type de zone',
   },
@@ -93,26 +113,88 @@ export default [
   {
     title: "Ligne",
     icon: "FiletextIcon",
-    route: '/tableau-de-bord/liste-ligne'
+    children: [
+
+      {
+        title: "Liste des Lignes",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-ligne'
+      },
+    ]
+
   },
   {
     title: "Mode de Deplacement",
     icon: "FiletextIcon",
-    route: "/tableau-de-bord/liste-mode-deplacement"
+    children: [
+
+      {
+        title: "Liste des modes de deplacement",
+        icon: 'FileTextIcon',
+        route: "/tableau-de-bord/liste-mode-deplacement"
+      },
+    ]
+
+
+
+  },
+  {
+    title: 'Bornes',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'Gestion des Bornes',
+        route: '/tableau-de-bord/liste-borne',
+      },
+
+
+    ],
   },
   {
     title: "Tracker Gps",
-    
-    route: '/tableau-de-bord/liste-trackers_gps'
+    children: [
+
+      {
+        title: "Liste des tracker gps",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-trackers_gps'
+      },
+    ]
+
   },
   {
-    title: "Tronçon ",
-    
-    route: '/tableau-de-bord/liste-troncon'
+    title: "Tronçon",
+
+    children: [
+
+      {
+        title: "Liste des tronçons",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-troncon'
+      },
+    ]
+
+
+  },
+
+  {
+    header: 'Utilisateurs et permissions',
   },
   {
-    header: 'Utilisateur et permissions',
+    title: "administration",
+
+    children: [
+
+      {
+        title: "Liste des utilisateurs",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-utilisateur'
+      },
+    ]
+
+
   },
+
 
 
 ]

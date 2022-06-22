@@ -92,7 +92,7 @@ export default defineComponent({
 
 
       // leaflet.marker.
-      fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${value}`)
+      fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${value}`)
         .then(response => response.json())
         .then(res => {
 
@@ -117,34 +117,34 @@ export default defineComponent({
 
               DeleteMarker()
               // message.success(`${res.data.length} Point d'arrêt dans cette zone`)
-            
-                res.data.forEach(element => {
-                
-                if(element.idtypePointArret.id == typePointArret.value){
+
+              res.data.forEach(element => {
+
+                if (element.idtypePointArret.id == typePointArret.value) {
                   console.log("LATITUDE :", element.latitude, " LONGITUDE :", element.longitude)
-                leaflet.marker([element.latitude, element.longitude]).bindPopup('<b>LIEU :</b><br>' + element.nom).openPopup().addTo(map)
+                  leaflet.marker([element.latitude, element.longitude]).bindPopup('<b>LIEU :</b><br>' + element.nom).openPopup().addTo(map)
 
                 }
               });
 
-                // res.data.filter((item) => {
-                //   console.log("ITEM")
-                // console.log(item.idtypePointArret.id)
-                //   if (item.idtypePointArret.id.toLowerCase().includes(typePointArret.value)) {
-                //     console.log("trouver", item.idtypePointArret.id)
-                //   }
-                //   else {
+              // res.data.filter((item) => {
+              //   console.log("ITEM")
+              // console.log(item.idtypePointArret.id)
+              //   if (item.idtypePointArret.id.toLowerCase().includes(typePointArret.value)) {
+              //     console.log("trouver", item.idtypePointArret.id)
+              //   }
+              //   else {
 
-                //       if( typePointArret.value == 1){
-                //         message.info("Aucun point d'arrêt physique dans cette zone")
-                //       }
-                //       else{
-                //          message.info("Aucun point d'arrêt virtuel dans cette zone")
-                //       }
+              //       if( typePointArret.value == 1){
+              //         message.info("Aucun point d'arrêt physique dans cette zone")
+              //       }
+              //       else{
+              //          message.info("Aucun point d'arrêt virtuel dans cette zone")
+              //       }
 
-                //   }
+              //   }
 
-                // })
+              // })
             }
 
           }

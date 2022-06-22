@@ -1,12 +1,17 @@
 <template>
-  <a-card :bordered="false" style="margin: 10px 0" id="macarte">
-    <a-typography-title :level="5">Recherche</a-typography-title>
+  <a-card :bordered="true" style="margin: 1px 0" id="macarte">
     <div class="components-input-demo-presuffix">
       <!-- Début Champ de recherche proprietaire-->
       <a-row>
         <a-col :span="8">
-          <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
-            v-model:value="searchText" />
+         <a-input-search
+            type="text"
+            placeholder="Rechercher"
+            enter-button
+            @change="onChange"
+            @keyup="onChange"
+            v-model:value="searchText"
+          />
           <br />
           <!-- Balise  pour lister l'ensemble des proprietaire -->
           <div v-for="(zone, index) in filters" :key="zone.libelle">
@@ -14,35 +19,7 @@
           </div>
           <!-- Balise  pour lister l'ensemble des proprietaire -->
         </a-col>
-        <!-- Fin  Champ de recherche proprietaire-->
-
-        <!-- Début  Modal Ajout proprietaire
-        <a-col :span="8" :offset="6">
-          <a-button type="primary" @click="showModal"> Ajouter </a-button>
-          <a-modal
-            v-model:visible="visible"
-            width="500px"
-            title="Ajouter un proprietaire"
-            @ok="onSubmit"
-          >
-            <a-form
-              :model="formState"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
-              <a-form-item label="Nom" :rules="[{ required: true }]">
-                <a-input v-model:value="formState.nom" />
-              </a-form-item>
-               <a-form-item label="Prenom" :rules="[{ required: true }]">
-                <a-input v-model:value="formState.prenom" />
-              </a-form-item>
-              <a-form-item label="Genre" :rules="[{ required: true }]">
-                <a-input v-model:value="formState.genre" />
-              </a-form-item>
-            </a-form>
-          </a-modal>
-        </a-col>-->
-        <!-- Fin Modal Ajout proprietaire-->
+       
       </a-row>
     </div>
   </a-card>
@@ -79,7 +56,7 @@ export default defineComponent({
           {
             nom: formState.nom.proprietaire,
             prenom: formState.prenom.proprietaire,
-            genre: formState.genre.proprietaire,
+            genre:formState.genre.proprietaire,
             statut: true,
           }
         )
@@ -96,7 +73,7 @@ export default defineComponent({
       libelle_type_transport: "",
       statut: "",
     });
-
+ 
     return {
       userName,
       visible,
@@ -106,7 +83,7 @@ export default defineComponent({
       filters: [],
       searchQuery: "",
     };
-
+     
   },
   mounted() {
     console.log("Component mounted");
@@ -117,7 +94,7 @@ export default defineComponent({
       this.$emit("search", this.searchText);
     },
   },
-  emits: ["newValue"]
+emits:["newValue"]
   // computed: {
   //   resultQuery() {
   //     if (this.searchQuery) {

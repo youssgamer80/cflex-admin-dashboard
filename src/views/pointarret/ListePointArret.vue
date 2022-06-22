@@ -27,7 +27,7 @@
             <a-divider type="vertical" />
             <pushpin-outlined @click="AffectMap(record.latitude, record.longitude, record.nom)" />
 
-           
+
 
 
 
@@ -47,38 +47,37 @@
         </template>
       </template>
     </a-table>
-     <!--Début Modale Modifier Point arrêt: DEBUT -->
+    <!--Début Modale Modifier Point arrêt: DEBUT -->
 
-            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
-
-
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+    <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
 
 
-                <a-form-item label="Nom" name="nom">
-                  <a-select v-model:value="formState.nom" show-search placeholder="Cherchez le lieu"
-                    style="width: 200px" :options="options" :filter-option="filterOption" @change="choice"
-                    @search="handleChange"></a-select>
-                </a-form-item>
+      <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+
+
+        <a-form-item label="Nom" name="nom">
+          <a-select v-model:value="formState.nom" show-search placeholder="Cherchez le lieu" style="width: 200px"
+            :options="options" :filter-option="filterOption" @change="choice" @search="handleChange"></a-select>
+        </a-form-item>
 
 
 
-                <a-form-item label="Zone ">
-                  <a-select v-model:value="formState.idZoneFk" placeholder="please select your zone">
+        <a-form-item label="Zone ">
+          <a-select v-model:value="formState.idZoneFk" placeholder="please select your zone">
 
-                    <a-select-option v-for="item in dataListZone" v-bind:key="item.id" :value="item.id">{{
-                        item.libelle
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
+            <a-select-option v-for="item in dataListZone" v-bind:key="item.id" :value="item.id">{{
+                item.libelle
+            }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
 
 
-              </a-form>
+      </a-form>
 
-            </a-modal>
+    </a-modal>
 
-            <!--Début Modale Modifier Point arrêt: FIN -->
+    <!--Début Modale Modifier Point arrêt: FIN -->
 
 
     <!--Début Modale Carte Point arrêt: DEBUT -->
@@ -137,7 +136,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/pointarrets", {
+  return axios.get("http://192.168.252.206:4000/api/pointarrets", {
     params,
   });
 };
@@ -193,7 +192,7 @@ export default defineComponent({
 
       leaflet.tileLayer(
         'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w0Zm51M2FxMDAzczNqbXM3c2VkMGZ1MCJ9.waYmvLmGKXV_oKqSOL7cLg', {
-         maxZoom: 19,
+        maxZoom: 19,
         tileSize: 512,
         zoomOffset: -1,
         // attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -215,7 +214,7 @@ export default defineComponent({
 
       const acard = document.getElementById('macarte');
 
-      console.log("HAUTEUR: ",acard.scrollHeight)
+      console.log("HAUTEUR: ", acard.scrollHeight)
       // acard.scrollTo({
       //   top: 1000000,
       //   left: 100,
@@ -226,7 +225,7 @@ export default defineComponent({
       // console.log("CARD ", acard);
 
       // console.log("WINDOWS :", window.innerHeight)
-      
+
       window.scrollTo({
         top: acard.scrollHeight,
         // left: 100,
@@ -279,7 +278,7 @@ export default defineComponent({
     const onSubmit = async () => {
 
       const resp = await axios
-        .put(`http://localhost:4001/api/pointarrets/updatePointArret/${formState.id}`, {
+        .put(`http://192.168.252.206:4000/api/pointarrets/updatePointArret/${formState.id}`, {
           nom: formState.nom,
           longitude: formState.lon,
           latitude: formState.lat,
@@ -336,7 +335,7 @@ export default defineComponent({
     const onDelete = async (id) => {
       const resp = await axios
         .delete(
-          `http://localhost:4001/api/pointarrets/deletePointArret/${id}`);
+          `http://192.168.252.206:4000/api/pointarrets/deletePointArret/${id}`);
       if (resp.status === 200) {
         // console.log(typeof dataSource)
         dataSource.value = dataSource.value.filter(
@@ -506,7 +505,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.206:4000/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataListZone = res.data
@@ -515,7 +514,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://localhost:4001/api/pointarrets")
+    fetch("http://192.168.252.206:4000/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataListPointArret = res.data

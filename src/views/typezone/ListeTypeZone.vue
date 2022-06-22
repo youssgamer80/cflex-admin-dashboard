@@ -19,31 +19,7 @@
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <!--Début Modale Modifier type Transport-->
-            <a-modal v-model:visible="visible" title="Modification">
 
-              <!-- <a-input v-model:value="formState.username" placeholder="Basic usage" />
-               <a-input v-model:value="formState.password" placeholder="Basic usage" />
-              -->
-              <a-form :model="formState" name="basic" autocomplete="off" :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }" @finish="onFinish">
-
-                <!-- <a-form-item label="Username" name="username"
-                  :rules="[{ required: true, message: 'Please input your username!' }]">
-                  <a-input v-model:value="formState.id" />
-                </a-form-item> -->
-
-                <a-form-item label="libelle" name="libelle"
-                  :rules="[{ required: true, message: 'Please input your libelle!' }]">
-                  <a-input v-model:value="formState.libelle" />
-                </a-form-item>
-
-                <!-- <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-                  <a-button type="primary" html-type="submit">Submit</a-button>
-                </a-form-item> -->
-              </a-form>
-
-            </a-modal>
             <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.libelle)" />
 
 
@@ -64,6 +40,33 @@
       </template>
     </a-table>
   </a-card>
+
+  <!--Début Modale Modifier type Transport-->
+
+  <!--Début Modale Modifier type Transport-->
+  <a-modal v-model:visible="visible" title="Modification">
+
+    <!-- <a-input v-model:value="formState.username" placeholder="Basic usage" />
+               <a-input v-model:value="formState.password" placeholder="Basic usage" />
+              -->
+    <a-form :model="formState" name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
+      @finish="onFinish">
+
+      <!-- <a-form-item label="Username" name="username"
+                  :rules="[{ required: true, message: 'Please input your username!' }]">
+                  <a-input v-model:value="formState.id" />
+                </a-form-item> -->
+
+      <a-form-item label="libelle" name="libelle" :rules="[{ required: true, message: 'Please input your libelle!' }]">
+        <a-input v-model:value="formState.libelle" />
+      </a-form-item>
+
+      <!-- <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+                  <a-button type="primary" html-type="submit">Submit</a-button>
+                </a-form-item> -->
+    </a-form>
+
+  </a-modal>
 </template>
 
 <script>
@@ -92,7 +95,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/typezone", {
+  return axios.get("http://192.168.252.206:4000/api/typezone", {
     params,
   });
 };
@@ -107,7 +110,7 @@ export default defineComponent({
 
     handleSearch(value) {
       let NewdataSource = []
-      
+
 
       // console.log("Old data")
       // console.log(this.oldData)
@@ -123,7 +126,7 @@ export default defineComponent({
           if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
-          
+
         })
         this.dataSource = NewdataSource
 
@@ -148,7 +151,7 @@ export default defineComponent({
       formatResult: (res) => {
         console.log(res.data.data)
         return res.data.data
-        
+
       },
       pagination: {
         currentKey: "page",
@@ -175,7 +178,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://localhost:4001/api/typezone/deleteTypeZone/${id}`
+          `http://192.168.252.206:4000/api/typezone/deleteTypeZone/${id}`
         )
         .then((resp) => {
           if (resp.status === 200) {
@@ -190,13 +193,13 @@ export default defineComponent({
     };
 
     const onFinish = values => {
-      
+
 
       console.log('Success:', values);
       return axios
-        .put(`http://localhost:4001/api/typezone/updateTypeZone/${formState.id}`, {
-          libelle:formState.libelle,
-          statut:true,
+        .put(`http://192.168.252.206:4000/api/typezone/updateTypeZone/${formState.id}`, {
+          libelle: formState.libelle,
+          statut: true,
         })
         .then((resp) => {
           if (resp.status === 200) {
@@ -250,13 +253,13 @@ export default defineComponent({
     };
   },
 
-  mounted(){
+  mounted() {
 
 
-     fetch("http://localhost:4001/api/typezone")
+    fetch("http://192.168.252.206:4000/api/typezone")
       .then(response => response.json())
       .then(res => {
-       this.dataListTypeZone= res.data
+        this.dataListTypeZone = res.data
         console.log(this.dataListTypeZone)
         // console.log(this.dataZoneParent[0].zoneparent)
       })

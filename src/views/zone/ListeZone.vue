@@ -18,43 +18,6 @@
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <!--Début Modale Modifier type Transport-->
-            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
-
-
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
-                @finish="onFinish">
-
-
-
-                <a-form-item label="libelle" name="libelle"
-                  :rules="[{ required: true, message: 'Please input your libelle!' }]">
-                  <a-input v-model:value="formState.libelle" />
-                </a-form-item>
-
-                <a-form-item label="Type de zone">
-                  <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
-
-                    <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-
-                <a-form-item label="Zone parent">
-                  <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
-
-                    <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
-                        item.zoneparent
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-
-
-              </a-form>
-
-            </a-modal>
 
             <edit-outlined :style="{ color: '#08f26e' }"
               @click="showModal(record.id, record.libelle, record.idTypeZoneFk.id, record.idZoneparentFk.id)" />
@@ -79,6 +42,44 @@
       </template>
     </a-table>
   </a-card>
+
+  <!--Début Modale Modifier type Transport-->
+  <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
+
+
+    <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" @finish="onFinish">
+
+
+
+      <a-form-item label="libelle" name="libelle" :rules="[{ required: true, message: 'Please input your libelle!' }]">
+        <a-input v-model:value="formState.libelle" />
+      </a-form-item>
+
+      <a-form-item label="Type de zone">
+        <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
+
+          <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+          }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Zone parent">
+        <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
+
+          <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
+              item.zoneparent
+          }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+
+
+    </a-form>
+
+  </a-modal>
+
+
 </template>
 
 <script>
@@ -106,7 +107,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/zones", {
+  return axios.get("http://192.168.252.206:4000/api/zones", {
     params,
   });
 };
@@ -118,12 +119,12 @@ export default defineComponent({
     DeleteOutlined,
   },
 
-  
+
   methods: {
 
     handleSearch(value) {
       let NewdataSource = []
-      
+
 
       // console.log("Old data")
       // console.log(this.oldData)
@@ -139,7 +140,7 @@ export default defineComponent({
           if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
-          
+
         })
         this.dataSource = NewdataSource
 
@@ -156,7 +157,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://localhost:4001/api/zones/updateZone/${formState.id}`, {
+        .put(`http://192.168.252.206:4000/api/zones/updateZone/${formState.id}`, {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -190,7 +191,7 @@ export default defineComponent({
       pageSize,
     } = usePagination(queryData, {
       formatResult: (res) => {
-        
+
         return res.data.data
       },
       pagination: {
@@ -217,7 +218,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://localhost:4001/api/zones/deleteZone/${id}`,
+          `http://192.168.252.206:4000/api/zones/deleteZone/${id}`,
           {
             data: {
               statut: false,
@@ -290,7 +291,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/zoneparents")
+    fetch("http://192.168.252.206:4000/api/zoneparents")
       .then(response => response.json())
       .then(res => {
         this.dataZoneParent = res.data
@@ -298,7 +299,7 @@ export default defineComponent({
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
-    fetch("http://localhost:4001/list")
+    fetch("http://192.168.252.206:4000/list")
       .then(response => response.json())
       .then(res => {
         this.dataTypeZone = res
@@ -307,10 +308,10 @@ export default defineComponent({
       })
 
 
-      fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.206:4000/api/zones")
       .then(response => response.json())
       .then(res => {
-       this.dataListZone= res.data
+        this.dataListZone = res.data
 
         console.log(this.dataListZone)
       })
