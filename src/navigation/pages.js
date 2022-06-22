@@ -188,7 +188,7 @@ export default [
       {
         title: "Liste des utilisateurs",
         icon: 'FileTextIcon',
-        route: '/tableau-de-bord/liste-utilisateur'
+        route: '/tableau-de-bord/liste-utilisateur',
       },
       {
         title: "Role",

@@ -1,5 +1,5 @@
 <template>
-    <a-typography-title :level="4">utilisateurs </a-typography-title>
+    <a-typography-title :level="4">Utilisateur</a-typography-title>
 
     <!-- <SearchHeaderBorne @search="handleSearch" /> -->
     <a-card :style="{
@@ -10,13 +10,13 @@
     }" :bordered="false" id="macarte">
         <a-table :columns="columns" :row-key="keyBornes" :data-source="dataSource" :pagination="pagination"
             :loading="loading" @change="handleTableChange">
-            <template #bodyCell="{ column, text, record }">
-                <template v-if="column.dataIndex === 'id'">{{ text }}
+            <template #bodyCell="{ column, record }">
+                <template v-if="column.dataIndex === 'id'">{{ record.id }}
                 </template>
-                <template v-if="column.dataIndex === 'libelle'">{{ text }}
+                <template v-if="column.dataIndex === 'libelle'">{{ record.nomUtilisateur }}
                 </template>
 
-                <template v-if="column.dataIndex === 'idPointArretFk'">{{ text.nom }}
+                <template v-if="column.dataIndex === 'idPointArretFk'">{{ record.role.role }}
                 </template>
                 <!-- <template v-if="column.dataIndex === 'statut'">
                     <h1 v-if="text">en fonction</h1>
@@ -28,13 +28,12 @@
 
                         <!-- modification borne ( config sur icon widget ) -->
                         <edit-outlined :style="{ color: '#08f26e' }"
-                            @click="showModal(record.id, record.libelle, record.idPointArretFk.nom)" />
+                            @click="showModal(record.id, record.nomUtilisateur, record.role.role, record.motDePasse)" />
 
 
                         <a-divider type="vertical" />
                         <!-- popup modification  -->
-                        <a-popconfirm v-if="dataSource.length"
-                            title="Voulez vous supprimez les information de cette borne?"
+                        <a-popconfirm v-if="dataSource.length" title="Voulez vous bloquer l acces de cet utilisateur ?"
                             @confirm="onDelete(record.id)">
                             <a>
 
@@ -49,24 +48,28 @@
                 </template>
             </template>
         </a-table>
-        <a-modal v-model:visible="visible" title="Modification iinfo utilisateur" @ok="modifborne">
+        <a-modal v-model:visible="visible" title="Modification information utilisateur" @ok="modifRole">
 
 
             <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
 
 
 
-                <a-form-item label="libelle" name="libelle" :rules="[{ required: true }]">
+                <a-form-item label="nom et prenom" name="nom" :rules="[{ required: true }]">
 
-                    <a-input v-model:value="formState.libelle" />
-
+                    <a-input v-model:value="formState.nom" />
+                    <!-- affectation de mot de passe -->
                 </a-form-item>
-                <a-form-item label="point d arret"
-                    :rules="[{ required: true, message: 'entrez le nom de l utilisateur SVP !!' }]">
-                    <a-select v-model:value="formState.idPointArretFk">
+                <a-form-item label="mot de passe" name="pass" :rules="[{ required: true }]">
+                    <a-input v-model:value="formState.pass" />
+                </a-form-item>
 
-                        <a-select-option v-for="point in pointarret" v-bind:key="point.id" :value="point.id">{{
-                                point.nom
+                <!-- attribution des roles -->
+                <a-form-item label="role" :rules="[{ required: true }]">
+                    <a-select v-model:value="formState.idRole" @change="ChangeRole">
+
+                        <a-select-option v-for="p in roles" v-bind:key="p.id" :value="p.id">{{
+                                p.role
                         }}
                         </a-select-option>
                     </a-select>
@@ -87,28 +90,24 @@ import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
-
+// import SearchHeaderBorne from "../../components/SearchHeader_borne.vue";
 import axios from "axios";
 
 const columns = [
 
     {
-        title: "id ",
+        title: "reference",
         dataIndex: "id",
         sorter: true,
     },
     {
-        title: "nom",
+        title: "nom et prenom",
         dataIndex: "libelle",
         sorter: true,
     },
     {
-        title: "prenom",
-        dataIndex: "idPointArretFk",
-    },
-    {
         title: "role",
-        dataIndex: "role",
+        dataIndex: "idPointArretFk",
     },
 
     {
@@ -120,7 +119,7 @@ const columns = [
 
 
 const queryData = (params) => {
-    return axios.get("http://192.168.252.206:4000/api/::::", {
+    return axios.get("http://192.168.252.132:4000/utilisateur/list", {
         params,
     });
 };
@@ -129,7 +128,7 @@ const queryData = (params) => {
 
 export default defineComponent({
     components: {
-
+        // SearchHeaderBorne,
         EditOutlined,
         DeleteOutlined,
     },
@@ -141,8 +140,8 @@ export default defineComponent({
 
             if (value.length > 0) {
 
-                this.dataListBorne.filter((item) => {
-                    if (item.idPointArretFk.nom.toLowerCase().includes(value.toLowerCase()) || item.libelle.toLowerCase().includes(value.toLowerCase())) {
+                this.ListeUtilisateur.filter((item) => {
+                    if (item.idRole.nom.toLowerCase().includes(value.toLowerCase()) || item.libelle.toLowerCase().includes(value.toLowerCase())) {
                         console.log(item)
                         NewdataSource.push(item);
                     }
@@ -153,38 +152,36 @@ export default defineComponent({
 
             }
             else {
-                this.dataSource = this.dataListBorne
+                this.dataSource = this.ListeUtilisateur
             }
         },
     },
     setup() {
 
-        const modifborne = async () => {
+
+        const ChangeRole = value => {
+            formState.idRole = value;
+            console.log(`selected depart : ${this.formState.idRole}`);
+        };
+
+        const modifRole = async () => {
+
+            console.log("test", formState.idRole)
 
 
 
             const resp = await axios
-                .put(`http://192.168.252.206:4000/api/:::::/${formState.id}`, {
-                    libelle: formState.libelle,
-                    idPointArretFk: formState.idPointArretFk
-
-                    // libele: {
-
-                    //     id: formState.libelle
-                    // },
-                    // idZoneparentFk: {
-
-                    //     id: formState.libel
-                    // },
-
+                .put(`http://192.168.252.132:4000/utilisateur/updateutilisateur/${formState.id}`, {
+                    "nomUtilisateur": formState.nom,
+                    "motDePasse": formState.pass,
+                    "statut": true,
+                    "role": {
+                        "id": formState.idRole
+                    }
                 });
             if (resp.status === 200) {
                 visible.value = false;
                 message.success("Modification reussi");
-
-
-                // this.queryData();
-
 
 
             } else {
@@ -204,7 +201,7 @@ export default defineComponent({
         } = usePagination(queryData, {
             formatResult: (res) => {
 
-                return res.data.data
+                return res.data.data.utilisateur
             },
             pagination: {
                 currentKey: "page",
@@ -216,9 +213,9 @@ export default defineComponent({
             current: current.value,
             pageSize: pageSize.value,
 
-            // reglage du changemenet d etat de la table apres recherche  d une borne
+
             filteredList() {
-                return this.dataListBorne.filter((post) => {
+                return this.ListeUtilisateur.filter((post) => {
                     return post.libelle
                         .toLowerCase()
                         .includes(this.rechercheBorne.toLowerCase());
@@ -239,20 +236,17 @@ export default defineComponent({
 
         const onDelete = (id) => {
             return axios
-                .delete(`http://192.168.252.206:4000/:::::/${id}`,
-                    {
-                        data: {
-                            statut: false,
-                        },
-                    }
+                .delete(`http://192.168.252.132:4000/utilisateur/delete/${id}`
                 )
                 .then((resp) => {
                     if (resp.status === 200) {
+
+
                         console.log(typeof dataSource)
                         dataSource.value = dataSource.value.filter(
                             (item) => item.id !== id
                         );
-                        message.success("Supprimé avec succès!!");
+                        message.success("utilisateur bloqué !!");
                     } else {
                         message.error("impossible!!");
                     }
@@ -262,43 +256,48 @@ export default defineComponent({
         const visible = ref(false);
         let notEgal
 
-        const showModal = (id, libelle, idPointArretFk) => {
+        const showModal = (id, nom, idRole, pass) => {
             formState.id = id;
-            formState.libelle = libelle;
-            formState.idPointArretFk = idPointArretFk;
+            formState.nom = nom;
+            formState.idRole = idRole;
+            formState.pass = pass;
+
             visible.value = true;
         };
 
 
         const formState = reactive({
             id: '',
-            libelle: '',
-            idPointArretFk: '',
+            nom: '',
+            idRole: '',
+            pass: '',
 
         });
 
 
 
-        const searchQuery = ref('');
+
 
         return {
-            searchQuery,
+
             dataSource,
+            ChangeRole,
             pagination,
             loading,
             columns,
             handleTableChange,
             onDelete,
             showModal,
-
             visible,
             formState,
-            pointarret: [],
-            modifborne,
+            roles: [],
+            modifRole,
             notEgal
 
         };
     },
+
+
 
 
     mounted() {
@@ -306,19 +305,20 @@ export default defineComponent({
 
 
 
-        fetch("http://192.168.252.206:4000/api/::::")
+        fetch("http://192.168.252.132:4000/api/roles")
             .then(response => response.json())
             .then(res => {
-                this.pointarret = res.data
+                this.roles = res.data
 
             })
 
-        fetch("http://192.168.252.206:4000/api/::::")
+        fetch("http://192.168.252.132:4000/utilisateur/list")
             .then((response) => response.json())
             .then((res) => {
-                this.dataListBorne = res.data;
 
-                console.log(this.dataListBorne);
+                this.ListeUtilisateur = res.data;
+
+                console.log(this.ListeUtilisateur);
             });
 
 
@@ -332,5 +332,3 @@ export default defineComponent({
      box-shadow: 5px 8px 24px 5px rgba(208, 216, 243, 0.6);
  }
  </style>
-
-

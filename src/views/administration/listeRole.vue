@@ -85,26 +85,6 @@
         </a-modal>
         <!-- modal ajout de role -->
 
-        <!-- <a-modal v-model:visibles="visibles" title="Ajout de role" @ok="onSubmit">
-
-
-            <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
-
-
-
-                <a-form-item label="role" name="role" :rules="[{ required: true }]">
-
-                    <a-input v-model:value="formState.role" />
-
-                </a-form-item>
-
-
-
-            </a-form>
-
-        </a-modal> -->
-
-        <!-- test -->
 
         <a-modal v-model:visible="visibles" title="ajout de role" @ok="onSubmit">
 
@@ -239,7 +219,8 @@ export default defineComponent({
             const resp = await axios
                 .put(`http://192.168.252.132:4000/api/roles/updateRole/${formState.id}`, {
 
-                    role: formState.role
+                    role: formState.role,
+                    statut: true
 
                 });
             if (resp.status === 200) {
