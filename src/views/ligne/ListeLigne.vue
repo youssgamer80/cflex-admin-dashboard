@@ -20,7 +20,7 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale de modification d'une la ligne-->
-            
+
 
             <edit-outlined :style="{ color: '#08f26e' }"
               @click="showModal(record.id, record.nom, record.depart, record.depart_longitude, record.depart_latitude, record.arrivee, record.arrivee_longitude, record.arrivee_latitude, record.tarif, record.idZoneFk.id)" />
@@ -44,77 +44,74 @@
     </a-table>
     <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Ajouter Ligne" @ok="onUpdateLigne">
 
-              <a-button :style="{
-                marginBottom: '24px'
-              }" type="primary" @click="ListPointArret">
-                <template #icon>
-                  <SearchOutlined />
-                </template>
-                Liste des Points d'arrêt
-              </a-button>
-              <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
+      <a-button :style="{
+        marginBottom: '24px'
+      }" type="primary" @click="ListPointArret">
+        <template #icon>
+          <SearchOutlined />
+        </template>
+        Liste des Points d'arrêt
+      </a-button>
+      <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
 
-                <a-form-item label="Nom" :rules="[{ required: true }]">
-                  <a-input v-model:value="formState.nom" />
-                </a-form-item>
-
-
-                <a-form-item label="Depart" :rules="[{ required: true }]">
-
-                  <a-space>
-                    <a-select ref="select" v-model:value="formState.depart" style="width: 120px"
-                      @change="handleChangeDepart">
-                      <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
-                          item.nom
-                      }}
-                      </a-select-option>
-
-                    </a-select>
-
-                  </a-space>
-
-                </a-form-item>
+        <a-form-item label="Nom" :rules="[{ required: true }]">
+          <a-input v-model:value="formState.nom" />
+        </a-form-item>
 
 
-                <a-form-item label="Arrivee" :rules="[{ required: true }]">
+        <a-form-item label="Depart" :rules="[{ required: true }]">
 
-                  <a-space>
-                    <a-select ref="select" v-model:value="formState.arrivee" style="width: 120px"
-                      @change="handleChangeArrivee">
-                      <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
-                          item.nom
-                      }}
-                      </a-select-option>
+          <a-space>
+            <a-select ref="select" v-model:value="formState.depart" style="width: 120px" @change="handleChangeDepart">
+              <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
+                  item.nom
+              }}
+              </a-select-option>
 
-                    </a-select>
+            </a-select>
 
-                  </a-space>
+          </a-space>
 
-                </a-form-item>
+        </a-form-item>
 
-                <a-form-item label="Tarif" :rules="[{ required: true }]">
-                  <a-input v-model:value="formState.tarif" />
-                </a-form-item>
+
+        <a-form-item label="Arrivee" :rules="[{ required: true }]">
+
+          <a-space>
+            <a-select ref="select" v-model:value="formState.arrivee" style="width: 120px" @change="handleChangeArrivee">
+              <a-select-option v-for="item in dataPointArret" v-bind:key="item.id" :value="item.nom">{{
+                  item.nom
+              }}
+              </a-select-option>
+
+            </a-select>
+
+          </a-space>
+
+        </a-form-item>
+
+        <a-form-item label="Tarif" :rules="[{ required: true }]">
+          <a-input v-model:value="formState.tarif" />
+        </a-form-item>
 
 
 
-                <a-form-item label="Zone" :rules="[{ required: true }]">
+        <a-form-item label="Zone" :rules="[{ required: true }]">
 
-                  <a-space>
-                    <a-select ref="select" v-model:value="formState.idZoneFk" style="width: 120px"
-                      @change="handleChangeZone">
-                      <a-select-option v-for="item in dataZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
-                      }}
-                      </a-select-option>
+          <a-space>
+            <a-select ref="select" v-model:value="formState.idZoneFk" style="width: 120px" @change="handleChangeZone">
+              <a-select-option v-for="item in dataZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+              }}
+              </a-select-option>
 
-                    </a-select>
+            </a-select>
 
-                  </a-space>
+          </a-space>
 
-                </a-form-item>
+        </a-form-item>
 
-              </a-form>
-            </a-modal>
+      </a-form>
+    </a-modal>
   </a-card>
 </template>
 
@@ -160,7 +157,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4001/api/lignes", {
+  return axios.get("http://localhost:4001/api/lignes", {
     params,
   });
 };
@@ -208,7 +205,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://192.168.252.223:4001/api/lignes/updateligne/${formState.id}`, {
+        .put(`http://localhost:4001/api/lignes/updateligne/${formState.id}`, {
           nom: formState.nom,
           depart: formState.depart,
           tarif: formState.tarif,
@@ -267,7 +264,7 @@ export default defineComponent({
 
     const onDelete = (id) => {
       return axios
-        .delete(`http://192.168.252.223:4001/api/lignes/deleteligne/${id}`)
+        .delete(`http://localhost:4001/api/lignes/deleteligne/${id}`)
         .then((resp) => {
           if (resp.status === 200) {
             // console.log(typeof dataSource)
@@ -376,7 +373,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://192.168.252.223:4001/api/pointarrets")
+    fetch("http://localhost:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataPointArret = res.data
@@ -392,7 +389,7 @@ export default defineComponent({
 
     // Pour la liste des zones
 
-    fetch("http://192.168.252.223:4001/api/zones")
+    fetch("http://localhost:4001/api/zones")
       .then(response => response.json())
       .then(res => {
 
@@ -401,7 +398,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://192.168.252.223:4001/api/lignes")
+    fetch("http://localhost:4001/api/lignes")
       .then(response => response.json())
       .then(res => {
         this.dataListLigne = res.data

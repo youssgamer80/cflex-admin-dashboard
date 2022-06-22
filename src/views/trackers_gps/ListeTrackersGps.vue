@@ -2,27 +2,16 @@
   <a-typography-title :level="4">Liste des trackers</a-typography-title>
 
   <SearchHeader @search="handleSearch" />
-  <a-card
-    :style="{
-      padding: '24px',
-      background: '#fff',
-      textAlign: 'center',
-      minHeight: '360px',
-    }"
-    :bordered="false"
-    id="macarte"
-  >
-    <a-table
-      :columns="columns"
-      :row-key="keyTypeTransport"
-      :data-source="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-    >
+  <a-card :style="{
+    padding: '24px',
+    background: '#fff',
+    textAlign: 'center',
+    minHeight: '360px',
+  }" :bordered="false" id="macarte">
+    <a-table :columns="columns" :row-key="keyTypeTransport" :data-source="dataSource" :pagination="pagination"
+      :loading="loading" @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'idVehiculeFk'"
-          >{{ text.marque  }}    {{ text.immatriculation }} 
+        <template v-if="column.dataIndex === 'idVehiculeFk'">{{ text.marque }} {{ text.immatriculation }}
         </template>
         <template v-if="column.dataIndex === 'statut'">
           <p v-if="text">Disponible</p>
@@ -30,50 +19,42 @@
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <!--Début Modale Modifier type Transport-->
-            <a-modal
-              v-model:visible="visible"
-              title="Modification"
-              @ok="onSubmit"
-            >
-              <!--Formulaire modification type transport-->
-              <a-form
-                name="basic"
-                autocomplete="off"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
-                @finish="onFinish"
-              >
-                <a-form-item label="libelle" name="libelle">
-                  <a-input v-model:value="formState.libelle" />
-                </a-form-item>
-              </a-form>
-              <!--Formulaire modification type transport-->
-            </a-modal>
 
-            <edit-outlined
-              :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.libelle)"
-            />
+
+            <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.libelle)" />
 
             <!--Fin Modale Modifier type Transport-->
 
             <a-divider type="vertical" />
             <!--Début popup Supprimer type Transport-->
-            <a-popconfirm
-              v-if="dataSource.length"
-              title="Voulez vous supprimez?"
-              @confirm="onDelete(record.id)"
-            >
-              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
-              <template> <p>test</p></template>
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
+              <template>
+                <p>test</p>
+              </template>
             </a-popconfirm>
             <!--Fin popup Supprimer type Transport-->
           </div>
         </template>
       </template>
     </a-table>
+
   </a-card>
+
+  <!--Début Modale Modifier type Transport-->
+  <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
+    <!--Formulaire modification type transport-->
+    <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" @finish="onFinish">
+      <a-form-item label="libelle" name="libelle">
+        <a-input v-model:value="formState.libelle" />
+      </a-form-item>
+    </a-form>
+    <!--Formulaire modification type transport-->
+  </a-modal>
+
+
 </template>
 
 <script>
@@ -94,7 +75,7 @@ const columns = [
     title: "Maque et Immatriculation du véhicule",
     dataIndex: "idVehiculeFk",
   },
-  
+
 
   {
     title: "Statut",
@@ -143,7 +124,7 @@ export default defineComponent({
         `http://192.168.252.206:4000/api/Trackergpss/updateTrackergps/${formState.id}`,
         {
           libelle: formState.libelle,
-          
+
           statut: true,
         }
       );

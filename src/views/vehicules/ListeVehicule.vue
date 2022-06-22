@@ -2,136 +2,109 @@
   <a-typography-title :level="4">Liste des véhicules</a-typography-title>
 
   <SearchHeader @search="handleSearch" />
-  <a-card
-    :style="{
-      padding: '24px',
-      background: '#fff',
-      textAlign: 'center',
-      minHeight: '360px',
-    }"
-    :bordered="false"
-    id="macarte"
-  >
-    >
-    <a-table
-      :columns="columns"
-      :row-key="keyTypeTransport"
-      :data-source="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-    >
+  <a-card :style="{
+    padding: '24px',
+    background: '#fff',
+    textAlign: 'center',
+    minHeight: '360px',
+  }" :bordered="false" id="macarte">
+
+    <a-table :columns="columns" :row-key="keyTypeTransport" :data-source="dataSource" :pagination="pagination"
+      :loading="loading" @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'proprietaire'"
-          >{{ text.nom }} {{ text.prenom }}
+        <template v-if="column.dataIndex === 'proprietaire'">{{ text.nom }} {{ text.prenom }}
         </template>
         <!-- <template v-if="column.dataIndex === 'idZoneFk'"
           >{{ text.libelle }}
         </template> -->
-        <template v-if="column.dataIndex === 'idTypeTransportFk'"
-          >{{ record.idTypeTransportFk.libelleTypeTransport }}
+        <template v-if="column.dataIndex === 'idTypeTransportFk'">{{ record.idTypeTransportFk.libelleTypeTransport }}
         </template>
 
         <template v-if="column.dataIndex === 'statut'">
-          <h1 v-if="text">Disponible</h1>
-          <h1 v-else>Indisponible</h1>
+          <p v-if="text">Disponible</p>
+          <p v-else>Indisponible</p>
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale Modifier type Transport-->
-            <a-modal
-              v-model:visible="visible"
-              title="Modification"
-              @ok="onSubmit"
-            >
-              <!--Formulaire modification type transport-->
-              <a-form
-                name="basic"
-                autocomplete="off"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
-              >
-                <a-form-item label="Marque" name="marque">
-                  <a-input v-model:value="formState.marque" />
-                </a-form-item>
-                <a-form-item label="Modele" name="modele">
-                  <a-input v-model:value="formState.modele" />
-                </a-form-item>
-                <a-form-item label="Immatriculation" name="immatriculation">
-                  <a-input v-model:value="formState.immatriculation" />
-                </a-form-item>
-                <a-form-item label="Nombre de place" name="nbPlace">
-                  <a-input v-model:value="formState.nbPlace" />
-                </a-form-item>
-               
-                <a-form-item label="Carte Grise" name="carteGrise">
-                  <a-input v-model:value="formState.carteGrise" />
-                </a-form-item>
-                 <a-form-item label="Zone">
-                  <a-select
-                    v-model:value="formState.idZoneFk"
-                    placeholder="please select your zone"
-                  >
-                    <a-select-option
-                      v-for="item in dataListZone"
-                      v-bind:key="item.id"
-                      :value="item.id"
-                      >{{ item.libelle }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-                 <a-form-item label="Type transport">
-                  <a-select
-                    v-model:value="formState.idTypeTransportFk"
-                    placeholder="please select your zone"
-                  >
-                    <a-select-option
-                      v-for="item in dataListTypeTransport"
-                      v-bind:key="item.id"
-                      :value="item.id"
-                      >{{ item.libelleTypeTransport }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-form>
-              <!--Formulaire modification type transport-->
-            </a-modal>
 
-            <edit-outlined
-              :style="{ color: '#08f26e' }"
-              @click="
-                showModal(
-                  record.id,
-                  record.immatriculation,
-                  record.modele,
-                  record.marque,
-                  record.idZoneFk.id,
-                  record.carteGrise,
-                  record.nbPlace
-                  // record.proprietaire,
-                  //record.idTypeTransportFk.libelleTypeTransport
-                )
-              "
-            />
+            <edit-outlined :style="{ color: '#08f26e' }" @click="
+              showModal(
+                record.id,
+                record.immatriculation,
+                record.modele,
+                record.marque,
+                record.idZoneFk.id,
+                record.carteGrise,
+                record.nbPlace
+                // record.proprietaire,
+                //record.idTypeTransportFk.libelleTypeTransport
+              )
+            " />
 
             <!--Fin Modale Modifier type Transport-->
 
             <a-divider type="vertical" />
             <!--Début popup Supprimer type Transport-->
-            <a-popconfirm
-              v-if="dataSource.length"
-              title="Voulez vous supprimez?"
-              @confirm="onDelete(record.id)"
-            >
-              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
-              <template> <p>test</p></template>
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
+              <template>
+                <p>test</p>
+              </template>
             </a-popconfirm>
             <!--Fin popup Supprimer type Transport-->
           </div>
         </template>
       </template>
     </a-table>
+
+
+    <!-- teste vehicule -->
+
+
+
   </a-card>
+
+  <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
+    <!--Formulaire modification type transport-->
+    <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+      <a-form-item label="Marque" name="marque">
+        <a-input v-model:value="formState.marque" />
+      </a-form-item>
+      <a-form-item label="Modele" name="modele">
+        <a-input v-model:value="formState.modele" />
+      </a-form-item>
+      <a-form-item label="Immatriculation" name="immatriculation">
+        <a-input v-model:value="formState.immatriculation" />
+      </a-form-item>
+      <a-form-item label="Nombre de place" name="nbPlace">
+        <a-input v-model:value="formState.nbPlace" />
+      </a-form-item>
+
+      <a-form-item label="Carte Grise" name="carteGrise">
+        <a-input v-model:value="formState.carteGrise" />
+      </a-form-item>
+      <a-form-item label="Zone">
+        <a-select v-model:value="formState.idZoneFk" placeholder="please select your zone">
+          <a-select-option v-for="item in dataListZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+          }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item label="Type transport">
+        <a-select v-model:value="formState.idTypeTransportFk" placeholder="please select your zone">
+          <a-select-option v-for="item in dataListTypeTransport" v-bind:key="item.id" :value="item.id">{{
+              item.libelleTypeTransport
+          }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+    </a-form>
+    <!--Formulaire modification type transport-->
+  </a-modal>
+
 </template>
 
 <script>
@@ -191,7 +164,7 @@ const columns = [
 ];
 // Consomation api d'affichage
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4001/vehicule/list", {
+  return axios.get("http://192.168.252.206:4000/vehicule/list", {
     params,
   });
 };
@@ -233,16 +206,16 @@ export default defineComponent({
         immatriculation: formState.immatriculation,
         marque: formState.marque,
         modele: formState.modele,
-         nbPlace: formState.nbPlace,
+        nbPlace: formState.nbPlace,
         carteGrise: formState.carteGrise,
-        
+
         // idTypeTransportFk: formState.idTypeTransportFk,
 
         idZoneFk: {
           // "id": 2
           id: formState.idZoneFk,
         },
-        
+
         // proprietaire: {
         //   // "id": 2
         //   nom: formState.proprietaire,
@@ -262,7 +235,7 @@ export default defineComponent({
             // "id": 2
             id: formState.idZoneFk,
           },
-          idTypeTransportFk:{
+          idTypeTransportFk: {
             id: formState.idTypeTransportFk,
           },
           // proprietaire: {
@@ -399,7 +372,7 @@ export default defineComponent({
 
   mounted() {
     console.log("Component mounted");
-// liste des zones dans une liste deroulante
+    // liste des zones dans une liste deroulante
     fetch("http://192.168.252.206:4000/api/zones")
       .then((response) => response.json())
       .then((res) => {
@@ -408,21 +381,21 @@ export default defineComponent({
         console.log(this.dataListZone);
       });
 
-      //liste des types de transport dans une liste deroulante
-       fetch("http://192.168.252.206:4000/api/typetransport")
+    //liste des types de transport dans une liste deroulante
+    fetch("http://192.168.252.206:4000/api/typetransport")
       .then((response) => response.json())
       .then((res) => {
         this.dataListTypeTransport = res.data;
 
         console.log(this.dataListTypeTransport);
       });
-//liste des véhicule pour la recherche 
-      fetch("http://192.168.252.206:4000/vehicule/list")
+    //liste des véhicule pour la recherche 
+    fetch("http://192.168.252.206:4000/vehicule/list")
       .then((response) => response.json())
       .then((res) => {
         this.datalistVehicule = res.data.vehicule;
 
-        console.log("Liste des vehicule",this.datalistVehicule);
+        console.log("Liste des vehicule", this.datalistVehicule);
       });
   },
 });

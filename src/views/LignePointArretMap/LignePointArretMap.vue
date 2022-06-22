@@ -36,12 +36,14 @@
 
 
 
-    <button @click="onSubmitAddingCheckbox">
-      Ajouter
-    </button>
-    <button @click="onSubmitTroncon(true)">
+
+    <a-button type="primary" @click="onSubmitAddingCheckbox">Ajouter</a-button>
+
+    <button type="primary" @click="onSubmitTroncon(true)">
       Generer tronçon dans les deux sens
-    </button><button @click="onSubmitTroncon(false)">
+    </button>
+
+    <button type="primary" @click="onSubmitTroncon(false)">
       Generer tronçon dans un seul
     </button>
 
@@ -49,34 +51,43 @@
 
     <div id="map"></div>
 
-    <a-modal v-model:visible="visibleTroncon" title="Modification" @ok="onSubmitMap">
+    <!-- MODAL POUR CHOISIR LES TRONCONS VALIDE : DEBUT -->
+    <a-modal v-model:visible="visibleTroncon" title="Modification">
+      {{ formState.tronconActive }}
+      {{ formState.tronconActive.length }}
+      <a-row>
+        <div v-for="item in formState.troncon" v-bind:key="item.id" :style="{
+          marginLeft: '24px'
+        }">
+          <input type="checkbox" :id="item.id" :value="item.id" v-model="formState.tronconActive">
+          <label :for="item.id">{{ item.nom }}</label>
+        </div>
+      </a-row>
 
 
-
-    <div v-for="item in formState.troncon " v-bind:key="item.id">
-        <p > {{ item.nom }}</p>
-    </div>
-
-
-
-
+      <template #footer>
+        <!-- <a-button key="back" @click="handleCancel">Return</a-button> -->
+        <a-button key="submit" type="primary" :loading="loading" @click="onValidateTroncon">Valider</a-button>
+      </template>
 
     </a-modal>
+
+    <!-- MODAL POUR CHOISIR LES TRONCONS VALIDE : FIN -->
+
 
   </a-card>
 </template>
 
 <script>
 
-import { defineComponent, onMounted, reactive , ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import { useRoute } from 'vue-router'
 import leaflet from "leaflet"
-// import * from "leaflet-routing-machine"
+
 import { message } from "ant-design-vue";
 import axios from "axios";
 
 
-// import mapboxgl from 'mapbox-gl';
 
 
 
@@ -86,9 +97,7 @@ export default defineComponent({
 
 
   components: {
-    // SearchHeader_Carte,
-    // EditOutlined,
-    // DeleteOutlined,
+
   },
 
 
@@ -100,6 +109,8 @@ export default defineComponent({
     let dataMap
 
     const visibleTroncon = ref(false);
+    const loading = ref(false);
+
 
     const onSubmitTroncon = async (value) => {
 
@@ -108,53 +119,64 @@ export default defineComponent({
       console.log("VALUE", value)
       // console.log(formState.PointArretName)
 
-      console.log("DONNEES ENVOYEE",{
-            id_ligne: formState.idligne,
-            points: formState.PointArretName,
-            sens: value
-          })
-
-      // if (formState.PointArretName > 0) {
-
-          
-      //   // console.log(resp)
-        
-
-      // }
-      // else {
-
-      //   message.info("Veuillez Ajouter des points d'arrêt à cette ligne !")
-
-      // }
-
+      console.log("DONNEES ENVOYEE", {
+        id_ligne: formState.idligne,
+        points: formState.PointArretName,
+        sens: value
+      })
 
       const resp = await axios
-          .post("http://192.168.252.223:4001/api/v1/Troncon/addTronconGenere", {
-            id_ligne: formState.idligne,
-            points: formState.PointArretName,
-            sens: value
-          });
+        .post("http://localhost:4001/api/v1/Troncon/addTronconGenere", {
+          id_ligne: formState.idligne,
+          points: formState.PointArretName,
+          sens: value
+        });
 
-          if (resp.status === 200) {
+      if (resp.status === 200) {
 
-          console.log("RESULT DE L'API", resp.data.data)
-          formState.troncon = resp.data.data
-          message.success("Point arrêt ajouté à la ligne");
-          visibleTroncon.value= true
-
-
-          // router.push("/tableau-de-bord/liste-ligne")
+        console.log("RESULT DE L'API", resp.data.data)
+        formState.troncon = resp.data.data
+        message.success("Point arrêt ajouté à la ligne");
+        visibleTroncon.value = true
 
 
-        } else {
-          console.log(resp);
-          message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
+        // router.push("/tableau-de-bord/liste-ligne")
 
-        }
+
+      } else {
+        console.log(resp);
+        message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
+
+      }
 
 
     };
 
+
+    const onValidateTroncon = () => {
+
+      if (formState.tronconActive.length > 0) {
+        console.log("LISTE DES TRONCON ACTIVE :", formState.tronconActive)
+
+
+        formState.tronconActive.forEach(element => {
+
+          const resp = axios
+            .put(`http://localhost:4001/api/v1/Troncon/updateTroncon/${element}`, {
+              "statut": true
+            });
+
+          console.log(resp)
+        })
+        // visibleTroncon.value = false
+      }
+      else {
+
+        message.info("Veuillez choisir les tronçon valide")
+      }
+
+
+    }
     const onSubmitAddingCheckbox = async () => {
 
 
@@ -163,23 +185,23 @@ export default defineComponent({
 
 
       const resp = await axios
-        .post("http://192.168.252.223:4001/api/lignespointarret/addLignePointArret", {
+        .post("http://localhost:4001/api/lignespointarret/addLignePointArret", {
           idLigneFk: formState.idligne,
           idPointArretFk: formState.PointArretName
         });
 
 
-      console.log(resp)
+      // console.log(resp)
       if (resp.status === 200) {
 
         console.log("RESULT DE L'API", resp)
         message.success("Point arrêt ajouté à la ligne");
-        
+
         // router.push("/tableau-de-bord/liste-ligne")
 
 
       } else {
-        console.log(resp)
+        // console.log(resp)
         message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
       }
 
@@ -193,27 +215,27 @@ export default defineComponent({
 
 
       console.log("liste des point d'arrêt : ", formState.PointArretName)
-      console.log(formState.PointArretName)
+      // console.log(formState.PointArretName)
 
 
       const resp = await axios
-        .post("http://192.168.252.223:4001/api/lignespointarret/addLignePointArret", {
-          idLigneFk: formState.id,
+        .post("http://localhost:4001/api/lignespointarret/addLignePointArret", {
+          idLigneFk: formState.idligne,
           idPointArretFk: formState.PointArretName
         });
 
 
-      console.log(resp)
+      // console.log(resp)
       if (resp.status === 200) {
 
-        console.log(resp)
+        // console.log(resp)
         message.success("Point arrêt ajouté");
 
-        this.router.push("/tableau-de-bord/liste-pointarret")
+        // router.push("/tableau-de-bord/liste-pointarret")
 
 
       } else {
-        console.log(resp)
+        // console.log(resp)
         message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
       }
 
@@ -226,7 +248,7 @@ export default defineComponent({
       map.eachLayer(function (layer) {
 
 
-        console.log("CHAQUE LAYER", layer.options.pane)
+        // console.log("CHAQUE LAYER", layer.options.pane)
 
         if (typeof layer.options.pane !== undefined && layer.options.pane === "markerPane") {
 
@@ -241,7 +263,7 @@ export default defineComponent({
       formState.PointArretName.forEach((element) => {
 
 
-        fetch(`http://192.168.252.223:4001/api/pointarrets/${element}`)
+        fetch(`http://localhost:4001/api/pointarrets/${element}`)
           .then(response => response.json())
           .then(res => {
 
@@ -286,6 +308,26 @@ export default defineComponent({
 
 
 
+      fetch("https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62488b5819dc6c8d4cd6b9d35d216f74c9c6&start=-4.0186426000,5.3443958000&end=-4.0259256000,5.3535193000")
+        .then(res => res.json()
+          .then(data => {
+
+            const long = data.features[0].geometry.coordinates.length
+            for (let i = 0; i < long - 1; i++) {
+              console.log("Numero :", (i + 1))
+              // console.log(data.features[0].geometry.coordinates[i][0])
+
+              // leaflet.polygon([
+              //   [data.features[0].geometry.coordinates[i][1], data.features[0].geometry.coordinates[i][0]],
+              //   [data.features[0].geometry.coordinates[i+1][1], data.features[0].geometry.coordinates[i+1][0]],
+
+              // ]).addTo(map);
+            }
+          }))
+
+
+
+
       console.log("ROUTE", router.params.data)
 
       dataMap = router.params.data.split('&')
@@ -300,7 +342,7 @@ export default defineComponent({
       console.log("Dans la condition de l'action ")
       if (dataMap[0] == "Update") {
 
-        fetch(`http://192.168.252.223:4001/api/lignespointarret/${dataMap[1]}`)
+        fetch(`http://localhost:4001/api/lignespointarret/${dataMap[1]}`)
           .then(response => response.json())
           .then(res => {
 
@@ -319,7 +361,7 @@ export default defineComponent({
 
 
         // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
           .then(response => response.json())
           .then(res => {
 
@@ -336,7 +378,7 @@ export default defineComponent({
 
 
         // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
           .then(response => response.json())
           .then(res => {
 
@@ -361,6 +403,7 @@ export default defineComponent({
       PointArretName: [],
       PointArretZone: [],
       troncon: [],
+      tronconActive: []
       // Update : 0
       // idZoneparentFk: ""
     });
@@ -374,7 +417,9 @@ export default defineComponent({
       onSubmitAddingCheckbox,
       onUpdateCheckbox,
       onSubmitTroncon,
-    visibleTroncon
+      visibleTroncon,
+      onValidateTroncon,
+      loading
 
 
     };

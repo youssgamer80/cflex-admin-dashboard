@@ -18,43 +18,6 @@
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <!--Début Modale Modifier type Transport-->
-            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
-
-
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
-                @finish="onFinish">
-
-
-
-                <a-form-item label="libelle" name="libelle"
-                  :rules="[{ required: true, message: 'Please input your libelle!' }]">
-                  <a-input v-model:value="formState.libelle" />
-                </a-form-item>
-
-                <a-form-item label="Type de zone">
-                  <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
-
-                    <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-
-                <a-form-item label="Zone parent">
-                  <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
-
-                    <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
-                        item.zoneparent
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-
-
-              </a-form>
-
-            </a-modal>
 
             <edit-outlined :style="{ color: '#08f26e' }"
               @click="showModal(record.id, record.libelle, record.idTypeZoneFk.id, record.idZoneparentFk.id)" />
@@ -79,6 +42,44 @@
       </template>
     </a-table>
   </a-card>
+
+  <!--Début Modale Modifier type Transport-->
+  <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
+
+
+    <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" @finish="onFinish">
+
+
+
+      <a-form-item label="libelle" name="libelle" :rules="[{ required: true, message: 'Please input your libelle!' }]">
+        <a-input v-model:value="formState.libelle" />
+      </a-form-item>
+
+      <a-form-item label="Type de zone">
+        <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
+
+          <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+          }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item label="Zone parent">
+        <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
+
+          <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
+              item.zoneparent
+          }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+
+
+    </a-form>
+
+  </a-modal>
+
+
 </template>
 
 <script>
@@ -118,12 +119,12 @@ export default defineComponent({
     DeleteOutlined,
   },
 
-  
+
   methods: {
 
     handleSearch(value) {
       let NewdataSource = []
-      
+
 
       // console.log("Old data")
       // console.log(this.oldData)
@@ -139,7 +140,7 @@ export default defineComponent({
           if (item.libelle.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
-          
+
         })
         this.dataSource = NewdataSource
 
@@ -190,7 +191,7 @@ export default defineComponent({
       pageSize,
     } = usePagination(queryData, {
       formatResult: (res) => {
-        
+
         return res.data.data
       },
       pagination: {
@@ -310,7 +311,7 @@ export default defineComponent({
       fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
-       this.dataListZone= res.data
+        this.dataListZone = res.data
 
         console.log(this.dataListZone)
       })
