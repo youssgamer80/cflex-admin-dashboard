@@ -2,30 +2,18 @@
   <a-typography-title :level="4">Liste des tronçons</a-typography-title>
 
   <!-- <SearchHeader @search="handleSearch" /> -->
-  <a-card
-    :style="{
-      padding: '24px',
-      background: '#fff',
-      textAlign: 'center',
-      minHeight: '360px',
-    }"
-    :bordered="false"
-    id="macarte"
-  >
-    <a-table
-      :columns="columns"
-      :row-key="keyTypeTransport"
-      :data-source="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-    >
+  <a-card :style="{
+    padding: '24px',
+    background: '#fff',
+    textAlign: 'center',
+    minHeight: '360px',
+  }" :bordered="false" id="macarte">
+    <a-table :columns="columns" :row-key="keyTypeTransport" :data-source="dataSource" :pagination="pagination"
+      :loading="loading" @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'idPointArretBFk'"
-          >{{ text.nom }}
+        <template v-if="column.dataIndex === 'idPointArretBFk'">{{ text.nom }}
         </template>
-        <template v-if="column.dataIndex === 'idPointArretAFk'"
-          >{{ text.nom }}
+        <template v-if="column.dataIndex === 'idPointArretAFk'">{{ text.nom }}
         </template>
         <!-- <template v-if="column.dataIndex === 'hibernateLazyInitializer'"
           >{{ record.idPointArretAFk.idZoneFk.libelle }}
@@ -39,19 +27,10 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale Modifier tronçon-->
-            <a-modal
-              v-model:visible="visible"
-              title="Modification"
-              @ok="onSubmit"
-            >
+            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
               <!--Formulaire modification type transport-->
-              <a-form
-                name="basic"
-                autocomplete="off"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
-                @finish="onFinish"
-              >
+              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
+                @finish="onFinish">
                 <a-form-item label="libelle" name="libelle">
                   <a-input v-model:value="formState.libelle" />
                 </a-form-item>
@@ -61,22 +40,19 @@
 
             <pushpin-outlined :style="{ color: '#08f26e' }" @click="AffectMap(record.latitude, record.longitude)" />
             <a-divider type="vertical" />
-            <eye-outlined
-              :style="{ color: '#25b08' }"
-              @click="ModalTronçon(record.id)"
-            />
+            <eye-outlined :style="{ color: '#25b08' }" @click="ModalTronçon(record.id)" />
 
             <!--Fin Modale Modifier tronçon-->
 
             <a-divider type="vertical" />
             <!--Début popup Supprimer tronçon-->
-            <a-popconfirm
-              v-if="dataSource.length"
-              title="Voulez vous supprimez?"
-              @confirm="onDelete(record.id)"
-            >
-              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
-              <template> <p>test</p></template>
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
+              <template>
+                <p>test</p>
+              </template>
             </a-popconfirm>
             <!--Fin popup Supprimer tronçon-->
           </div>
@@ -84,29 +60,18 @@
       </template>
     </a-table>
     <div>
-      <a-modal
-        v-model:visible="visibleTroncon"
-        title="Detail sur le tronçon"
-        @ok="onSubmit"
-      >
+      <a-modal v-model:visible="visibleTroncon" title="Detail sur le tronçon" @ok="onSubmit">
         <!--Tableau d'affichage des details sur un tronçons-->
-        <a-table
-          :columns="columns2"
-          :row-key="keyTypeTransport"
-          :data-source="formState.dataSourceTronçons"
-          :loading="loading"
-          @change="handleTableChange"
-        >
+        <a-table :columns="columns2" :row-key="keyTypeTransport" :data-source="formState.dataSourceTronçons"
+          :loading="loading" @change="handleTableChange">
           <template #bodyCell="{ column, text }">
             <p v-if="column.dataIndex === 'idTypeTransportFk'">{{ text.libelleTypeTransport }}</p>
-           
-            <template
-              v-else-if="['action'].includes(column.dataIndex)"
-              
-            > <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.libelleTypeTransport)" />
-            <a-divider type="vertical" />
-             <delete-outlined :style="{ color: '#f73772' }" />
-             </template>
+
+            <template v-else-if="['action'].includes(column.dataIndex)">
+              <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.libelleTypeTransport)" />
+              <a-divider type="vertical" />
+              <delete-outlined :style="{ color: '#f73772' }" />
+            </template>
           </template>
         </a-table>
       </a-modal>
@@ -126,8 +91,8 @@
 
 <script>
 import { usePagination } from "vue-request";
-import { computed, defineComponent, ref, reactive, onMounted} from "vue";
-import { message  } from "ant-design-vue";
+import { computed, defineComponent, ref, reactive, onMounted } from "vue";
+import { message } from "ant-design-vue";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -172,12 +137,12 @@ const columns2 = [
     dataIndex: "idTypeTransportFk",
     sorter: true,
   },
-   {
+  {
     title: "Prix",
     dataIndex: "prix",
     sorter: true,
   },
-   {
+  {
     title: "Action",
     dataIndex: "action",
   },
@@ -216,8 +181,8 @@ export default defineComponent({
 
   setup() {
 
-//Les configurations pour l'affichage de la carte map
- onMounted(() => {
+    //Les configurations pour l'affichage de la carte map
+    onMounted(() => {
 
       formState.map = leaflet.map('mapid').setView([5.3532642, -3.9779868], 13);
 
@@ -225,7 +190,7 @@ export default defineComponent({
 
       leaflet.tileLayer(
         'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w0Zm51M2FxMDAzczNqbXM3c2VkMGZ1MCJ9.waYmvLmGKXV_oKqSOL7cLg', {
-         maxZoom: 19,
+        maxZoom: 19,
         tileSize: 512,
         zoomOffset: -1,
         // attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -243,11 +208,11 @@ export default defineComponent({
 
     })
 
-     const AffectMap = (lat, lon, nom) => {
+    const AffectMap = (lat, lon, nom) => {
 
       const acard = document.getElementById('macarte');
 
-      console.log("HAUTEUR: ",acard.scrollHeight)
+      console.log("HAUTEUR: ", acard.scrollHeight)
       // acard.scrollTo({
       //   top: 1000000,
       //   left: 100,
@@ -258,7 +223,7 @@ export default defineComponent({
       // console.log("CARD ", acard);
 
       // console.log("WINDOWS :", window.innerHeight)
-      
+
       window.scrollTo({
         top: acard.scrollHeight,
         // left: 100,
@@ -307,7 +272,7 @@ export default defineComponent({
 
 
     }
-     const coordonnée = reactive({
+    const coordonnée = reactive({
       lat: "",
       lon: ""
 
@@ -464,7 +429,7 @@ export default defineComponent({
     let options = ref([]);
     let option = []
 
-     const choice = value => {
+    const choice = value => {
       console.log(option);
       formState.nom = value
       console.log(formState.nom)
@@ -478,7 +443,7 @@ export default defineComponent({
       console.log("Nom de l'element choisi " + formState.nom + " La latitude :" + formState.lat + " La longitude :" + formState.lon)
 
     };
-      const handleChange = value => {
+    const handleChange = value => {
       // console.log(`selected ${value}`);
 
       fetch(`https://nominatim.openstreetmap.org/?addressdetails=1&q=${value}&countrycodes=ci&format=json`)
@@ -513,7 +478,7 @@ export default defineComponent({
 
         })
     };
-    
+
     console.log(dataSource);
     return {
       dataSource,
