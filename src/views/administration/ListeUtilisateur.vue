@@ -22,7 +22,7 @@
                     <h1 v-if="text">en fonction</h1>
                     <h1 v-else>pas en fonction</h1>
                 </template> -->
-                <template v-else-if="['action'].includes(column.dataIndex)">
+                <template v-else-if="['action'].includes(column.dataIndex)" >
                     <div>
 
 
