@@ -104,7 +104,7 @@ export default defineComponent({
 
 
       return axios
-        .post("http://localhost:4001/api/pointarrets/addPointArret", {
+        .post("http://192.168.252.223:4001/api/pointarrets/addPointArret", {
           nom: formState.nom,
           longitude: formState.lon,
           latitude: formState.lat,
@@ -236,7 +236,7 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataZone = res.data

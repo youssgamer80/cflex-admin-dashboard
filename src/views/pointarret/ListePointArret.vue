@@ -83,17 +83,7 @@
 
     <!--Début Modale Carte Point arrêt: DEBUT -->
 
-    <a-modal v-model:visible="visibleMap" title="Modification" @ok="onSubmitMap">
-
-
-
-
-
-
-
-
-
-    </a-modal>
+    
 
 
     <div id="mapid"></div>
@@ -137,7 +127,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/pointarrets", {
+  return axios.get("http://192.168.252.223:4001/api/pointarrets", {
     params,
   });
 };
@@ -279,7 +269,7 @@ export default defineComponent({
     const onSubmit = async () => {
 
       const resp = await axios
-        .put(`http://localhost:4001/api/pointarrets/updatePointArret/${formState.id}`, {
+        .put(`http://192.168.252.223:4001/api/pointarrets/updatePointArret/${formState.id}`, {
           nom: formState.nom,
           longitude: formState.lon,
           latitude: formState.lat,
@@ -336,7 +326,7 @@ export default defineComponent({
     const onDelete = async (id) => {
       const resp = await axios
         .delete(
-          `http://localhost:4001/api/pointarrets/deletePointArret/${id}`);
+          `http://192.168.252.223:4001/api/pointarrets/deletePointArret/${id}`);
       if (resp.status === 200) {
         // console.log(typeof dataSource)
         dataSource.value = dataSource.value.filter(
@@ -506,7 +496,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataListZone = res.data
@@ -515,7 +505,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://localhost:4001/api/pointarrets")
+    fetch("http://192.168.252.223:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataListPointArret = res.data

@@ -51,7 +51,9 @@ export default defineComponent({
       if (idzone == null) {
         message.info("Veuillez selectionné la zone ")
       }
-
+      else{
+        fetchData(idzone)
+      }
       console.log("ID TYPE POINT ARRET", e.target.value)
       console.log("ID ZONE POINT ARRET", idzone)
 
@@ -81,18 +83,11 @@ export default defineComponent({
     }
     // },
 
-
-    const handleSearch = (value) => {
-
-      idzone = value
-      console.log("PARENT :", idzone)
+    const fetchData = (value) =>{
 
 
-      DeleteMarker()
-
-
-      // leaflet.marker.
-      fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${value}`)
+            // leaflet.marker.
+      fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${value}`)
         .then(response => response.json())
         .then(res => {
 
@@ -127,24 +122,7 @@ export default defineComponent({
                 }
               });
 
-                // res.data.filter((item) => {
-                //   console.log("ITEM")
-                // console.log(item.idtypePointArret.id)
-                //   if (item.idtypePointArret.id.toLowerCase().includes(typePointArret.value)) {
-                //     console.log("trouver", item.idtypePointArret.id)
-                //   }
-                //   else {
-
-                //       if( typePointArret.value == 1){
-                //         message.info("Aucun point d'arrêt physique dans cette zone")
-                //       }
-                //       else{
-                //          message.info("Aucun point d'arrêt virtuel dans cette zone")
-                //       }
-
-                //   }
-
-                // })
+     
             }
 
           }
@@ -155,6 +133,20 @@ export default defineComponent({
 
 
         })
+    }
+
+    const handleSearch = (value) => {
+
+      idzone = value
+      console.log("PARENT :", idzone)
+
+
+      fetchData(value)
+
+      DeleteMarker()
+
+
+
     };
 
     onMounted(() => {
@@ -186,7 +178,8 @@ export default defineComponent({
       handleSearch,
       typePointArret,
       DeleteMarker,
-      onChange
+      onChange,
+      fetchData
 
 
     };

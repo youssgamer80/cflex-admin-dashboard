@@ -192,7 +192,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .post("http://localhost:4001/api/lignes/addLigne", {
+        .post("http://192.168.252.223:4001/api/lignes/addLigne", {
           nom: formState.nom,
           depart: formState.depart,
           arrivee: formState.arrivee,
@@ -243,7 +243,7 @@ export default defineComponent({
 
 
 
-      fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
+      fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
         .then(response => response.json())
         .then(res => {
 
@@ -320,7 +320,7 @@ export default defineComponent({
 
     
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataZone = res.data
@@ -333,7 +333,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://localhost:4001/api/pointarrets")
+    fetch("http://192.168.252.223:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataPointArret = res.data

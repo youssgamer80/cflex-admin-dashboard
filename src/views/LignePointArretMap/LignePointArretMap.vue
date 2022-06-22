@@ -36,20 +36,39 @@
 
 
 
-<button @click="onSubmitAddingCheckbox">
+    <button @click="onSubmitAddingCheckbox">
       Ajouter
+    </button>
+    <button @click="onSubmitTroncon(true)">
+      Generer tronçon dans les deux sens
+    </button><button @click="onSubmitTroncon(false)">
+      Generer tronçon dans un seul
     </button>
 
 
 
     <div id="map"></div>
 
+    <a-modal v-model:visible="visibleTroncon" title="Modification" @ok="onSubmitMap">
+
+
+
+    <div v-for="item in formState.troncon " v-bind:key="item.id">
+        <p > {{ item.nom }}</p>
+    </div>
+
+
+
+
+
+    </a-modal>
+
   </a-card>
 </template>
 
 <script>
 
-import { defineComponent, onMounted, reactive } from "vue";
+import { defineComponent, onMounted, reactive , ref } from "vue";
 import { useRoute } from 'vue-router'
 import leaflet from "leaflet"
 // import * from "leaflet-routing-machine"
@@ -80,17 +99,72 @@ export default defineComponent({
     let map
     let dataMap
 
+    const visibleTroncon = ref(false);
+
+    const onSubmitTroncon = async (value) => {
+
+
+      console.log("liste des points d'arrêts : ", formState.PointArretName)
+      console.log("VALUE", value)
+      // console.log(formState.PointArretName)
+
+      console.log("DONNEES ENVOYEE",{
+            id_ligne: formState.idligne,
+            points: formState.PointArretName,
+            sens: value
+          })
+
+      // if (formState.PointArretName > 0) {
+
+          
+      //   // console.log(resp)
+        
+
+      // }
+      // else {
+
+      //   message.info("Veuillez Ajouter des points d'arrêt à cette ligne !")
+
+      // }
+
+
+      const resp = await axios
+          .post("http://192.168.252.223:4001/api/v1/Troncon/addTronconGenere", {
+            id_ligne: formState.idligne,
+            points: formState.PointArretName,
+            sens: value
+          });
+
+          if (resp.status === 200) {
+
+          console.log("RESULT DE L'API", resp.data.data)
+          formState.troncon = resp.data.data
+          message.success("Point arrêt ajouté à la ligne");
+          visibleTroncon.value= true
+
+
+          // router.push("/tableau-de-bord/liste-ligne")
+
+
+        } else {
+          console.log(resp);
+          message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
+
+        }
+
+
+    };
 
     const onSubmitAddingCheckbox = async () => {
 
 
-      console.log("liste des point d'arrêt : ", formState.PointArretName)
+      console.log("liste des points d'arrêts : ", formState.PointArretName)
       console.log(formState.PointArretName)
 
 
       const resp = await axios
-        .post("http://localhost:4001/api/lignespointarret/addLignePointArret", {
-          idLigneFk: formState.id,
+        .post("http://192.168.252.223:4001/api/lignespointarret/addLignePointArret", {
+          idLigneFk: formState.idligne,
           idPointArretFk: formState.PointArretName
         });
 
@@ -98,10 +172,10 @@ export default defineComponent({
       console.log(resp)
       if (resp.status === 200) {
 
-        console.log(resp)
+        console.log("RESULT DE L'API", resp)
         message.success("Point arrêt ajouté à la ligne");
-
-        this.router.push("/tableau-de-bord/liste-ligne")
+        
+        // router.push("/tableau-de-bord/liste-ligne")
 
 
       } else {
@@ -113,6 +187,8 @@ export default defineComponent({
     };
 
 
+
+
     const onUpdateCheckbox = async () => {
 
 
@@ -121,7 +197,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .post("http://localhost:4001/api/lignespointarret/addLignePointArret", {
+        .post("http://192.168.252.223:4001/api/lignespointarret/addLignePointArret", {
           idLigneFk: formState.id,
           idPointArretFk: formState.PointArretName
         });
@@ -165,7 +241,7 @@ export default defineComponent({
       formState.PointArretName.forEach((element) => {
 
 
-        fetch(`http://localhost:4001/api/pointarrets/${element}`)
+        fetch(`http://192.168.252.223:4001/api/pointarrets/${element}`)
           .then(response => response.json())
           .then(res => {
 
@@ -224,15 +300,15 @@ export default defineComponent({
       console.log("Dans la condition de l'action ")
       if (dataMap[0] == "Update") {
 
-        fetch(`http://localhost:4001/api/lignespointarret/${dataMap[1]}`)
+        fetch(`http://192.168.252.223:4001/api/lignespointarret/${dataMap[1]}`)
           .then(response => response.json())
           .then(res => {
 
-            res.data.forEach((element)=>{
+            res.data.forEach((element) => {
               console.log("IDPOINT arrete ", element.idPointArretFk.id)
               formState.PointArretName.push(element.idPointArretFk.id)
 
-                leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
+              leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
 
             })
 
@@ -241,9 +317,9 @@ export default defineComponent({
             console.log(err)
           })
 
-       
+
         // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
           .then(response => response.json())
           .then(res => {
 
@@ -256,11 +332,11 @@ export default defineComponent({
         console.log("Modification de la BD")
       }
       else {
-        
+
 
 
         // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
           .then(response => response.json())
           .then(res => {
 
@@ -284,7 +360,7 @@ export default defineComponent({
       idligne: "",
       PointArretName: [],
       PointArretZone: [],
-      Add: "",
+      troncon: [],
       // Update : 0
       // idZoneparentFk: ""
     });
@@ -296,7 +372,10 @@ export default defineComponent({
       // DeleteMarker,
       dataMap,
       onSubmitAddingCheckbox,
-      onUpdateCheckbox
+      onUpdateCheckbox,
+      onSubmitTroncon,
+    visibleTroncon
+
 
     };
   },

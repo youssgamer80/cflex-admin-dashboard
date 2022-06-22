@@ -160,7 +160,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/lignes", {
+  return axios.get("http://192.168.252.223:4001/api/lignes", {
     params,
   });
 };
@@ -208,7 +208,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://localhost:4001/api/lignes/updateligne/${formState.id}`, {
+        .put(`http://192.168.252.223:4001/api/lignes/updateligne/${formState.id}`, {
           nom: formState.nom,
           depart: formState.depart,
           tarif: formState.tarif,
@@ -267,7 +267,7 @@ export default defineComponent({
 
     const onDelete = (id) => {
       return axios
-        .delete(`http://localhost:4001/api/lignes/deleteligne/${id}`)
+        .delete(`http://192.168.252.223:4001/api/lignes/deleteligne/${id}`)
         .then((resp) => {
           if (resp.status === 200) {
             // console.log(typeof dataSource)
@@ -376,7 +376,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/pointarrets")
+    fetch("http://192.168.252.223:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataPointArret = res.data
@@ -392,7 +392,7 @@ export default defineComponent({
 
     // Pour la liste des zones
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())
       .then(res => {
 
@@ -401,7 +401,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://localhost:4001/api/lignes")
+    fetch("http://192.168.252.223:4001/api/lignes")
       .then(response => response.json())
       .then(res => {
         this.dataListLigne = res.data
