@@ -18,7 +18,8 @@ import ListeBorne from '../views/borne/ListeBorne.vue'
 // import AjoutBorne from '../views/borne/AjoutBorne.vue'
 import ListeTroncon from '../views/tronçon/ListeTroncon.vue'
 import LignePointArretMap from '../views/LignePointArretMap/LignePointArretMap.vue'
-
+import ListeClientC from '../views/clientele/ListeClient.vue'
+import ListeUtilisateur from '../views/administration/ListeUtilisateur.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 
@@ -36,13 +37,13 @@ const routes = [
   { path: '/', redirect: { name: 'accueil' } },
   ...pages,
   { path: '/tableau-de-bord/liste-type-transport', name: 'liste-type-transport', component: ListeTypeTransport },
-  
+
 
   { path: '/tableau-de-bord/liste-proprietaires', name: 'liste-proprietaire', component: ListeProprietaire },
   { path: '/tableau-de-bord/liste-demandes', name: 'liste-demandes', component: UneDemande },
-  { path: '/tableau-de-bord/details-demandes', name: 'details-demandes', component: DetailDemande },
-  
-  { path: '/tableau-de-bord/liste-trackers_gps', name: 'liste-trackers_gps', component: ListeTrackersGps},
+  { path: '/tableau-de-bord/details-demandes/:id', name: 'details-demandes', component: DetailDemande },
+
+  { path: '/tableau-de-bord/liste-trackers_gps', name: 'liste-trackers_gps', component: ListeTrackersGps },
   { path: '/tableau-de-bord/liste-borne', name: 'liste-borne', component: ListeBorne },
   // { path: '/tableau-de-bord/ajout-borne', name: 'liste-proprietaire', component: AjoutBorne },
   { path: '/tableau-de-bord/liste-troncon', name: 'liste-troncon', component: ListeTroncon},
@@ -56,9 +57,11 @@ const routes = [
   { path: '/tableau-de-bord/liste-mode-deplacement', name: 'liste-mode-deplacement', component: ListeModeDeplacement },
   { path: '/tableau-de-bord/afficahgeCarteMap', name: 'affichageCarteMap', component: CarteMap_PointArret },
   { path: '/tableau-de-bord/lignepointarret/:data', name: 'liasionLignePointAret', component: LignePointArretMap },
+  { path: '/tableau-de-bord/liste-client', name: 'listeclient', component: ListeClientC },
+  { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: ListeUtilisateur },
 
 
- 
+
 ]
 
 const router = createRouter({
@@ -68,8 +71,8 @@ const router = createRouter({
 
 // router.beforeEach(async (to, _,next) => {
 //   const isLoggedIn = isUserLoggedIn()
-  
- 
+
+
 
 //   if (!canNavigate(to)) {
 //     // Redirect to login if not logged in

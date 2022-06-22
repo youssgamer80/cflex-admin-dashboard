@@ -23,13 +23,11 @@
             <a-modal v-model:visible="visible" title="Modification" @ok="onUpdate">
 
 
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
-                >
+              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
 
 
 
-                <a-form-item label="libelle" name="modedeplacement"
-                 >
+                <a-form-item label="libelle" name="modedeplacement">
                   <a-input v-model:value="formState.libelle" />
                 </a-form-item>
 
@@ -57,8 +55,7 @@
 
             </a-modal>
 
-            <edit-outlined :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.modeDeplacement)" />
+            <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.modeDeplacement)" />
 
 
 
@@ -103,7 +100,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/v1/ModeDeplacement/getModeDeplacements", {
+  return axios.get("http://192.168.252.206:4000/api/v1/ModeDeplacement/getModeDeplacements", {
     params,
   });
 };
@@ -115,19 +112,19 @@ export default defineComponent({
     DeleteOutlined,
   },
 
-  
+
   methods: {
 
     handleSearch(value) {
       let NewdataSource = []
-      
+
       if (value.length > 0) {
 
         this.dataListModeDeplacement.filter((item) => {
           if (item.modeDeplacement.toLowerCase().includes(value.toLowerCase())) {
             NewdataSource.push(item);
           }
-          
+
         })
         this.dataSource = NewdataSource
 
@@ -144,7 +141,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://localhost:4001/api/v1/ModeDeplacement/updateModeDeplacement/${formState.id}`, {
+        .put(`http://192.168.252.206:4000/api/v1/ModeDeplacement/updateModeDeplacement/${formState.id}`, {
           modeDeplacement: formState.libelle,
         });
       if (resp.status === 200) {
@@ -168,7 +165,7 @@ export default defineComponent({
       pageSize,
     } = usePagination(queryData, {
       formatResult: (res) => {
-        
+
         return res.data.data
       },
       pagination: {
@@ -195,7 +192,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://localhost:4001/api/v1/ModeDeplacement/deleteModeDeplacement/${id}`,
+          `http://192.168.252.206:4000/api/v1/ModeDeplacement/deleteModeDeplacement/${id}`,
           {
             data: {
               statut: false,
@@ -279,10 +276,10 @@ export default defineComponent({
     //   })
 
 
-      fetch("http://localhost:4001/api/v1/ModeDeplacement/getModeDeplacements")
+    fetch("http://192.168.252.206:4000/v1/ModeDeplacement/getModeDeplacements")
       .then(response => response.json())
       .then(res => {
-       this.dataListModeDeplacement= res.data
+        this.dataListModeDeplacement = res.data
 
         console.log(this.dataListModeDeplacement)
       })

@@ -36,7 +36,7 @@
 
 
 
-<button @click="onSubmitAddingCheckbox">
+    <button @click="onSubmitAddingCheckbox">
       Ajouter
     </button>
 
@@ -89,7 +89,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .post("http://localhost:4001/api/lignespointarret/addLignePointArret", {
+        .post("http://192.168.252.206:4000/api/lignespointarret/addLignePointArret", {
           idLigneFk: formState.id,
           idPointArretFk: formState.PointArretName
         });
@@ -121,7 +121,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .post("http://localhost:4001/api/lignespointarret/addLignePointArret", {
+        .post("http://192.168.252.206:4000/api/lignespointarret/addLignePointArret", {
           idLigneFk: formState.id,
           idPointArretFk: formState.PointArretName
         });
@@ -165,7 +165,7 @@ export default defineComponent({
       formState.PointArretName.forEach((element) => {
 
 
-        fetch(`http://localhost:4001/api/pointarrets/${element}`)
+        fetch(`http://192.168.252.206:4000/api/pointarrets/${element}`)
           .then(response => response.json())
           .then(res => {
 
@@ -224,15 +224,15 @@ export default defineComponent({
       console.log("Dans la condition de l'action ")
       if (dataMap[0] == "Update") {
 
-        fetch(`http://localhost:4001/api/lignespointarret/${dataMap[1]}`)
+        fetch(`http://192.168.252.206:4000/api/lignespointarret/${dataMap[1]}`)
           .then(response => response.json())
           .then(res => {
 
-            res.data.forEach((element)=>{
+            res.data.forEach((element) => {
               console.log("IDPOINT arrete ", element.idPointArretFk.id)
               formState.PointArretName.push(element.idPointArretFk.id)
 
-                leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
+              leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
 
             })
 
@@ -241,9 +241,9 @@ export default defineComponent({
             console.log(err)
           })
 
-       
+
         // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
           .then(response => response.json())
           .then(res => {
 
@@ -256,11 +256,11 @@ export default defineComponent({
         console.log("Modification de la BD")
       }
       else {
-        
+
 
 
         // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
           .then(response => response.json())
           .then(res => {
 

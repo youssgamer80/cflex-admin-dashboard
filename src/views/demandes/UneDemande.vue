@@ -11,7 +11,7 @@
       <a-col :span="8">
         <a-space direction="vertical">
           <a-typography-title :level="5">Gestion de demande</a-typography-title>
-          <a-typography-text>{{ date }} / {{ hours }}:{{ minutes }}:{{ seconds }}</a-typography-text>
+          <!-- <a-typography-text>{{ date }} / {{ hours }}:{{ minutes }}:{{ seconds }}</a-typography-text> -->
         </a-space>
       </a-col>
       <a-col :span="8" :offset="8">

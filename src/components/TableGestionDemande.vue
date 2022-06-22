@@ -1,237 +1,157 @@
 <template>
-<div>
-    <!-- <a-input-search v-model:value="value" placeholder="input search loading deault" loading /> -->
-    <!-- <br />
-    <br /> -->
-    <a-input-search
-      v-model:value="value"
-      placeholder="input search loading with enterButton"
-      loading
-      enter-button
-    />
-    <br>
-    <br>
-  </div>
- 
-  <a-table :columns="columns" :data-source="data" :pagination="true" class="components-table-demo-nested">
-    <template #bodyCell="{ column }">
-      <template v-if="column.key === 'operation'">
-        <a>Plus de détails</a>
+  <SearchHeader @search="handleSearch" />
+
+    <a-table
+    :columns="columns"
+    :data="data"
+    :data-source="dataSource"
+    :pagination="pagination"
+    :loading="loading"
+    @change="handleTableChange"
+  >
+    <template #bodyCell="{ column, text }">
+      <template v-if="column.dataIndex === 'idTypeTransportFk'">{{ text.libelleTypeTransport }}</template>
+        <template v-if="column.dataIndex === 'id'">
+        <router-link :to="url+text">Gerer la demande</router-link>
+      </template>
+       <template v-if="column.dataIndex === 'etat'">
+       <template v-if="text === 1">
+       Non traitée
+       </template>
+       <template v-else-if="text === 2">
+        En cours de traitement
+        </template>
+        <template v-else-if="text === 3">
+        Rejetée
+        </template>
+        <template v-else-if="text === 4">
+        Validée
+        </template>
       </template>
     </template>
-    <template #expandedRowRender>
-      <a-table :columns="innerColumns" :data-source="innerData" :pagination="false">
-        <template #bodyCell="{ column }">
-          <template v-if="column.key === 'state'">
-            <span>
-              <a-badge status="success" />
-              Finished
-            </span>
-          </template>
-          <template v-else-if="column.key === 'operation'">
-            <span class="table-operation">
-              <a-dropdown>
-                <template #overlay>
-                  <a-menu>
-                    <a-menu-item><router-link to="/tableau-de-bord/details-demandes">Gerer la demande</router-link></a-menu-item>
-                    <a-menu-item>Plus de détails</a-menu-item>
-                  </a-menu>
-                </template>
-                <a>
-                  Suivre la demande
-                  <down-outlined />
-                </a>
-              </a-dropdown>
-            </span>
-          </template>
-        </template>
-      </a-table>
-    </template>
   </a-table>
+
 </template>
 <script>
-import { DownOutlined } from '@ant-design/icons-vue';
-// import { defineComponent } from 'vue';
-import { defineComponent, ref } from 'vue';
-import lodash from 'lodash';
+import { usePagination } from 'vue-request';
+import { computed, defineComponent } from 'vue';
 import axios from 'axios';
-const columns = [{
-  title: 'Nom',
-  dataIndex: 'nom',
-  key: 'nom',
-}, {
-  title: 'Prénoms',
-  dataIndex: 'prenom',
-  key: 'prenom',
-}, {
-  title: 'Email',
-  dataIndex: 'email',
-  key: 'email',
-}, {
-  title: 'Téléphone',
-  dataIndex: 'telephone',
-  key: 'telephone',
-}, {
-  title: 'Action',
-  key: 'operation',
-}];
-var data = [];
-var donnee = [];
-
-
-// for (let i = 0; i < 6; ++i) {
-//   data.push({
-//     key: i,
-//     name: `Screem ${i + 1}`,
-//     platform: 'iOS',
-//     version: '10.3.4.5654',
-//     upgradeNum: 500,
-//     creator: 'Jack',
-//     createdAt: '2014-12-24 23:12:00',
-//   });
-// }
-const queryData = async () => {
-  await axios.get(
-    "http://192.168.252.92:4000/api/demandes").then(response => {
-      console.log(lodash.chain(response.data.data).groupBy(x => x.idProprietaireFk)
-        .map((value, key) => ({ proprietaire: key, data: value }))
-        .value())
-      donnee = lodash.chain(response.data.data).groupBy(x => x.idProprietaireFk)
-        .map((value, key) => ({ proprietaire: key, data: value }))
-        .value()
-
-      console.log('donnee', donnee)
-
-      let owners = []
-      // initialize vars
-      /* let owners = [
-        '1' []
-      ]; */
-
-      lodash.each(donnee, function (value) {
-        lodash.each(value.data, function (value2) {
-          let singleOwner = {
-            "owner": value2.proprietaire,
-            "orders": [value2]
-          };
-          let ownerWithIndex = {};
-          ownerWithIndex[value2.proprietaire.id] = singleOwner;
-
-          console.log('ownerWithIndex', ownerWithIndex);
-
-          console.log('Test Condition', typeof owners[value2.proprietaire.id]);
-
-          if (typeof owners[value2.proprietaire.id] !== "undefined") {
-            console.log(owners);
-            owners[value2.proprietaire.id].orders.push(value2)
-          } else {
-            owners[value2.proprietaire.id] = singleOwner;
-            console.log('transformation', Object.entries(ownerWithIndex));
-            console.log('owners', owners);
-          }
-
-        })
-
-      });
-
-
-      for (let i = 1; i < owners.length; i++) {
-        var owner = owners[i].owner;
-        owner["key"] = `owner${i}`;
-        console.log('owners', owners);
-        data.push(owner);
-        for (let j = 0; j < owners[i].orders.length; j++) {
-          var order = owners[i].orders[j];
-          order["key"] = `owner${i}`;
-          innerData.push(order);
-          console.log(`order${i}`, order);
-
-        }
-
-      }
-
-      // for (let i = 0; i < owners.length; ++i) {
-      //   data.push(owners[i].owner);
-      //   for (let j = 0; j < owners [i].data.length; ++j) {
-      //     if(owners [i].data[j].idProprietaireFk ==owners [i].proprietaire){
-      //       innerData.push(owners [i].data[j]);
-      //     }
-      //   }
-      // }
-      // for (let i = 0; i < donnee.length; ++i) {
-      //   for (let j = 0; j < donnee[i].data.length; ++j) {
-      //     if(donnee[i].proprietaire==donnee[i].data[j].proprietaire){
-      //       innerData.push(donnee[i].data[j]);
-      //     }
-      //   }
-      // }
-
-      //  for (let i = 0; i < donnee.length; ++i) {
-      //   innerData.push(donnee[i].data[0].codeDemande);
-      // }
-      // donnee.forEach(element => {
-      //   element.data.forEach(element1 => {
-      //     if (element.proprietaire == element1.id) {
-      //       innerData.push(element1);
-      //     }
-      //   });
-      // })
-
-
-
-    });
-};
-queryData();
-
-
-
-const innerColumns = [{
-  title: 'Code demande',
-  dataIndex: 'codeDemande',
-  key: 'codeDemande',
-}, {
+import SearchHeader from './SearchHeader_demande.vue';
+const columns = [
+{
+  title: 'Type Transport',
+  dataIndex: 'idTypeTransportFk',
+  sorter: true,
+  width: '20%',
+},
+{
   title: 'Immatriculation',
   dataIndex: 'immatriculation',
-  key: 'immatriculation',
-}, {
+  sorter: true,
+  width: '20%',
+}
+, {
   title: 'Etat',
-  key: 'etat',
+  dataIndex: 'etat',
+  // filters: [{
+  //   text: 'Traité',
+  //   value: 'false',
+  // }, {
+  //   text: 'Non traité',
+  //   value: 'true',
+  // }],
+
 }, {
-  title: 'Date de demande',
-  dataIndex: 'date',
-  key: 'date',
-}, {
-  title: 'Action',
-  dataIndex: 'operation',
-  key: 'operation',
-}];
-let innerData = [];
+  title: 'Marque',
+  dataIndex: 'marque',
+},{
+  title: 'ACTION',
+  dataIndex: 'id',
+  sorter: true,
+  width: '20%',
+},];
 
 
+const queryData = params => {
+  return axios.get('http://192.168.252.206:4000/api/demandes', {
+    params,
+  });
+};
 
 export default defineComponent({
-  components: {
-    DownOutlined,
-  },
-  // data() {
-  //   return {
-  //     columns,
-  //     data,
-  //     innerColumns,
-  //     innerData,
-  //   };
-  // },
+  components: { SearchHeader },
   setup() {
+    const url = "/tableau-de-bord/details-demandes/"
+    const {
+      data: dataSource,
+      run,
+      loading,
+      current,
+      pageSize,
+    } = usePagination(queryData, {
+      formatResult: res => res.data.data,
+      pagination: {
+        currentKey: 'page',
+        pageSizeKey: 'data',
+      },
+    });
+    const pagination = computed(() => ({
+      total: dataSource.length,
+      current: current.value,
+      pageSize: pageSize.value,
+    }));
 
-    const value = ref('');
-    return {
-      data,
-      columns,
-      innerColumns,
-      innerData,
-      value,
-
+    const handleTableChange = (pag, filters, sorter) => {
+      run({
+        data: pag.pageSize,
+        page: pag?.current,
+        sortField: sorter.field,
+        sortOrder: sorter.order,
+        ...filters,
+      });
     };
+
+
+    return {
+      dataSource,
+      pagination,
+      loading,
+      columns,
+      handleTableChange,
+      url,
+      datalistDemande: [],
+    };
+  },
+mounted() {
+    console.log("Component mounted");
+
+//liste des demandes pour la recherche 
+      fetch("http://192.168.252.206:4000/api/demandes")
+      .then((response) => response.json())
+      .then((res) => {
+        this.datalistDemande = res.data;
+
+        console.log("Liste des demandes",this.datalistDemande);
+      });
+  },
+  methods: {
+    handleSearch(value) {
+      let NewdataSource = [];
+      if (value.length > 0) {
+        this.datalistDemande.filter((item) => {
+          if (
+            item.immatriculation
+              .toLowerCase()
+              .includes(value.toLowerCase())
+          ) {
+            NewdataSource.push(item);
+          }
+        });
+        this.dataSource = NewdataSource;
+      } else {
+        this.dataSource = this.datalistDemande;
+      }
+    },
   },
 
 });
