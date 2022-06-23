@@ -63,7 +63,7 @@
             <!-------------Icon pour avoir accès à la carte map------------------>
               <pushpin-outlined
               :style="{ color: '#08f26e' }"
-              @click="AffectMap(record.latitude, record.longitude)"
+              @click="AffectMap(record.idPointArretAFk.latitude, record.idPointArretAFk.longitude ,record.idPointArretAFk.nom , record.idPointArretBFk.latitude, record.idPointArretBFk.longitude ,record.idPointArretBFk.nom )"
             />
             
             <!--------------------------------------------------------------------------------------DEBUT POP UP SUPPRIMER TRONÇON-------------------------------------------------------------------------------------->
@@ -239,7 +239,7 @@ export default defineComponent({
      
     });
 
-    const AffectMap = (lat, lon, nom) => {
+    const AffectMap = (latA, lonA, nomA , latB, lonB, nomB) => {
       const acard = document.getElementById("macarte");
 
       console.log("HAUTEUR: ", acard.scrollHeight);
@@ -252,6 +252,8 @@ export default defineComponent({
       });
 
       formState.map.eachLayer(function (layer) {
+
+        console.log("LAYER PANE :",layer.options.pane)
         if (
           typeof layer.options.pane !== undefined &&
           layer.options.pane === "markerPane"
@@ -260,28 +262,47 @@ export default defineComponent({
          
         }
 
+
+        if (
+          typeof layer.options.pane !== undefined &&
+          layer.options.pane === "overlayPane"
+        ) {
+          formState.map.removeLayer(layer);
+         
+        }
+
      
       });
+// Pour faire un traçage sur la carte map
+fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62488b5819dc6c8d4cd6b9d35d216f74c9c6&start=${lonA},${latA}&end=${lonB},${latB}`)
+        .then(res => res.json()
+          .then(data => {
 
-      coordonnée.lat = lat;
-      coordonnée.lon = lon;
+            const long = data.features[0].geometry.coordinates.length
+            for (let i = 0; i < long - 1; i++) {
+              // console.log("Numero :", (i + 1))
+              // console.log(data.features[0].geometry.coordinates[i][0])
 
-      console.log(
-        "Map here lat :",
-        coordonnée.lat,
-        " lon :",
-        coordonnée.lon,
-        "Nom :",
-        nom
-      );
+              leaflet.polygon([
+                [data.features[0].geometry.coordinates[i][1], data.features[0].geometry.coordinates[i][0]],
+                [data.features[0].geometry.coordinates[i + 1][1], data.features[0].geometry.coordinates[i + 1][0]],
+
+              ]).addTo(formState.map);
+            }
+          }))
 
       leaflet
-        .marker([coordonnée.lat, coordonnée.lon])
-        .bindPopup("<b>LIEU :</b><br>" + nom)
+        .marker([latA, lonA])
+        .bindPopup("<b>LIEU :</b><br>" + nomA)
         .openPopup()
         .addTo(formState.map);
 
-      formState.map.panTo(new leaflet.LatLng(coordonnée.lat, coordonnée.lon));
+ leaflet
+        .marker([latB, lonB])
+        .bindPopup("<b>LIEU :</b><br>" + nomB)
+        .openPopup()
+        .addTo(formState.map);
+      formState.map.panTo(new leaflet.LatLng([latB, lonB]));
     };
     const coordonnée = reactive({
       lat: "",
