@@ -293,7 +293,7 @@ export default defineComponent({
     onMounted(() => {
 
 
-      map = leaflet.map('map').setView([5.3434534, -4.026047], 8);
+      map = leaflet.map('map').setView([5.3434534, -4.026047], 13);
 
 
 
@@ -305,132 +305,147 @@ export default defineComponent({
       }).addTo(map);
 
 
+      // leaflet.marker([5.3443958000, -4.0186426000]).addTo(map)
+
+      // leaflet.marker([5.3535193000, -4.0259256000]).addTo(map)
+
+
+      // fetch("https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62488b5819dc6c8d4cd6b9d35d216f74c9c6&start=-4.0186426000,5.3443958000&end=-4.0259256000,5.3535193000")
+      //   .then(res => res.json()
+      //     .then(data => {
+
+      //       const long = data.features[0].geometry.coordinates.length
+      //       for (let i = 0; i < long - 1; i++) {
+      //         console.log("Numero :", (i + 1))
+      //         // console.log(data.features[0].geometry.coordinates[i][0])
+
+      //         leaflet.polygon([
+      //           [data.features[0].geometry.coordinates[i][1], data.features[0].geometry.coordinates[i][0]],
+      //           [data.features[0].geometry.coordinates[i + 1][1], data.features[0].geometry.coordinates[i + 1][0]],
+
+      //         ]).addTo(map);
+      //       }
+      //     }))
+
+
+      // fetch('https://api.openrouteservice.org/v2/directions/driving-car', {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     "coordinates":[[-4.0186426000,5.3443958000],[-4.0259256000,5.3535193000]]
+      //   }),
+      //   headers: { 
+      //     "Authorization":"5b3ce3597851110001cf62488b5819dc6c8d4cd6b9d35d216f74c9c6",
+      //     "Content-type": "application/json; charset=UTF-8",
+      //     "Accept": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+      //      }})
+      //   .then(response => response.json())
+      //   .then(json => console.log(json))
+      //   .catch(err => console.log(err));
+
+
+    console.log("ROUTE", router.params.data)
+
+    dataMap = router.params.data.split('&')
+    formState.idligne = dataMap[1]
+    console.log("ACTION", dataMap[0])
+    console.log("IDLIGNE", formState.idligne)
+    console.log("IDZONE", dataMap[2])
 
 
 
-      fetch("https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62488b5819dc6c8d4cd6b9d35d216f74c9c6&start=-4.0186426000,5.3443958000&end=-4.0259256000,5.3535193000")
-        .then(res => res.json()
-          .then(data => {
+    console.log("DATA", dataMap)
+    console.log("Dans la condition de l'action ")
+    if (dataMap[0] == "Update") {
 
-            const long = data.features[0].geometry.coordinates.length
-            for (let i = 0; i < long - 1; i++) {
-              console.log("Numero :", (i + 1))
-              // console.log(data.features[0].geometry.coordinates[i][0])
+      fetch(`http://localhost:4001/api/lignespointarret/${dataMap[1]}`)
+        .then(response => response.json())
+        .then(res => {
 
-              // leaflet.polygon([
-              //   [data.features[0].geometry.coordinates[i][1], data.features[0].geometry.coordinates[i][0]],
-              //   [data.features[0].geometry.coordinates[i+1][1], data.features[0].geometry.coordinates[i+1][0]],
+          res.data.forEach((element) => {
+            console.log("IDPOINT arrete ", element.idPointArretFk.id)
+            formState.PointArretName.push(element.idPointArretFk.id)
 
-              // ]).addTo(map);
-            }
-          }))
-
-
-
-
-      console.log("ROUTE", router.params.data)
-
-      dataMap = router.params.data.split('&')
-      formState.idligne = dataMap[1]
-      console.log("ACTION", dataMap[0])
-      console.log("IDLIGNE", formState.idligne)
-      console.log("IDZONE", dataMap[2])
-
-
-
-      console.log("DATA", dataMap)
-      console.log("Dans la condition de l'action ")
-      if (dataMap[0] == "Update") {
-
-        fetch(`http://localhost:4001/api/lignespointarret/${dataMap[1]}`)
-          .then(response => response.json())
-          .then(res => {
-
-            res.data.forEach((element) => {
-              console.log("IDPOINT arrete ", element.idPointArretFk.id)
-              formState.PointArretName.push(element.idPointArretFk.id)
-
-              leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
-
-            })
-
-          })
-          .catch(err => {
-            console.log(err)
-          })
-
-
-        // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
-          .then(response => response.json())
-          .then(res => {
-
-            formState.PointArretZone = res.data
-
-          })
-          .catch(err => {
-            console.log(err)
-          })
-        console.log("Modification de la BD")
-      }
-      else {
-
-
-
-        // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-        fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
-          .then(response => response.json())
-          .then(res => {
-
-            formState.PointArretZone = res.data
-
-            console.log("LISTE DES POINT ARRET POUR LA ZONE", formState.PointArretZone)
+            leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
 
           })
-          .catch(err => {
-            console.log(err)
-          })
-      }
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+
+      // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
+      fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        .then(response => response.json())
+        .then(res => {
+
+          formState.PointArretZone = res.data
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      console.log("Modification de la BD")
+    }
+    else {
+
+
+
+      // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
+      fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+        .then(response => response.json())
+        .then(res => {
+
+          formState.PointArretZone = res.data
+
+          console.log("LISTE DES POINT ARRET POUR LA ZONE", formState.PointArretZone)
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
 
 
 
 
-    })
+  })
 
 
-    const formState = reactive({
-      idligne: "",
-      PointArretName: [],
-      PointArretZone: [],
-      troncon: [],
-      tronconActive: []
-      // Update : 0
-      // idZoneparentFk: ""
-    });
+const formState = reactive({
+  idligne: "",
+  PointArretName: [],
+  PointArretZone: [],
+  troncon: [],
+  tronconActive: []
+  // Update : 0
+  // idZoneparentFk: ""
+});
 
-    return {
-      choicePoint,
-      map,
-      formState,
-      // DeleteMarker,
-      dataMap,
-      onSubmitAddingCheckbox,
-      onUpdateCheckbox,
-      onSubmitTroncon,
-      visibleTroncon,
-      onValidateTroncon,
-      loading
+return {
+  choicePoint,
+  map,
+  formState,
+  // DeleteMarker,
+  dataMap,
+  onSubmitAddingCheckbox,
+  onUpdateCheckbox,
+  onSubmitTroncon,
+  visibleTroncon,
+  onValidateTroncon,
+  loading
 
 
-    };
+};
   },
 
 
-  mounted() {
+mounted() {
 
-    console.log("Component mounted");
+  console.log("Component mounted");
 
-  },
+},
 });
 </script>
 
