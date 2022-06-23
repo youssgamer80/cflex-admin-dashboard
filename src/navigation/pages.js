@@ -4,6 +4,7 @@ export default [
   },
   {
     title: 'Vehicule',
+    route: '/tableau-de-bord/liste-vehicules',
     icon: 'MailIcon',
     children: [
       {

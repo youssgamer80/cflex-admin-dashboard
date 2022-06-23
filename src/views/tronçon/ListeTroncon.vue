@@ -2,90 +2,127 @@
   <a-typography-title :level="4">Liste des tronçons</a-typography-title>
 
   <!-- <SearchHeader @search="handleSearch" /> -->
-  <a-card :style="{
-    padding: '24px',
-    background: '#fff',
-    textAlign: 'center',
-    minHeight: '360px',
-  }" :bordered="false" id="macarte">
-    <a-table :columns="columns" :row-key="keyTypeTransport" :data-source="dataSource" :pagination="pagination"
-      :loading="loading" @change="handleTableChange">
+  <a-card
+    :style="{
+      padding: '24px',
+      background: '#fff',
+      textAlign: 'center',
+      minHeight: '360px',
+    }"
+    :bordered="false"
+    id="macarte"
+  >
+    <a-table
+      :columns="columns"
+      :row-key="keyTypeTransport"
+      :data-source="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+    >
       <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'idPointArretBFk'">{{ text.nom }}
+        <!--------------------------------------------------------------------------------------DEBUT AFFICHAGE DES INFORMATIONS SUR UN TRONÇON-------------------------------------------------------------------->
+        <template v-if="column.dataIndex === 'idPointArretBFk'"
+          >{{ text.nom }}
         </template>
-        <template v-if="column.dataIndex === 'idPointArretAFk'">{{ text.nom }}
+        <template v-if="column.dataIndex === 'idPointArretAFk'"
+          >{{ text.nom }}
         </template>
-        <!-- <template v-if="column.dataIndex === 'hibernateLazyInitializer'"
-          >{{ record.idPointArretAFk.idZoneFk.libelle }}
-        </template> -->
-
         <template v-if="column.dataIndex === 'statut'">
-          <!-- <p v-if="text">Disponible</p>
-          <p v-else>Indisponible</p> -->
           {{ record.idPointArretAFk.idZoneFk.idZoneparentFk.zoneparent }}
         </template>
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
-            <!--Début Modale Modifier tronçon-->
-            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
-              <!--Formulaire modification type transport-->
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
-                @finish="onFinish">
+            <!--------------------------------------------------------------------------------------DEBUT MODALE MODIFIER TRONÇON-------------------------------------------------------------------------------------->
+            <a-modal
+              v-model:visible="visible"
+              title="Modification"
+              @ok="onSubmit"
+            >
+              <!--------------------------------------------------------------------------------------FORMULAIRE MODIFICATION TRONÇON------------------------------------------------------------------------------------->
+              <a-form
+                name="basic"
+                autocomplete="off"
+                :label-col="{ span: 8 }"
+                :wrapper-col="{ span: 16 }"
+                @finish="onFinish"
+              >
                 <a-form-item label="libelle" name="libelle">
                   <a-input v-model:value="formState.libelle" />
                 </a-form-item>
               </a-form>
-              <!--Formulaire modification tronçon" -->
+              <!--------------------------------------------------------------------------------------FORMULAIRE MODIFICATION TRONÇON------------------------------------------------------------------------------------->
             </a-modal>
-
-            <pushpin-outlined :style="{ color: '#08f26e' }" @click="AffectMap(record.latitude, record.longitude)" />
+            <!-------------------------------------------------------------------------------------- FIN MODALE MODIFIER TRONÇON -------------------------------------------------------------------------------------->
+          
+            <eye-outlined
+              :style="{ color: '#25b08' }"
+              @click="ModalTronçon(record.id)"
+            />
             <a-divider type="vertical" />
-            <eye-outlined :style="{ color: '#25b08' }" @click="ModalTronçon(record.id)" />
-
-            <!--Fin Modale Modifier tronçon-->
-
-            <a-divider type="vertical" />
-            <!--Début popup Supprimer tronçon-->
-            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
-              <a>
-                <delete-outlined :style="{ color: '#f73772' }" />
-              </a>
-              <template>
-                <p>test</p>
-              </template>
+            <!-------------Icon pour avoir accès à la carte map------------------>
+              <pushpin-outlined
+              :style="{ color: '#08f26e' }"
+              @click="AffectMap(record.latitude, record.longitude)"
+            />
+            
+            <!--------------------------------------------------------------------------------------DEBUT POP UP SUPPRIMER TRONÇON-------------------------------------------------------------------------------------->
+            <a-popconfirm
+              v-if="dataSource.length"
+              title="Voulez vous supprimez?"
+              @confirm="onDelete(record.id)"
+            > <a-divider type="vertical" />
+              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
+              <template> <p>test</p></template>
             </a-popconfirm>
-            <!--Fin popup Supprimer tronçon-->
+            <!--------------------------------------------------------------------------------------FIN POP UP SUPPRIMER TRONÇON-------------------------------------------------------------------------------------->
           </div>
         </template>
       </template>
     </a-table>
     <div>
-      <a-modal v-model:visible="visibleTroncon" title="Detail sur le tronçon" @ok="onSubmit">
-        <!--Tableau d'affichage des details sur un tronçons-->
-        <a-table :columns="columns2" :row-key="keyTypeTransport" :data-source="formState.dataSourceTronçons"
-          :loading="loading" @change="handleTableChange">
-          <template #bodyCell="{ column, text }">
-            <p v-if="column.dataIndex === 'idTypeTransportFk'">{{ text.libelleTypeTransport }}</p>
+      <a-modal
+        v-model:visible="visibleTroncon"
+        title="Detail sur le tronçon"
+        @ok="onSubmit"
+      >
+       <!--------------------------------------------------------------------------------DEBUT TABLEAU D'AFFICHAGE DES DETAILS SUR UN TRONÇON------------------------------------------------------------------------------------>
+        <a-table
+          :columns="columns2"
+          :row-key="keyTypeTransport"
+          :data-source="formState.dataSourceTronçons"
+          :loading="loading"
+          @change="handleTableChange"
+        >
+          <template #bodyCell="{ column, text, record }">
+            <p v-if="column.dataIndex === 'idTypeTransportFk'">
+              {{ text.id }}
+            </p>
 
             <template v-else-if="['action'].includes(column.dataIndex)">
-              <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.libelleTypeTransport)" />
+              <edit-outlined
+                :style="{ color: '#08f26e' }"
+                @click="showModal(record.id, record.libelleTypeTransport)"
+              />
               <a-divider type="vertical" />
-              <delete-outlined :style="{ color: '#f73772' }" />
+              <a-popconfirm
+              v-if="dataSource.length"
+              title="Voulez vous supprimez?"
+              @confirm="onDelete(record.id )"
+            > 
+              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
+              <template> <p>test</p></template>
+            </a-popconfirm>
             </template>
           </template>
         </a-table>
+         <!-------------------------------------------------------------------------------- FIN TABLEAU D'AFFICHAGE DES DETAILS SUR UN TRONÇON------------------------------------------------------------------------------------>
       </a-modal>
     </div>
 
-    <!--Début Modale Carte Tronçon : DEBUT -->
-
-    <a-modal v-model:visible="visibleMap" title="Modification" @ok="onSubmitMap">
-
-    </a-modal>
-
-
+    <!--La div pour -->
     <div id="mapid"></div>
-    <!--Début Modale Carte Carte Tronçon: FIN -->
+    
   </a-card>
 </template>
 
@@ -97,12 +134,14 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
-  PushpinOutlined
+  PushpinOutlined,
 } from "@ant-design/icons-vue";
-//  Leaflet & MAP 
-import leaflet from "leaflet"
+//  Leaflet & MAP
+import leaflet from "leaflet";
 // import SearchHeader from "../../components/SearchHeader_trackersGps.vue";
 import axios from "axios";
+
+// Première columns pour afficher la liste des tronçon avec des informations complémentaires.
 const columns = [
   {
     title: "Nom",
@@ -131,6 +170,7 @@ const columns = [
     dataIndex: "action",
   },
 ];
+// Deuxième columns pour afficher les details sur un tronçon.
 const columns2 = [
   {
     title: "Type de Transport",
@@ -147,20 +187,21 @@ const columns2 = [
     dataIndex: "action",
   },
 ];
-// Consomation api d'affichage
+// Methode pour la consomation de l'api d'affichage des tronçons
 const queryData = (params) => {
-  return axios.get("http://192.168.252.206:4000/api/v1/Troncon/getTroncons", {
+  return axios.get("http://192.168.252.135:4001/api/v1/Troncon/getTroncons", {
     params,
   });
 };
-// Declaration des différents compsants utilisés
+
 export default defineComponent({
+  // Déclaration des composants
   components: {
     // SearchHeader,
     EditOutlined,
     DeleteOutlined,
     EyeOutlined,
-    PushpinOutlined
+    PushpinOutlined,
   },
   // Méthode pour la recherche de tronçon
   methods: {
@@ -180,142 +221,72 @@ export default defineComponent({
   },
 
   setup() {
-
     //Les configurations pour l'affichage de la carte map
     onMounted(() => {
+      formState.map = leaflet.map("mapid").setView([5.3532642, -3.9779868], 13);
 
-      formState.map = leaflet.map('mapid').setView([5.3532642, -3.9779868], 13);
+      leaflet
+        .tileLayer(
+          "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w0Zm51M2FxMDAzczNqbXM3c2VkMGZ1MCJ9.waYmvLmGKXV_oKqSOL7cLg",
+          {
+            maxZoom: 19,
+            tileSize: 512,
+            zoomOffset: -1,
+          }
+        )
+        .addTo(formState.map);
 
-
-
-      leaflet.tileLayer(
-        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w0Zm51M2FxMDAzczNqbXM3c2VkMGZ1MCJ9.waYmvLmGKXV_oKqSOL7cLg', {
-        maxZoom: 19,
-        tileSize: 512,
-        zoomOffset: -1,
-        // attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }).addTo(formState.map);
-
-
-      // leaflet.tileLayer(
-      //   'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-      //     maxZoom: 19,
-      //   tileSize: 512,
-      //   zoomOffset: -1,
-      //   // attribution: '© <a href="https://www.mapbox.com/contribute/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      // }).addTo(formState.map);
-
-
-    })
+     
+    });
 
     const AffectMap = (lat, lon, nom) => {
+      const acard = document.getElementById("macarte");
 
-      const acard = document.getElementById('macarte');
-
-      console.log("HAUTEUR: ", acard.scrollHeight)
-      // acard.scrollTo({
-      //   top: 1000000,
-      //   left: 100,
-      //   behavior: 'smooth'
-      // });
-
-
-      // console.log("CARD ", acard);
-
-      // console.log("WINDOWS :", window.innerHeight)
+      console.log("HAUTEUR: ", acard.scrollHeight);
+      
 
       window.scrollTo({
         top: acard.scrollHeight,
         // left: 100,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
 
       formState.map.eachLayer(function (layer) {
-
-
-        if (typeof layer.options.pane !== undefined && layer.options.pane === "markerPane") {
-
-          formState.map.removeLayer(layer)
-          // leaflet.map('mapid').setView([5.3532642, -3.9779868], 15);
-
+        if (
+          typeof layer.options.pane !== undefined &&
+          layer.options.pane === "markerPane"
+        ) {
+          formState.map.removeLayer(layer);
+         
         }
 
-
-        // console.log(layer)
-      })
-
+     
+      });
 
       coordonnée.lat = lat;
       coordonnée.lon = lon;
 
+      console.log(
+        "Map here lat :",
+        coordonnée.lat,
+        " lon :",
+        coordonnée.lon,
+        "Nom :",
+        nom
+      );
 
-      console.log("Map here lat :", coordonnée.lat, " lon :", coordonnée.lon, "Nom :", nom)
-
-      // visibleMap.value = true
-
-      // setup a marker group
-      // var markers = leaflet.layerGroup();
-
-      // create the marker
-      // markers.removeLayer();
-
-      // var marker = leaflet.marker([coordonnée.lat, coordonnée.lon]);
-
-
-      // add marker
-      // markers.addLayer(marker);
-
-      // map.addLayer(markers);
-      leaflet.marker([coordonnée.lat, coordonnée.lon]).bindPopup('<b>LIEU :</b><br>' + nom).openPopup().addTo(formState.map)
+      leaflet
+        .marker([coordonnée.lat, coordonnée.lon])
+        .bindPopup("<b>LIEU :</b><br>" + nom)
+        .openPopup()
+        .addTo(formState.map);
 
       formState.map.panTo(new leaflet.LatLng(coordonnée.lat, coordonnée.lon));
-
-
-    }
+    };
     const coordonnée = reactive({
       lat: "",
-      lon: ""
-
+      lon: "",
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     //Consomation Api Modification tronçon
     const onSubmit = async () => {
@@ -348,7 +319,7 @@ export default defineComponent({
         pageSizeKey: "results",
       },
     });
-    //Modal tronçon
+    //Modal d'affichage des details sur un tronçon
     const ModalTronçon = async (id) => {
       // console.log(id);
       visibleTroncon.value = true;
@@ -386,7 +357,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.252.206:4000/api/Trackergpss/deleteTrackergps/${id}`,
+          `http://192.168.252.135:4001/api/troncon_typetransport/deleteTronconTypeTransport/${id}`,
           {
             data: {
               statut: false,
@@ -395,7 +366,7 @@ export default defineComponent({
         )
         .then((resp) => {
           if (resp.status === 200) {
-            dataSource.value = dataSource.value.filter(
+            formState.dataSourceTronçons = formState.dataSourceTronçons.filter(
               (item) => item.id !== id
             );
             message.success("Supprimé avec succès!!");
@@ -419,7 +390,7 @@ export default defineComponent({
       dataSourceTronçons: [],
       lat: "",
       lon: "",
-      map: ""
+      map: "",
     });
 
     const handleOk = (e) => {
@@ -427,56 +398,41 @@ export default defineComponent({
       visible.value = false;
     };
     let options = ref([]);
-    let option = []
+    let option = [];
 
-    const choice = value => {
-      console.log(option);
-      formState.nom = value
-      console.log(formState.nom)
-      option.forEach(element => {
-        if (formState.nom == element.label) {
-          formState.lat = element.value.lat,
-            formState.lon = element.value.lon
-
-        }
-      })
-      console.log("Nom de l'element choisi " + formState.nom + " La latitude :" + formState.lat + " La longitude :" + formState.lon)
-
-    };
-    const handleChange = value => {
+    const handleChange = (value) => {
       // console.log(`selected ${value}`);
 
-      fetch(`https://nominatim.openstreetmap.org/?addressdetails=1&q=${value}&countrycodes=ci&format=json`)
-        .then(response => response.json())
-        .then(res => {
+      fetch(
+        `https://nominatim.openstreetmap.org/?addressdetails=1&q=${value}&countrycodes=ci&format=json`
+      )
+        .then((response) => response.json())
+        .then((res) => {
           // console.log("reponse")
-          console.log("label :", res)
-          res.forEach(element => {
+          console.log("label :", res);
+          res.forEach((element) => {
             // console.log(element.display_name)
-            console.log("ELEMENT", element)
+            console.log("ELEMENT", element);
             option.push({
               value: {
                 lat: element.lat,
-                lon: element.lon
+                lon: element.lon,
               },
-              label: element.display_name
-            })
+              label: element.display_name,
+            });
           });
 
           // console.log(option.value)
 
-          option.forEach(element => {
-
+          option.forEach((element) => {
             options.value.push({
               value: element.label,
-              label: element.label
-            })
-            console.log("element")
-            console.log(element.label)
-
-          })
-
-        })
+              label: element.label,
+            });
+            console.log("element");
+            console.log(element.label);
+          });
+        });
     };
 
     console.log(dataSource);
@@ -498,8 +454,7 @@ export default defineComponent({
       columns2,
       AffectMap,
       coordonnée,
-      choice,
-      handleChange
+      handleChange,
     };
   },
 

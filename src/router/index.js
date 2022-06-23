@@ -47,9 +47,9 @@ const routes = [
   { path: '/tableau-de-bord/liste-trackers_gps', name: 'liste-trackers_gps', component: ListeTrackersGps },
   { path: '/tableau-de-bord/liste-borne', name: 'liste-borne', component: ListeBorne },
   // { path: '/tableau-de-bord/ajout-borne', name: 'liste-proprietaire', component: AjoutBorne },
-  { path: '/tableau-de-bord/liste-troncon', name: 'liste-troncon', component: ListeTroncon },
-
-  { path: '/tableau-de-bord/liste-vehicule', name: 'liste-vehicule', component: ListeVehicule },
+  { path: '/tableau-de-bord/liste-troncon', name: 'liste-troncon', component: ListeTroncon},
+ 
+  { path: '/tableau-de-bord/liste-vehicules', name: 'liste-vehicules', component: ListeVehicule},
   { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
   { path: '/tableau-de-bord/liste-zone', name: 'liste-zones', component: ListeZone },
   { path: '/tableau-de-bord/type-zone', name: 'type-zone', component: ListeTypeZone },
