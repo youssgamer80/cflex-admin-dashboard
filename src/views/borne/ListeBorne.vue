@@ -147,7 +147,7 @@ export default defineComponent({
                         console.log(item)
                         NewdataSource.push(item);
                     }
-                    console.log(item.libelle)
+
 
                 })
                 this.dataSource = NewdataSource

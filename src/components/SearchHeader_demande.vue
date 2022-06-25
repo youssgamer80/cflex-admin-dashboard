@@ -4,14 +4,8 @@
       <!-- Début Champ de recherche proprietaire-->
       <a-row>
         <a-col :span="8">
-         <a-input-search
-            type="text"
-            placeholder="Rechercher"
-            enter-button
-            @change="onChange"
-            @keyup="onChange"
-            v-model:value="searchText"
-          />
+          <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
+            v-model:value="searchText" />
           <br />
           <!-- Balise  pour lister l'ensemble des proprietaire -->
           <div v-for="(zone, index) in filters" :key="zone.libelle">
@@ -19,7 +13,7 @@
           </div>
           <!-- Balise  pour lister l'ensemble des proprietaire -->
         </a-col>
-       
+
       </a-row>
     </div>
   </a-card>
@@ -56,7 +50,7 @@ export default defineComponent({
           {
             nom: formState.nom.proprietaire,
             prenom: formState.prenom.proprietaire,
-            genre:formState.genre.proprietaire,
+            genre: formState.genre.proprietaire,
             statut: true,
           }
         )
@@ -73,7 +67,7 @@ export default defineComponent({
       libelle_type_transport: "",
       statut: "",
     });
- 
+
     return {
       userName,
       visible,
@@ -83,7 +77,7 @@ export default defineComponent({
       filters: [],
       searchQuery: "",
     };
-     
+
   },
   mounted() {
     console.log("Component mounted");
@@ -94,7 +88,7 @@ export default defineComponent({
       this.$emit("search", this.searchText);
     },
   },
-emits:["newValue"]
+  emits: ["newValue"]
   // computed: {
   //   resultQuery() {
   //     if (this.searchQuery) {
