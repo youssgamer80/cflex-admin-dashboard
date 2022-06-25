@@ -23,6 +23,7 @@ import Listeutilisateur from '../views/administration/ListeUtilisateur.vue'
 import Role from '../views/administration/listeRole.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
+import Trajet from '../views/trajet/ListeTrajet.vue'
 
 
 
@@ -60,7 +61,8 @@ const routes = [
   { path: '/tableau-de-bord/lignepointarret/:data', name: 'liasionLignePointAret', component: LignePointArretMap },
   { path: '/tableau-de-bord/liste-client', name: 'listeclient', component: ListeClientC },
   { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: Listeutilisateur },
-  { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role }
+  { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role },
+  { path: '/tableau-de-bord/liste-trajet', name: 'listeTrajet', component: Trajet }
 
 
 

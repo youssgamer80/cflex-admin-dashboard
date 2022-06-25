@@ -163,6 +163,20 @@ export default [
 
   },
   {
+    title: "Trajets",
+
+    children: [
+
+      {
+        title: "Liste des trajets",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-trajet'
+      },
+    ]
+
+
+  },
+  {
     title: "Tronçon",
 
     children: [

@@ -117,7 +117,7 @@ export default defineComponent({
         .then((resp) => {
           if (resp.status === 200) {
             visible.value = false;
-            message.success("Enregistrement reussi");
+            message.success("Enregistrement reussit");
           } else {
             message.error("impossible!!");
           }
@@ -147,7 +147,7 @@ export default defineComponent({
 
         }
       })
-      console.log("Nom de l'element choisi "+formState.nom+" La latitude :"+formState.lat+ " La longitude :"+formState.lon)
+      console.log("Nom de l'element choisit "+formState.nom+" La latitude :"+formState.lat+ " La longitude :"+formState.lon)
       // options.value.forEach(element =>{
       //   if(formState.lat == element.value){
           
