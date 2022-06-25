@@ -1,7 +1,7 @@
 <template>
     <a-typography-title :level="4">Utilisateur</a-typography-title>
 
-    <!-- <SearchHeaderBorne @search="handleSearch" /> -->
+    <SearchHeaderUtilisateur @search="handleSearchUtilisateur" />
     <a-card :style="{
         padding: '24px',
         background: '#fff',
@@ -26,7 +26,7 @@
                     <div>
 
 
-                        <!-- modification borne ( config sur icon widget ) -->
+
                         <edit-outlined :style="{ color: '#08f26e' }"
                             @click="showModal(record.id, record.nomUtilisateur, record.role.role, record.motDePasse)" />
 
@@ -58,7 +58,7 @@
                 <a-form-item label="nom et prenom" name="nom" :rules="[{ required: true }]">
 
                     <a-input v-model:value="formState.nom" />
-                    <!-- affectation de mot de passe -->
+
                 </a-form-item>
                 <a-form-item label="mot de passe" name="pass" :rules="[{ required: true }]">
                     <a-input v-model:value="formState.pass" />
@@ -89,8 +89,8 @@ import { usePagination } from "vue-request";
 import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import SearchHeaderUtilisateur from "../../components/SearchHeader_utilisateur.vue";
 
-// import SearchHeaderBorne from "../../components/SearchHeader_borne.vue";
 import axios from "axios";
 
 const columns = [
@@ -119,7 +119,7 @@ const columns = [
 
 
 const queryData = (params) => {
-    return axios.get("http://192.168.252.132:4000/utilisateur/list", {
+    return axios.get("http://192.168.252.123:4002/utilisateur/list", {
         params,
     });
 };
@@ -128,24 +128,33 @@ const queryData = (params) => {
 
 export default defineComponent({
     components: {
-        // SearchHeaderBorne,
+        SearchHeaderUtilisateur,
         EditOutlined,
         DeleteOutlined,
+    },
+    data() {
+        return {
+
+            ListeUtilisateur: []
+        }
+
     },
 
     methods: {
 
-        handleSearch(value) {
+        handleSearchUtilisateur(value) {
             let NewdataSource = []
 
             if (value.length > 0) {
 
+
                 this.ListeUtilisateur.filter((item) => {
-                    if (item.idRole.nom.toLowerCase().includes(value.toLowerCase()) || item.libelle.toLowerCase().includes(value.toLowerCase())) {
-                        console.log(item)
+                    console.log("test de recherche", item.nomUtilisateur);
+                    if (item.role.role.toLowerCase().includes(value.toLowerCase()) || item.nomUtilisateur.toLowerCase().includes(value.toLowerCase())) {
+                        console.log(item);
                         NewdataSource.push(item);
                     }
-                    console.log(item.libelle)
+
 
                 })
                 this.dataSource = NewdataSource
@@ -171,7 +180,7 @@ export default defineComponent({
 
 
             const resp = await axios
-                .put(`http://192.168.252.132:4000/utilisateur/updateutilisateur/${formState.id}`, {
+                .put(`http://192.168.252.123:4002/utilisateur/updateutilisateur/${formState.id}`, {
                     "nomUtilisateur": formState.nom,
                     "motDePasse": formState.pass,
                     "statut": true,
@@ -216,9 +225,9 @@ export default defineComponent({
 
             filteredList() {
                 return this.ListeUtilisateur.filter((post) => {
-                    return post.libelle
+                    return post.nomUtilisateur
                         .toLowerCase()
-                        .includes(this.rechercheBorne.toLowerCase());
+                        .includes(this.recherchUtilisateur.toLowerCase());
                 });
             },
 
@@ -236,7 +245,12 @@ export default defineComponent({
 
         const onDelete = (id) => {
             return axios
-                .delete(`http://192.168.252.132:4000/utilisateur/delete/${id}`
+                .delete(`http://192.168.252.123:4002/utilisateur/delete/${id}`,
+                    {
+                        data: {
+                            statut: false,
+                        },
+                    }
                 )
                 .then((resp) => {
                     if (resp.status === 200) {
@@ -305,18 +319,18 @@ export default defineComponent({
 
 
 
-        fetch("http://192.168.252.132:4000/api/roles")
+        fetch("http://192.168.252.123:4002/api/roles")
             .then(response => response.json())
             .then(res => {
-                this.roles = res.data
+                this.roles = res.data;
 
-            })
+            });
 
-        fetch("http://192.168.252.132:4000/utilisateur/list")
+        fetch("http://192.168.252.123:4002/utilisateur/list")
             .then((response) => response.json())
             .then((res) => {
 
-                this.ListeUtilisateur = res.data;
+                this.ListeUtilisateur = res.data.utilisateur;
 
                 console.log(this.ListeUtilisateur);
             });

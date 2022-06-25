@@ -142,7 +142,7 @@ const columns = [
 
 
 const queryData = (params) => {
-    return axios.get("http://192.168.252.132:4000/api/roles", {
+    return axios.get("http://192.168.252.123:4002/api/roles", {
         params,
     });
 };
@@ -188,7 +188,7 @@ export default defineComponent({
 
 
             return axios
-                .post("http://192.168.252.132:4000/api/roles/addRole", {
+                .post("http://192.168.252.123:4002/api/roles/addRole", {
 
                     role: formState.role,
                     statut: true
@@ -217,7 +217,7 @@ export default defineComponent({
 
 
             const resp = await axios
-                .put(`http://192.168.252.132:4000/api/roles/updateRole/${formState.id}`, {
+                .put(`http://192.168.252.123:4002/api/roles/updateRole/${formState.id}`, {
 
                     role: formState.role,
                     statut: true
@@ -228,7 +228,7 @@ export default defineComponent({
                 message.success("Modification reussi");
 
 
-                // this.queryData();
+              
 
 
 
@@ -284,7 +284,7 @@ export default defineComponent({
 
         const onDelete = (id) => {
             return axios
-                .delete(`http://192.168.252.206:4000/api/roles/deleteRole/${id}`,
+                .delete(`http://192.168.252.123:4002/api/roles/deleteRole/${id}`,
                     {
                         data: {
                             statut: false,
@@ -359,7 +359,7 @@ export default defineComponent({
 
 
 
-        fetch("http://192.168.252.132:4000/api/roles")
+        fetch("http://192.168.252.123:4002/api/roles")
             .then((response) => response.json())
             .then((res) => {
                 this.dataListRole = res.data;
