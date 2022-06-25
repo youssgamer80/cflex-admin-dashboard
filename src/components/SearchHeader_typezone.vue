@@ -8,11 +8,7 @@
           <a-input-search type="text" placeholder="Rechercher" enter-button @change="onChange" @keyup="onChange"
             v-model:value="searchText" />
           <br />
-          <!-- Balise  pour lister l'ensemble des types transport -->
-          <div v-for="(zone, index) in filters" :key="zone.libelle">
-            {{ index }}. {{ filter.libelle }}
-          </div>
-          <!-- Balise  pour lister l'ensemble des types transport -->
+         
         </a-col>
         <!-- Fin  Champ de recherche Type Transport-->
 
@@ -53,34 +49,36 @@ export default defineComponent({
 
 
   setup() {
-   
+
     const userName = ref("");
     const visible = ref(false);
     const showModal = () => { visible.value = true };
     //fonction pour enregiqtrer un type de tt
     const onSubmit = (e) => {
-  
-      console.log(e); 
-      
-      return axios
-        .post("http://192.168.252.203:4001/api/typezone/addTypeZone", {
-          libelle:formState.libelle,
-          statut:true,
-          
-        })
-        .then((resp) => {
-          if (resp.status === 200) {
-            visible.value = false;
-            message.success("Enregistrement reussi");
-          } else {
-            message.error("impossible!!");
-          }
-        });
+
+      console.log(e);
+
+      if (formState.libelle != "") {
+        return axios
+          .post("http://192.168.252.203:4001/api/typezone/addTypeZone", {
+            libelle: formState.libelle,
+            statut: true,
+
+          })
+          .then((resp) => {
+            if (resp.status === 200) {
+              visible.value = false;
+              message.success("Enregistrement reussi");
+            } else {
+              message.error("impossible!!");
+            }
+          });
+      } else {
+        message.info("Veuillez remplir les champs vide svp !")
+      }
     };
     const formState = reactive({
-      libelle: "",
-      statut: "",
-     
+      libelle: ""
     });
 
     return {
@@ -89,9 +87,8 @@ export default defineComponent({
       showModal,
       onSubmit,
       formState,
-      filters: [],
       searchQuery: "",
- 
+
     };
   },
   mounted() {
@@ -99,13 +96,13 @@ export default defineComponent({
 
   },
   methods: {
-   
-     onChange() {
+
+    onChange() {
       this.$emit("search", this.searchText);
     },
 
 
-    
+
   },
   computed: {
     resultQuery() {

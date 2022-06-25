@@ -17,7 +17,8 @@
 
 
           <!-- 1RE modal pour l'ajout de la ligne : DEBUT -->
-          <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Modification de la ligne Ligne" @ok="onSubmitLigne">
+          <a-modal v-model:visible="visible" width="1000px" height="1000px" title="Création de la ligne"
+            @ok="onSubmitLigne">
 
             <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
 
@@ -59,8 +60,8 @@
 
               </a-form-item>
 
-              <a-form-item label="Tarif" :rules="[{ required: true }]" >
-                <a-input v-model:value="formState.tarif"  style="width: 120px" />
+              <a-form-item label="Tarif" :rules="[{ required: true }]">
+                <a-input v-model:value="formState.tarif" style="width: 120px" />
               </a-form-item>
 
 
@@ -86,12 +87,12 @@
 
 
           <!-- Deuxieme modal pour l'ajout des points d'arrêt : DEBUT -->
-          
+
           <!-- Deuxieme modal pour l'ajout des points d'arrêt : FIN -->
 
 
 
-          
+
 
 
 
@@ -130,9 +131,6 @@ export default defineComponent({
     const searchQuery = ref('')
 
 
-
-
-
     const handleChangeZone = value => {
       formState.idZoneFk = value;
       console.log(`selected zone : ${formState.idZoneFk}`);
@@ -165,104 +163,112 @@ export default defineComponent({
 
 
 
-
-      // Enregistrement de la longitude et latitude du point de depart
-      formState.ListPointArret.forEach(element => {
-
-        if (formState.depart == element.nom) {
-          formState.depart_longitude = element.longitude
-          formState.depart_latitude = element.latitude
-        }
-      })
+      console.log("NOM", formState.nom)
+      console.log("DEPART", formState.depart)
+      console.log("ARRIVEE", formState.arrivee)
+      console.log("TARIF", formState.tarif)
+      console.log("ZONE", formState.idZoneFk)
 
 
-      // Enregistrement de la longitude et latitude du point d'arrivee
-      formState.ListPointArret.forEach(element => {
+      if (formState.nom != "" && formState.depart != "" && formState.arrivee != "" && formState.tarif != "" && formState.idZoneFk != "") {
 
-        if (formState.arrivee == element.nom) {
-          formState.arrivee_longitude = element.longitude
-          formState.arrivee_latitude = element.latitude
+        // Enregistrement de la longitude et latitude du point de depart
+        formState.ListPointArret.forEach(element => {
 
-          console.log("ARRIVE LONG:", formState.arrivee_longitude)
-          console.log("ARRIVE LAT:", formState.arrivee_latitude)
-        }
-      })
-
-
+          if (formState.depart == element.nom) {
+            formState.iddepart = element.id
+            formState.depart_longitude = element.longitude
+            formState.depart_latitude = element.latitude
+          }
+        })
 
 
-      const resp = await axios
-        .post("http://192.168.252.223:4001/api/lignes/addLigne", {
-          nom: formState.nom,
-          depart: formState.depart,
-          arrivee: formState.arrivee,
-          tarif: formState.tarif,
-          depart_longitude: formState.depart_longitude,
-          depart_latitude: formState.depart_latitude,
-          arrivee_longitude: formState.arrivee_longitude,
-          arrivee_latitude: formState.arrivee_latitude,
-          idZoneFk: formState.idZoneFk
+        // Enregistrement de la longitude et latitude du point d'arrivee
+        formState.ListPointArret.forEach(element => {
 
-        });
+          if (formState.arrivee == element.nom) {
+            formState.idarrivee = element.id
+            formState.arrivee_longitude = element.longitude
+            formState.arrivee_latitude = element.latitude
+
+            console.log("ARRIVE LONG:", formState.arrivee_longitude)
+            console.log("ARRIVE LAT:", formState.arrivee_latitude)
+          }
+        })
 
 
-      // console.log(resp)
-      if (resp.status === 200) {
+
+
+        const resp = await axios
+          .post("http://192.168.252.223:4001/api/lignes/addLigne", {
+            nom: formState.nom,
+            depart: formState.depart,
+            arrivee: formState.arrivee,
+            tarif: formState.tarif,
+            depart_longitude: formState.depart_longitude,
+            depart_latitude: formState.depart_latitude,
+            arrivee_longitude: formState.arrivee_longitude,
+            arrivee_latitude: formState.arrivee_latitude,
+            idZoneFk: formState.idZoneFk
+
+          });
+
 
         // console.log(resp)
-        visible.value = false;
-        formState.id = resp.data.data.id
-        message.success("Ligne ajouté");
-        // visibleAddPoint.value = true
+        if (resp.status === 200) {
+
+          console.log(resp)
+          if (resp.data.data != null) {
+            
+            visible.value = false;
+            formState.id = resp.data.data.id
+            message.success("Ligne ajouté");
 
 
-        // formState.nom = ""
-        // formState.idTypeTransportFk = 0
-        // formState.idZoneFk = 0
-        // formState.arrivee = "",
-        // formState.depart = ""
+            router.push(`/tableau-de-bord/lignepointarret/Add&${formState.id}&${formState.idZoneFk}&${formState.iddepart}&${formState.idarrivee}`)
+            // console.log("router", router)
+            console.log(`Identifiant de la ligne crée : ${formState.id}`)
 
-        // let data ={
-        //   idligne: 2,
-        //   idzone: 3
-        // }
+          }
+          else {
+          message.error("Nom de ligne dejà existant");
 
-        // const data = {
-        //   id: 
-        // }
-      
-        router.push(`/tableau-de-bord/lignepointarret/Add&${formState.id}&${formState.idZoneFk}`)
-        // console.log("router", router)
-        console.log(`Identifiant de la ligne crée : ${formState.id}`)
+          }
 
 
-      } else {
-        visible.value = true
-        message.error("Erreur rencontré lors de l'ajout de la ligne !!");
+        } else {
+          // visible.value = true
+          message.error("Erreur rencontré lors de l'ajout de la ligne !!");
+        }
+
+
+
+        // fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
+        //   .then(response => response.json())
+        //   .then(res => {
+
+        //     formState.PointArretZone = res.data
+        //     console.log("PAR ZONE")
+        //     console.log(formState.PointArretZone)
+
+
+        //   })
+        //   .catch(err => {
+        //     console.log(err)
+        //   })
+
+
       }
+      else {
 
-
-
-      fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
-        .then(response => response.json())
-        .then(res => {
-
-          formState.PointArretZone = res.data
-          console.log("PAR ZONE")
-          console.log(formState.PointArretZone)
-
-
-        })
-        .catch(err => {
-          console.log(err)
-        })
-
+        message.info("Veuillez remplir les champs vide svp !")
+      }
 
 
     };
 
 
-    
+
 
 
 
@@ -277,12 +283,14 @@ export default defineComponent({
       depart_latitude: "",
       arrivee_longitude: "",
       arrivee_latitude: "",
-      idTypeTransportFk: "",
       idZoneFk: "",
 
       ListPointArret: [],
       PointArretName: [],
-      PointArretZone: []
+      PointArretZone: [],
+
+      iddepart: "",
+      idarrivee: ""
       // idZoneparentFk: ""
     });
 
@@ -298,7 +306,7 @@ export default defineComponent({
       formState,
       filters: [],
       dataZone: [],
- 
+
       dataPointArret: [],
       idTypeZoneFk: "",
       idZoneparentFk: "",
@@ -318,7 +326,11 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    
+    console.log("NOM", this.formState.nom)
+      console.log("DEPART", this.formState.depart)
+      console.log("ARRIVEE", this.formState.arrivee)
+      console.log("TARIF", this.formState.tarif)
+      console.log("ZONE", this.formState.idZoneFk)
 
     fetch("http://192.168.252.223:4001/api/zones")
       .then(response => response.json())

@@ -106,7 +106,8 @@ export default defineComponent({
     const onSubmit = async () => {
       visible.value = true;
 
-      const resp = await axios
+     if(formState.libelle != "" && selectzoneparent != "" && selecttypezone != ""){
+       const resp = await axios
         .post("http://192.168.252.203:4001/api/zones/addZone", {
           libelle: formState.libelle,
 
@@ -129,10 +130,14 @@ export default defineComponent({
       } else {
         message.error("impossible!!");
       }
+     }else {
+          // visible.value = true
+          message.error("Erreur rencontré lors de l'ajout de la ligne !!");
+        }
+
     };
     const formState = reactive({
       libelle: "",
-      statut: "",
       // idTypeZoneFk: "",
       // idZoneparentFk: ""
     });

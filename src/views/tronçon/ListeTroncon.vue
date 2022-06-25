@@ -2,31 +2,19 @@
   <a-typography-title :level="4">Liste des tronçons</a-typography-title>
 
   <!-- <SearchHeader @search="handleSearch" /> -->
-  <a-card
-    :style="{
-      padding: '24px',
-      background: '#fff',
-      textAlign: 'center',
-      minHeight: '360px',
-    }"
-    :bordered="false"
-    id="macarte"
-  >
-    <a-table
-      :columns="columns"
-      :row-key="keyTypeTransport"
-      :data-source="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-    >
+  <a-card :style="{
+    padding: '24px',
+    background: '#fff',
+    textAlign: 'center',
+    minHeight: '360px',
+  }" :bordered="false" id="macarte">
+    <a-table :columns="columns" :row-key="keyTypeTransport" :data-source="dataSource" :pagination="pagination"
+      :loading="loading" @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
         <!--------------------------------------------------------------------------------------DEBUT AFFICHAGE DES INFORMATIONS SUR UN TRONÇON-------------------------------------------------------------------->
-        <template v-if="column.dataIndex === 'idPointArretBFk'"
-          >{{ text.nom }}
+        <template v-if="column.dataIndex === 'idPointArretBFk'">{{ text.nom }}
         </template>
-        <template v-if="column.dataIndex === 'idPointArretAFk'"
-          >{{ text.nom }}
+        <template v-if="column.dataIndex === 'idPointArretAFk'">{{ text.nom }}
         </template>
         <template v-if="column.dataIndex === 'statut'">
           {{ record.idPointArretAFk.idZoneFk.idZoneparentFk.zoneparent }}
@@ -34,19 +22,10 @@
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--------------------------------------------------------------------------------------DEBUT MODALE MODIFIER TRONÇON-------------------------------------------------------------------------------------->
-            <a-modal
-              v-model:visible="visible"
-              title="Modification"
-              @ok="onSubmit"
-            >
+            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
               <!--------------------------------------------------------------------------------------FORMULAIRE MODIFICATION TRONÇON------------------------------------------------------------------------------------->
-              <a-form
-                name="basic"
-                autocomplete="off"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
-                @finish="onFinish"
-              >
+              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
+                @finish="onFinish">
                 <a-form-item label="libelle" name="libelle">
                   <a-input v-model:value="formState.libelle" />
                 </a-form-item>
@@ -54,26 +33,22 @@
               <!--------------------------------------------------------------------------------------FORMULAIRE MODIFICATION TRONÇON------------------------------------------------------------------------------------->
             </a-modal>
             <!-------------------------------------------------------------------------------------- FIN MODALE MODIFIER TRONÇON -------------------------------------------------------------------------------------->
-          
-            <eye-outlined
-              :style="{ color: '#25b08' }"
-              @click="ModalTronçon(record.id)"
-            />
+
+            <eye-outlined :style="{ color: '#25b08' }" @click="ModalTronçon(record.id)" />
             <a-divider type="vertical" />
             <!-------------Icon pour avoir accès à la carte map------------------>
-              <pushpin-outlined
-              :style="{ color: '#08f26e' }"
-              @click="AffectMap(record.idPointArretAFk.latitude, record.idPointArretAFk.longitude ,record.idPointArretAFk.nom , record.idPointArretBFk.latitude, record.idPointArretBFk.longitude ,record.idPointArretBFk.nom )"
-            />
-            
+            <pushpin-outlined :style="{ color: '#08f26e' }"
+              @click="AffectMap(record.idPointArretAFk.latitude, record.idPointArretAFk.longitude, record.idPointArretAFk.nom, record.idPointArretBFk.latitude, record.idPointArretBFk.longitude, record.idPointArretBFk.nom)" />
+
             <!--------------------------------------------------------------------------------------DEBUT POP UP SUPPRIMER TRONÇON-------------------------------------------------------------------------------------->
-            <a-popconfirm
-              v-if="dataSource.length"
-              title="Voulez vous supprimez?"
-              @confirm="onDelete(record.id)"
-            > <a-divider type="vertical" />
-              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
-              <template> <p>test</p></template>
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+              <a-divider type="vertical" />
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
+              <template>
+                <p>test</p>
+              </template>
             </a-popconfirm>
             <!--------------------------------------------------------------------------------------FIN POP UP SUPPRIMER TRONÇON-------------------------------------------------------------------------------------->
           </div>
@@ -81,48 +56,36 @@
       </template>
     </a-table>
     <div>
-      <a-modal
-        v-model:visible="visibleTroncon"
-        title="Detail sur le tronçon"
-        @ok="onSubmit"
-      >
-       <!--------------------------------------------------------------------------------DEBUT TABLEAU D'AFFICHAGE DES DETAILS SUR UN TRONÇON------------------------------------------------------------------------------------>
-        <a-table
-          :columns="columns2"
-          :row-key="keyTypeTransport"
-          :data-source="formState.dataSourceTronçons"
-          :loading="loading"
-          @change="handleTableChange"
-        >
+      <a-modal v-model:visible="visibleTroncon" title="Detail sur le tronçon" @ok="onSubmit">
+        <!--------------------------------------------------------------------------------DEBUT TABLEAU D'AFFICHAGE DES DETAILS SUR UN TRONÇON------------------------------------------------------------------------------------>
+        <a-table :columns="columns2" :row-key="keyTypeTransport" :data-source="formState.dataSourceTronçons"
+          :loading="loading" @change="handleTableChange">
           <template #bodyCell="{ column, text, record }">
             <p v-if="column.dataIndex === 'idTypeTransportFk'">
               {{ text.id }}
             </p>
 
             <template v-else-if="['action'].includes(column.dataIndex)">
-              <edit-outlined
-                :style="{ color: '#08f26e' }"
-                @click="showModal(record.id, record.libelleTypeTransport)"
-              />
+              <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.libelleTypeTransport)" />
               <a-divider type="vertical" />
-              <a-popconfirm
-              v-if="dataSource.length"
-              title="Voulez vous supprimez?"
-              @confirm="onDelete(record.id )"
-            > 
-              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
-              <template> <p>test</p></template>
-            </a-popconfirm>
+              <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+                <a>
+                  <delete-outlined :style="{ color: '#f73772' }" />
+                </a>
+                <template>
+                  <p>test</p>
+                </template>
+              </a-popconfirm>
             </template>
           </template>
         </a-table>
-         <!-------------------------------------------------------------------------------- FIN TABLEAU D'AFFICHAGE DES DETAILS SUR UN TRONÇON------------------------------------------------------------------------------------>
+        <!-------------------------------------------------------------------------------- FIN TABLEAU D'AFFICHAGE DES DETAILS SUR UN TRONÇON------------------------------------------------------------------------------------>
       </a-modal>
     </div>
 
     <!--La div pour -->
     <div id="mapid"></div>
-    
+
   </a-card>
 </template>
 
@@ -236,14 +199,14 @@ export default defineComponent({
         )
         .addTo(formState.map);
 
-     
+
     });
 
-    const AffectMap = (latA, lonA, nomA , latB, lonB, nomB) => {
+    const AffectMap = (latA, lonA, nomA, latB, lonB, nomB) => {
       const acard = document.getElementById("macarte");
 
       console.log("HAUTEUR: ", acard.scrollHeight);
-      
+
 
       window.scrollTo({
         top: acard.scrollHeight,
@@ -253,13 +216,13 @@ export default defineComponent({
 
       formState.map.eachLayer(function (layer) {
 
-        console.log("LAYER PANE :",layer.options.pane)
+        console.log("LAYER PANE :", layer.options.pane)
         if (
           typeof layer.options.pane !== undefined &&
           layer.options.pane === "markerPane"
         ) {
           formState.map.removeLayer(layer);
-         
+
         }
 
 
@@ -268,13 +231,13 @@ export default defineComponent({
           layer.options.pane === "overlayPane"
         ) {
           formState.map.removeLayer(layer);
-         
+
         }
 
-     
+
       });
-// Pour faire un traçage sur la carte map
-fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62488b5819dc6c8d4cd6b9d35d216f74c9c6&start=${lonA},${latA}&end=${lonB},${latB}`)
+      // Pour faire un traçage sur la carte map
+      fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62488b5819dc6c8d4cd6b9d35d216f74c9c6&start=${lonA},${latA}&end=${lonB},${latB}`)
         .then(res => res.json()
           .then(data => {
 
@@ -297,7 +260,7 @@ fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3
         .openPopup()
         .addTo(formState.map);
 
- leaflet
+      leaflet
         .marker([latB, lonB])
         .bindPopup("<b>LIEU :</b><br>" + nomB)
         .openPopup()
