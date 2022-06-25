@@ -82,7 +82,9 @@
 
     <!--Début Modale Carte Point arrêt: DEBUT -->
 
-    
+    <a-modal v-model:visible="visibleMap" title="Modification" @ok="onSubmitMap">
+
+    </a-modal>
 
 
     <div id="mapid"></div>

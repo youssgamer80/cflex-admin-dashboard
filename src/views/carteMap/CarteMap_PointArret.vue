@@ -103,6 +103,8 @@ export default defineComponent({
             if (typePointArret.value == 0) {
               console.log("TYPE POINT ARRET == 0 ")
               message.success(`${res.data.length} Point d'arrêt dans cette zone`)
+              map.panTo(new leaflet.LatLng(res.data[0].latitude, res.data[0].longitude));
+
               res.data.forEach(element => {
                 console.log("LATITUDE :", element.latitude, " LONGITUDE :", element.longitude)
                 leaflet.marker([element.latitude, element.longitude]).bindPopup('<b>LIEU :</b><br>' + element.nom).openPopup().addTo(map)
@@ -125,24 +127,7 @@ export default defineComponent({
                 }
               });
 
-              // res.data.filter((item) => {
-              //   console.log("ITEM")
-              // console.log(item.idtypePointArret.id)
-              //   if (item.idtypePointArret.id.toLowerCase().includes(typePointArret.value)) {
-              //     console.log("trouver", item.idtypePointArret.id)
-              //   }
-              //   else {
-
-              //       if( typePointArret.value == 1){
-              //         message.info("Aucun point d'arrêt physique dans cette zone")
-              //       }
-              //       else{
-              //          message.info("Aucun point d'arrêt virtuel dans cette zone")
-              //       }
-
-              //   }
-
-              // })
+              
             }
 
           }

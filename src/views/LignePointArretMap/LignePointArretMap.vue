@@ -37,15 +37,25 @@
 
 
 
-    <a-button type="primary" @click="onSubmitAddingCheckbox">Ajouter</a-button>
+   <div :style="{
+      marginBottom: '24px',
+      paading: '24px'
+    }">
+     <p>Route : </p> {{ formState.route }}
+     <a-button type="primary" @click="onSubmitAddingCheckbox">Ajouter</a-button>
 
-    <button type="primary" @click="onSubmitTroncon(true)">
-      Generer tronçon dans les deux sens
-    </button>
+    <a-button type="primary" @click="onSubmitTroncon(true)" :style="{
+      marginLeft: '24px',
+    }">
+      Generer tronçon-(deux sens)
+    </a-button>
 
-    <button type="primary" @click="onSubmitTroncon(false)">
-      Generer tronçon dans un seul
-    </button>
+    <a-button type="primary" @click="onSubmitTroncon(false)" :style="{
+      marginLeft: '24px',
+    }">
+      Generer tronçon(un seul)
+    </a-button>
+   </div>
 
 
 
@@ -343,109 +353,140 @@ export default defineComponent({
       //   .catch(err => console.log(err));
 
 
-    console.log("ROUTE", router.params.data)
+      console.log("ROUTE", router.params.data)
 
-    dataMap = router.params.data.split('&')
-    formState.idligne = dataMap[1]
-    console.log("ACTION", dataMap[0])
-    console.log("IDLIGNE", formState.idligne)
-    console.log("IDZONE", dataMap[2])
+      dataMap = router.params.data.split('&')
+      formState.idligne = dataMap[1]
+      console.log("ACTION", dataMap[0])
+      console.log("IDLIGNE", formState.idligne)
+      console.log("IDZONE", dataMap[2])
 
 
 
-    console.log("DATA", dataMap)
-    console.log("Dans la condition de l'action ")
-    if (dataMap[0] == "Update") {
+      console.log("DATA", dataMap)
+      console.log("Dans la condition de l'action ")
+      if (dataMap[0] == "Update") {
 
-      fetch(`http://localhost:4001/api/lignespointarret/${dataMap[1]}`)
-        .then(response => response.json())
-        .then(res => {
+        formState.route ="Update"
 
-          res.data.forEach((element) => {
-            console.log("IDPOINT arrete ", element.idPointArretFk.id)
-            formState.PointArretName.push(element.idPointArretFk.id)
+        fetch(`http://localhost:4001/api/lignespointarret/${dataMap[1]}`)
+          .then(response => response.json())
+          .then(res => {
 
-            leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
+            res.data.forEach((element) => {
+              console.log("IDPOINT arrete ", element.idPointArretFk.id)
+              formState.PointArretName.push(element.idPointArretFk.id)
+
+              leaflet.marker([element.idPointArretFk.latitude, element.idPointArretFk.longitude]).bindPopup('<b>LIEU :</b><br>' + element.idPointArretFk.nom).openPopup().addTo(map)
+
+            })
 
           })
-
-        })
-        .catch(err => {
-          console.log(err)
-        })
+          .catch(err => {
+            console.log(err)
+          })
 
 
-      // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-      fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
-        .then(response => response.json())
-        .then(res => {
+        // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
+        fetch(`http://localhost:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+          .then(response => response.json())
+          .then(res => {
 
-          formState.PointArretZone = res.data
+            formState.PointArretZone = res.data
 
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      console.log("Modification de la BD")
-    }
-    else {
+          })
+          .catch(err => {
+            console.log(err)
+          })
+        console.log("Modification de la BD")
+      }
+      else {
+
+        formState.route = "Add"
+
+        // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
+        fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
+          .then(response => response.json())
+          .then(res => {
 
 
-
-      // console.log("VALEUR DE ACTION  DATAMAP:", dataMap[0])
-      fetch(`http://192.168.252.206:4000/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${dataMap[2]}`)
-        .then(response => response.json())
-        .then(res => {
-
-          formState.PointArretZone = res.data
-
-          console.log("LISTE DES POINT ARRET POUR LA ZONE", formState.PointArretZone)
-
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
+            formState.PointArretZone = res.data
+            formState.PointArretName.push(dataMap[3])
+            formState.PointArretName.push(dataMap[4])
 
 
 
-
-  })
-
-
-const formState = reactive({
-  idligne: "",
-  PointArretName: [],
-  PointArretZone: [],
-  troncon: [],
-  tronconActive: []
-  // Update : 0
-  // idZoneparentFk: ""
-});
-
-return {
-  choicePoint,
-  map,
-  formState,
-  // DeleteMarker,
-  dataMap,
-  onSubmitAddingCheckbox,
-  onUpdateCheckbox,
-  onSubmitTroncon,
-  visibleTroncon,
-  onValidateTroncon,
-  loading
+            formState.PointArretName.forEach((element) => {
 
 
-};
+              fetch(`http://localhost:4001/api/pointarrets/${element}`)
+                .then(response => response.json())
+                .then(res => {
+
+                  // formState.PointArretZone = res.data
+                  console.log("POINT ARRET PAR ID", element)
+                  console.log(res.data)
+
+
+                  console.log("LATITUDE :", res.data.latitude, " LONGITUDE :", res.data.longitude)
+                  leaflet.marker([res.data.latitude, res.data.longitude]).bindPopup('<b>LIEU :</b><br>' + res.data.nom).openPopup().addTo(map)
+
+
+                })
+                .catch(err => {
+                  console.log(err)
+                })
+            })
+
+
+            console.log("LISTE DES POINT ARRET POUR LA ZONE", formState.PointArretZone)
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+
+
+
+
+    })
+
+
+    const formState = reactive({
+      idligne: "",
+      PointArretName: [],
+      PointArretZone: [],
+      troncon: [],
+      tronconActive: [],
+      route:""
+      // Update : 0
+      // idZoneparentFk: ""
+    });
+
+    return {
+      choicePoint,
+      map,
+      formState,
+      // DeleteMarker,
+      dataMap,
+      onSubmitAddingCheckbox,
+      onUpdateCheckbox,
+      onSubmitTroncon,
+      visibleTroncon,
+      onValidateTroncon,
+      loading
+
+
+    };
   },
 
 
-mounted() {
+  mounted() {
 
-  console.log("Component mounted");
+    console.log("Component mounted");
 
-},
+  },
 });
 </script>
 
