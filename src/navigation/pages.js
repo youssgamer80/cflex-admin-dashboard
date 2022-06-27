@@ -1,20 +1,8 @@
 export default [
   {
-    header: 'Type vehicule & demandes',
+    header: 'Demandes & véhicules',
   },
-  {
-    title: 'Vehicule',
-    route: '/tableau-de-bord/liste-vehicules',
-    icon: 'MailIcon',
-    children: [
-      {
-        title: 'Liste des vehicules',
-        icon: 'FileTextIcon',
-        route: '/tableau-de-bord/liste-vehicule',
-      },
-
-    ],
-  },
+ 
 
 
   {
@@ -34,21 +22,6 @@ export default [
     ],
   },
   {
-    title: 'Type Transport',
-    icon: 'FileTextIcon',
-    children: [
-      {
-        title: 'Liste des types de transport',
-        icon: 'FileTextIcon',
-        route: '/tableau-de-bord/liste-type-transport',
-      },
-
-    ],
-  },
-  {
-    header: 'proprietaire',
-  },
-  {
     title: 'Proprietaire',
     children: [
       {
@@ -61,21 +34,60 @@ export default [
 
   },
   {
-    title: "client usager",
-    icon: "FiletextIcon",
+    title: 'Vehicule',
+    icon: 'MailIcon',
+    children: [
+      {
+        title: 'Liste des vehicules',
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-vehicule',
+      },
+
+    ],
+  },
+  {
+    title: "Tracker Gps",
     children: [
 
       {
-        title: "Liste des clients usagers",
+        title: "Liste des tracker gps",
         icon: 'FileTextIcon',
-        route: '/tableau-de-bord/liste-client'
+        route: '/tableau-de-bord/liste-trackers_gps'
       },
     ]
 
   },
-
+ 
   {
-    header: 'Zone et Type de zone',
+    header: 'En attente de nommination',
+  },
+  {
+    title: "Point d'arrêt",
+    icon: 'FiletextIcon',
+    children: [
+      {
+        title: "Liste des Points d'arrêts",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-pointarret'
+      },
+      {
+        title: "Affichage sur la carte ",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/afficahgeCarteMap'
+      }
+    ]
+  },
+  {
+    title: 'Bornes',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'Gestion des Bornes',
+        route: '/tableau-de-bord/liste-borne',
+      },
+
+
+    ],
   },
   {
     title: 'Zone',
@@ -96,20 +108,30 @@ export default [
     ],
   },
   {
-    title: "Point d'arrêt",
-    icon: 'FiletextIcon',
+    title: 'Type Transport',
+    icon: 'FileTextIcon',
     children: [
       {
-        title: "Liste des Points d'arrêts",
+        title: 'Liste des types de transport',
         icon: 'FileTextIcon',
-        route: '/tableau-de-bord/liste-pointarret'
+        route: '/tableau-de-bord/liste-type-transport',
       },
+
+    ],
+  },
+  {
+    title: "Tronçon",
+
+    children: [
+
       {
-        title: "Affichage sur la carte ",
+        title: "Liste des tronçons",
         icon: 'FileTextIcon',
-        route: '/tableau-de-bord/afficahgeCarteMap'
-      }
+        route: '/tableau-de-bord/liste-troncon'
+      },
     ]
+
+
   },
   {
     title: "Ligne",
@@ -120,45 +142,6 @@ export default [
         title: "Liste des Lignes",
         icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-ligne'
-      },
-    ]
-
-  },
-  {
-    title: "Mode de Deplacement",
-    icon: "FiletextIcon",
-    children: [
-
-      {
-        title: "Liste des modes de deplacement",
-        icon: 'FileTextIcon',
-        route: "/tableau-de-bord/liste-mode-deplacement"
-      },
-    ]
-
-
-
-  },
-  {
-    title: 'Bornes',
-    icon: 'FileTextIcon',
-    children: [
-      {
-        title: 'Gestion des Bornes',
-        route: '/tableau-de-bord/liste-borne',
-      },
-
-
-    ],
-  },
-  {
-    title: "Tracker Gps",
-    children: [
-
-      {
-        title: "Liste des tracker gps",
-        icon: 'FileTextIcon',
-        route: '/tableau-de-bord/liste-trackers_gps'
       },
     ]
 
@@ -177,20 +160,34 @@ export default [
 
 
   },
-  {
-    title: "Tronçon",
+ 
+  
 
+  // {
+  //   header: 'Zone et Type de zone',
+  // },
+ 
+  
+  
+  {
+    title: "Mode de Deplacement",
+    icon: "FiletextIcon",
     children: [
 
       {
-        title: "Liste des tronçons",
+        title: "Liste des modes de deplacement",
         icon: 'FileTextIcon',
-        route: '/tableau-de-bord/liste-troncon'
+        route: "/tableau-de-bord/liste-mode-deplacement"
       },
     ]
 
 
+
   },
+ 
+ 
+  
+  
 
   {
     header: 'Utilisateurs et permissions',
@@ -211,10 +208,20 @@ export default [
         route: '/tableau-de-bord/liste-role'
       },
     ]
+  },
+  {
+    title: "client usager",
+    icon: "FiletextIcon",
+    children: [
 
+      {
+        title: "Liste des clients usagers",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-client'
+      },
+    ]
 
   },
-
 
 
 ]

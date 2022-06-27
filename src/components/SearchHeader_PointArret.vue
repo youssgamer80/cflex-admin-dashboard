@@ -126,7 +126,6 @@ export default defineComponent({
       }
 
 
-<<<<<<< HEAD
       return axios
         .post("http://192.168.252.223:4001/api/pointarrets/addPointArret", {
           nom: formState.nom,
@@ -146,8 +145,6 @@ export default defineComponent({
             message.error("impossible!!");
           }
         });
-=======
->>>>>>> 1f10ab2e78d9c0e2837c7ed9415fe8a9cb68f192
     };
     const formState = reactive({
       nom: "",
@@ -173,11 +170,7 @@ export default defineComponent({
 
         }
       })
-<<<<<<< HEAD
       console.log("Nom de l'element choisit "+formState.nom+" La latitude :"+formState.lat+ " La longitude :"+formState.lon)
-=======
-      console.log("Nom de l'element choisi " + formState.nom + " La latitude :" + formState.lat + " La longitude :" + formState.lon)
->>>>>>> 1f10ab2e78d9c0e2837c7ed9415fe8a9cb68f192
       // options.value.forEach(element =>{
       //   if(formState.lat == element.value){
 
