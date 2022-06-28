@@ -126,6 +126,25 @@ export default defineComponent({
       }
 
 
+      return axios
+        .post("http://192.168.252.223:4001/api/pointarrets/addPointArret", {
+          nom: formState.nom,
+          longitude: formState.lon,
+          latitude: formState.lat,
+          idZoneFk: {
+            id: formState.idZoneFk
+          },
+          statut: true,
+
+        })
+        .then((resp) => {
+          if (resp.status === 200) {
+            visible.value = false;
+            message.success("Enregistrement reussit");
+          } else {
+            message.error("impossible!!");
+          }
+        });
     };
     const formState = reactive({
       nom: "",
@@ -151,7 +170,7 @@ export default defineComponent({
 
         }
       })
-      console.log("Nom de l'element choisi " + formState.nom + " La latitude :" + formState.lat + " La longitude :" + formState.lon)
+      console.log("Nom de l'element choisit "+formState.nom+" La latitude :"+formState.lat+ " La longitude :"+formState.lon)
       // options.value.forEach(element =>{
       //   if(formState.lat == element.value){
 

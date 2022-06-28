@@ -261,7 +261,7 @@ export default defineComponent({
         .addTo(formState.map);
 
       leaflet
-        .marker([latB, lonB])
+                            .marker([latB, lonB])
         .bindPopup("<b>LIEU :</b><br>" + nomB)
         .openPopup()
         .addTo(formState.map);

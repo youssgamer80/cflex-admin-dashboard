@@ -23,6 +23,7 @@ import Listeutilisateur from '../views/administration/ListeUtilisateur.vue'
 import Role from '../views/administration/listeRole.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
+import Trajet from '../views/trajet/ListeTrajet.vue'
 
 
 
@@ -49,7 +50,7 @@ const routes = [
   // { path: '/tableau-de-bord/ajout-borne', name: 'liste-proprietaire', component: AjoutBorne },
   { path: '/tableau-de-bord/liste-troncon', name: 'liste-troncon', component: ListeTroncon},
  
-  { path: '/tableau-de-bord/liste-vehicules', name: 'liste-vehicules', component: ListeVehicule},
+  { path: '/tableau-de-bord/liste-vehicule', name: 'liste-vehicule', component: ListeVehicule},
   { path: '/tableau-de-bord/type-transport', name: 'type-transport', component: AjoutTypeTransport },
   { path: '/tableau-de-bord/liste-zone', name: 'liste-zones', component: ListeZone },
   { path: '/tableau-de-bord/type-zone', name: 'type-zone', component: ListeTypeZone },
@@ -60,7 +61,8 @@ const routes = [
   { path: '/tableau-de-bord/lignepointarret/:data', name: 'liasionLignePointAret', component: LignePointArretMap },
   { path: '/tableau-de-bord/liste-client', name: 'listeclient', component: ListeClientC },
   { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: Listeutilisateur },
-  { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role }
+  { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role },
+  { path: '/tableau-de-bord/liste-trajet', name: 'listeTrajet', component: Trajet }
 
 
 
