@@ -42,7 +42,7 @@
       paading: '24px'
     }">
      <p>Route : </p> {{ formState.route }}
-     <a-button type="primary" @click="onSubmitAddingCheckbox">Ajouter</a-button>
+     <a-button type="primary" @click="onUpdateCheckbox">Modifier</a-button>
 
     <a-button type="primary" @click="onSubmitTroncon(true)" :style="{
       marginLeft: '24px',
@@ -229,7 +229,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .post("http://localhost:4001/api/lignespointarret/addLignePointArret", {
+        .put("http://localhost:4001/api/lignespointarret/updateligne/", {
           idLigneFk: formState.idligne,
           idPointArretFk: formState.PointArretName
         });
@@ -239,14 +239,14 @@ export default defineComponent({
       if (resp.status === 200) {
 
         // console.log(resp)
-        message.success("Point arrêt ajouté");
+        message.success("Point arrêt modifié");
 
         // router.push("/tableau-de-bord/liste-pointarret")
 
 
       } else {
         // console.log(resp)
-        message.error("Erreur rencontré lors de l'ajout des points d'arrêts !!");
+        message.error("Erreur rencontré lors de la modification des points d'arrêts !!");
       }
 
 
