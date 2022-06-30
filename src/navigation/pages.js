@@ -14,10 +14,10 @@ export default [
         route: '/tableau-de-bord/liste-demandes',
       },
 
-      {
-        title: 'Demande annulée',
-        route: '/tableau-de-bord/demande-annulee',
-      },
+      // {
+      //   title: 'Demande annulée',
+      //   route: '/tableau-de-bord/demande-annulee',
+      // },
 
     ],
   },
@@ -159,6 +159,18 @@ export default [
     ]
 
 
+  },
+  {
+    title: 'Itineraire',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'Gerener des Itineraires',
+        route: '/tableau-de-bord/generer-itineraire',
+      },
+
+
+    ],
   },
  
   

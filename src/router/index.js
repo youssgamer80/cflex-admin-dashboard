@@ -24,6 +24,7 @@ import Role from '../views/administration/listeRole.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 import Trajet from '../views/trajet/ListeTrajet.vue'
+import GenererItineraire from '../views/itineraire/GenererItineraire.vue'
 
 
 
@@ -47,6 +48,7 @@ const routes = [
 
   { path: '/tableau-de-bord/liste-trackers_gps', name: 'liste-trackers_gps', component: ListeTrackersGps },
   { path: '/tableau-de-bord/liste-borne', name: 'liste-borne', component: ListeBorne },
+  { path: '/tableau-de-bord/generer-itineraire', name: 'generer-itineraire', component: GenererItineraire },
   // { path: '/tableau-de-bord/ajout-borne', name: 'liste-proprietaire', component: AjoutBorne },
   { path: '/tableau-de-bord/liste-troncon', name: 'liste-troncon', component: ListeTroncon},
  

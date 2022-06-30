@@ -1,188 +1,80 @@
 <template>
-  <a-typography-title :level="4">Liste proprietaire</a-typography-title>
-
-  <SearchHeadeProprietaire @search="handleSearch" />
-  <a-card
-    :style="{
-      padding: '24px',
-      background: '#fff',
-      textAlign: 'center',
-      minHeight: '360px',
-    }"
-    :bordered="false"
-    id="macarte"
-  >
-    <a-table
-      :columns="columns"
-      :row-key="keyTypeTransport"
-      :data-source="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
+  <a-typography-title :level="4">Gestion des itineraires</a-typography-title>
+  <div class="container" :style="{
+         position: relative,
+          left: '100px',
+       
+      }">
+    <a-card
+      :style="{
+        padding: '24px',
+        background: '#fff',
+        textAlign: 'center',
+        minHeight: '360px',
+       
+      }"
+      :bordered="false"
+      id="carte"
     >
-      <template #bodyCell="{ column, text, record }">
-        <template v-if="column.dataIndex === 'nom'">{{ text }} </template>
-        <template v-if="column.dataIndex === 'statut'">
-          <h1 v-if="text">Disponible</h1>
-          <h1 v-else>Indisponible</h1>
-        </template>
-        <template v-else-if="['action'].includes(column.dataIndex)">
-          <div>
-            <!--Début Modale Modifier proprietaire-->
-
-            <a-modal
-              v-model:visible="visible"
-              title="Modification"
-              @ok="onSubmit"
-            >
-              <!--Formulaire modification  information du proprietaire-->
-              <a-form
-                name="basic"
-                autocomplete="off"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
-                @finish="onFinish"
-              >
-                <a-form-item label="Nom" name="nom">
-                  <a-input v-model:value="formState.nom" />
-                </a-form-item>
-                <a-form-item label="Prenom" name="prenom">
-                  <a-input v-model:value="formState.prenom" />
-                </a-form-item>
-                <a-form-item label="Genre" name="genre">
-                  <a-input v-model:value="formState.genre" />
-                </a-form-item>
-                <!-- <a-form-item label="Prenom" name="Prenom">
-                </a-form-item> -->
-              </a-form>
-              <!--Formulaire modification  information du proprietaire-->
-            </a-modal>
-            <!--Fin Modale Modifier proprietaire-->
-            <!--Début popup Supprimer proprietaire-->
-            <a-popconfirm
-              v-if="dataSource.length"
-              title="Voulez vous supprimez?"
-              @confirm="onDelete(record.id)"
-            >
-              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
-            </a-popconfirm>
-            <a-divider type="vertical" />
-            <!--Fin popup Supprimer proprietaire-->
-            <!--Début modal :Voir plus d'information sur le proprietaire et l'ensemble de ses véhicules-->
-
-            <eye-outlined
-              :style="{ color: '#f73772' }"
-              @click="ModalProprio(record.id)"
-            />
-            <!-- Fin modal: Voir plus d'information sur le proprietaire et l'ensemble de ses véhicules-->
-          </div>
-        </template>
-      </template>
-    </a-table>
-
-    <div>
-      <a-modal
-        v-model:visible="visibleProprio"
-        title="Liste des véhicules"
-        @ok="handleOk2"
-        width="1000px"
-      >
-        <!--Tableau d'affichage des véhicules d'un proprietaire-->
-
-        <a-table
-          :columns="columns2"
-          :row-key="keyTypeTransport"
-          :data-source="formState.dataSourceVehicule"
-          :pagination="pagination"
-          :loading="loading"
-          @change="handleTableChange"
-        >
-          <template #bodyCell="{ column, text }">
-           
-            <p v-if="column.dataIndex === 'marque'">{{ text }}</p>
-             <p v-if="column.dataIndex === 'immatriculation'">{{ text }}</p>
-            <p v-if="column.dataIndex === 'modele'"> {{ text }}</p>
-         <template v-else-if="['action'].includes(column.dataIndex)"> <a-button type="primary" @click="showModal"> Genérer un token </a-button>
-         </template>
+      <a-col :span="15">
+        <a-input-search
+          type="text"
+          placeholder="Rechercher une zone"
+          enter-button
+          @change="onChange"
+          @keyup="onChange"
+          v-model:value="searchText"
+          :style="{marginBottom: 10}"
+        />
+        <br />
+      </a-col>
+      <!-- <a-typography-title :level="5">Selectionnez la zone</a-typography-title> -->
+      <a-table :columns="columns" :data-source="dataSource" :loading="loading">
+        <template #bodyCell="{ column, text }">
+          <template v-if="column.dataIndex === 'libelle'"
+            >{{ text }}
           </template>
-        </a-table>
-      </a-modal>
-    </div>
-  </a-card>
+           <template v-else-if="['action'].includes(column.dataIndex)"> <a-button type="primary" @click="showModal">
+          Genérer 
+        </a-button></template>
+          </template
+        >
+      </a-table>
+    </a-card>
+    <a-card id="carte2">
+      <a-form
+        :model="formState"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <!-- <a-button type="primary" @click="showModal">
+          Genérer un itineraire
+        </a-button> -->
+      </a-form>
+    </a-card>
+  </div>
 </template>
 
-<script>
+ <script>
 import { usePagination } from "vue-request";
 import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
-import {
-  // EditOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-} from "@ant-design/icons-vue";
+// import {
+//   // EditOutlined,
+//   DeleteOutlined,
+//   EyeOutlined,
+// } from "@ant-design/icons-vue";
 
-import SearchHeadeProprietaire from "../../components/SearchHeader_proprietaire.vue";
+// import SearchHeadeProprietaire from "../../components/SearchHeader_proprietaire.vue";
 import axios from "axios";
 
 const columns = [
   {
-    title: "nom",
-    dataIndex: "nom",
+    title: "libelle",
+    dataIndex: "libelle",
     sorter: true,
   },
-  {
-    title: "Prenom",
-    dataIndex: "prenom",
-  },
-  // {
-  //   title: "statut",
-  //   dataIndex: "statut",
-  // },
-  {
-    title: "Genre",
-    dataIndex: "genre",
-  },
-  {
-    title: "Telephone",
-    dataIndex: "telephone",
-  },
-  {
-    title: "Permis",
-    dataIndex: "permis",
-  },
-  {
-    title: "Date Naissance",
-    dataIndex: "dateNaissance",
-  },
-  {
-    title: "Action",
-    dataIndex: "action",
-  },
-];
-const columns2 = [
-  {
-    title: "Marque",
-    dataIndex: "marque",
-    sorter: true,
-  },
-  {
-    title: "Modele",
-    dataIndex: "modele",
-  },
-  {
-    title: "Immatriculation",
-    dataIndex: "immatriculation",
-  },
-  
-  
-  {
-    title: "Nombre de place",
-    dataIndex: "nbPlace",
-  },
-  {
-    title: "Carte Grise",
-    dataIndex: "carteGrise",
-  },
+
   {
     title: "Action",
     dataIndex: "action",
@@ -191,7 +83,7 @@ const columns2 = [
 
 // Consomation api d'affichage liste des proprietaires
 const queryData = (params) => {
-  return axios.get("http://192.168.252.206:4000/proprietaire/list", {
+  return axios.get("http://192.168.252.206:4000/api/zones", {
     params,
   });
 };
@@ -207,12 +99,12 @@ const queryData = (params) => {
 
 // Declaration des différents compsants utilisés
 export default defineComponent({
-  components: {
-    SearchHeadeProprietaire,
-    // EditOutlined,
-    DeleteOutlined,
-    EyeOutlined,
-  },
+  // components: {
+  //   SearchHeadeProprietaire,
+  //   // EditOutlined,
+  //   DeleteOutlined,
+  //   EyeOutlined,
+  // },
   // Méthode pour la recheerche d'un proprietaire
   methods: {
     handleSearch(value) {
@@ -280,7 +172,7 @@ ${id}`
       current,
       pageSize,
     } = usePagination(queryData, {
-      formatResult: (res) => res.data.data.proprietaire,
+      formatResult: (res) => res.data.data,
       pagination: {
         currentKey: "page",
         pageSizeKey: "results",
@@ -365,7 +257,7 @@ ${id}`
       pagination,
       loading,
       columns,
-      columns2,
+
       handleTableChange,
       onDelete,
       handleOk,
@@ -415,7 +307,20 @@ ${id}`
 </script>
 
 <style>
-#macarte {
-  box-shadow: 5px 8px 24px 5px rgba(208, 216, 243, 0.6);
+#carte {
+  height: 1000px;
+  width: 700px;
+  margin: 15px;
+}
+#carte2 {
+  height: 1000px;
+  width: 1200px;
+  margin: 5px;
+}
+.container {
+  display: flex;
+
+
+
 }
 </style>
