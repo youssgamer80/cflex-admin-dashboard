@@ -12,6 +12,7 @@ import ListeLigne from '../views/ligne/ListeLigne.vue'
 import ListeModeDeplacement from '../views/mode_deplacement/ListeModeDeplacement.vue'
 import CarteMap_PointArret from '../views/carteMap/CarteMap_PointArret.vue'
 import ListeProprietaire from '../views/proprietaire/ListeProprietaire.vue'
+import ListeTypePointArret from '../views/pointarret/ListeTypePointArret.vue'
 import ListeVehicule from '../views/vehicules/ListeVehicule.vue'
 import ListeTrackersGps from '../views/trackers_gps/ListeTrackersGps.vue'
 import ListeBorne from '../views/borne/ListeBorne.vue'
@@ -40,6 +41,7 @@ const routes = [
   { path: '/', redirect: { name: 'accueil' } },
   ...pages,
   { path: '/tableau-de-bord/liste-type-transport', name: 'liste-type-transport', component: ListeTypeTransport },
+  { path: '/tableau-de-bord/liste-type-point-arret', name: 'liste-type-point-arret', component: ListeTypePointArret },
 
 
   { path: '/tableau-de-bord/liste-proprietaires', name: 'liste-proprietaire', component: ListeProprietaire },

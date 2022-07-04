@@ -24,7 +24,7 @@
           @change="onChange"
           @keyup="onChange"
           v-model:value="searchText"
-          :style="{marginBottom: 10}"
+          :style="{ margin: '20px'}"
         />
         <br />
       </a-col>
@@ -42,15 +42,11 @@
       </a-table>
     </a-card>
     <a-card id="carte2">
-      <a-form
-        :model="formState"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
-        <!-- <a-button type="primary" @click="showModal">
-          Genérer un itineraire
-        </a-button> -->
-      </a-form>
+    <a-typography-title :level="4">Les informations sur l'itineraires</a-typography-title>
+     <a-table :columns="columns2" :data-source="dataSource">
+        
+      </a-table>
+
     </a-card>
   </div>
 </template>
@@ -74,6 +70,14 @@ const columns = [
     dataIndex: "libelle",
     sorter: true,
   },
+
+  {
+    title: "Action",
+    dataIndex: "action",
+  },
+];
+const columns2 = [
+  
 
   {
     title: "Action",
@@ -257,7 +261,7 @@ ${id}`
       pagination,
       loading,
       columns,
-
+      columns2, 
       handleTableChange,
       onDelete,
       handleOk,

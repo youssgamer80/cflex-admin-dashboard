@@ -193,17 +193,7 @@ export default defineComponent({
           " La longitude :" +
           formState.lon
       );
-      // options.value.forEach(element =>{
-      //   if(formState.lat == element.value){
-
-      //     formState.nom = element.label
-      //     console.log("Trouvé "+ formState.nom)
-      //   }
-      //   // console.log("Chaque element")
-      //   // console.log(element.value)
-      // })
-      // console.log("Le Label "+ formState.nom)
-      // console.log("La latitude "+ formState.lat)
+    
     };
 
     const handleChange = (value) => {

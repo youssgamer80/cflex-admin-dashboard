@@ -71,6 +71,12 @@ export default [
         route: '/tableau-de-bord/liste-pointarret'
       },
       {
+        title: 'Liste types point arret',
+        icon: 'MailIcon',
+        route: '/tableau-de-bord/liste-type-point-arret',
+
+      },
+      {
         title: "Affichage sur la carte ",
         icon: 'FileTextIcon',
         route: '/tableau-de-bord/afficahgeCarteMap'
@@ -192,11 +198,19 @@ export default [
         route: "/tableau-de-bord/liste-mode-deplacement"
       },
     ]
-
-
-
   },
- 
+  // {
+  //   title: 'Type point arret',
+  //   children: [
+  //     {
+  //       title: 'Liste des points arrets',
+  //       icon: 'MailIcon',
+  //       route: '/tableau-de-bord/liste-type-point-arret',
+
+  //     },
+  //   ],
+
+  // },
  
   
   
