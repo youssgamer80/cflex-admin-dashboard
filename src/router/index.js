@@ -26,7 +26,7 @@ import Role from '../views/administration/listeRole.vue'
 //import { canNavigate } from '@/acl/routeProtection'
 import Trajet from '../views/trajet/ListeTrajet.vue'
 import GenererItineraire from '../views/itineraire/GenererItineraire.vue'
-
+import Litiges from '../views/litige/ListLitige.vue'
 
 
 
@@ -66,7 +66,8 @@ const routes = [
   { path: '/tableau-de-bord/liste-client', name: 'listeclient', component: ListeClientC },
   { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: Listeutilisateur },
   { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role },
-  { path: '/tableau-de-bord/liste-trajet', name: 'listeTrajet', component: Trajet }
+  { path: '/tableau-de-bord/liste-trajet', name: 'listeTrajet', component: Trajet },
+  { path: '/tableau-de-bord/liste-litige', name: 'listeTrajet', component: Litiges }
 
 
 

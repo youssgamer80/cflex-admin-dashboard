@@ -248,6 +248,19 @@ export default [
     ]
 
   },
+  {
+    title: "Litige",
+    icon: "FiletextIcon",
+    children: [
+
+      {
+        title: "Liste des litiges",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-litige'
+      },
+    ]
+
+  },
 
 
 ]
