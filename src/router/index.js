@@ -27,6 +27,7 @@ import Role from '../views/administration/listeRole.vue'
 import Trajet from '../views/trajet/ListeTrajet.vue'
 import GenererItineraire from '../views/itineraire/GenererItineraire.vue'
 import Litiges from '../views/litige/ListLitige.vue'
+import AssigneRole from '../views/administration/AssignRole.vue'
 
 
 
@@ -67,7 +68,9 @@ const routes = [
   { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: Listeutilisateur },
   { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role },
   { path: '/tableau-de-bord/liste-trajet', name: 'listeTrajet', component: Trajet },
-  { path: '/tableau-de-bord/liste-litige', name: 'listeTrajet', component: Litiges }
+  { path: '/tableau-de-bord/liste-litige', name: 'Litiges', component: Litiges },
+  { path: '/tableau-de-bord/assigne-role', name: 'AssignRole', component: AssigneRole }
+
 
 
 

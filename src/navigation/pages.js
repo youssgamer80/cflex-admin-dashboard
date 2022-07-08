@@ -233,6 +233,11 @@ export default [
         icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-role'
       },
+      {
+        title: "Assigner Role",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/assigne-role'
+      },
     ]
   },
   {
