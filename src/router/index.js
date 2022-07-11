@@ -12,6 +12,7 @@ import ListeLigne from '../views/ligne/ListeLigne.vue'
 import ListeModeDeplacement from '../views/mode_deplacement/ListeModeDeplacement.vue'
 import CarteMap_PointArret from '../views/carteMap/CarteMap_PointArret.vue'
 import ListeProprietaire from '../views/proprietaire/ListeProprietaire.vue'
+import ListeTypePointArret from '../views/pointarret/ListeTypePointArret.vue'
 import ListeVehicule from '../views/vehicules/ListeVehicule.vue'
 import ListeTrackersGps from '../views/trackers_gps/ListeTrackersGps.vue'
 import ListeBorne from '../views/borne/ListeBorne.vue'
@@ -24,7 +25,9 @@ import Role from '../views/administration/listeRole.vue'
 //import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 //import { canNavigate } from '@/acl/routeProtection'
 import Trajet from '../views/trajet/ListeTrajet.vue'
-
+import GenererItineraire from '../views/itineraire/GenererItineraire.vue'
+import Litiges from '../views/litige/ListLitige.vue'
+import AssigneRole from '../views/administration/AssignRole.vue'
 
 
 
@@ -39,6 +42,7 @@ const routes = [
   { path: '/', redirect: { name: 'accueil' } },
   ...pages,
   { path: '/tableau-de-bord/liste-type-transport', name: 'liste-type-transport', component: ListeTypeTransport },
+  { path: '/tableau-de-bord/liste-type-point-arret', name: 'liste-type-point-arret', component: ListeTypePointArret },
 
 
   { path: '/tableau-de-bord/liste-proprietaires', name: 'liste-proprietaire', component: ListeProprietaire },
@@ -47,6 +51,7 @@ const routes = [
 
   { path: '/tableau-de-bord/liste-trackers_gps', name: 'liste-trackers_gps', component: ListeTrackersGps },
   { path: '/tableau-de-bord/liste-borne', name: 'liste-borne', component: ListeBorne },
+  { path: '/tableau-de-bord/generer-itineraire', name: 'generer-itineraire', component: GenererItineraire },
   // { path: '/tableau-de-bord/ajout-borne', name: 'liste-proprietaire', component: AjoutBorne },
   { path: '/tableau-de-bord/liste-troncon', name: 'liste-troncon', component: ListeTroncon},
  
@@ -62,7 +67,10 @@ const routes = [
   { path: '/tableau-de-bord/liste-client', name: 'listeclient', component: ListeClientC },
   { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: Listeutilisateur },
   { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role },
-  { path: '/tableau-de-bord/liste-trajet', name: 'listeTrajet', component: Trajet }
+  { path: '/tableau-de-bord/liste-trajet', name: 'listeTrajet', component: Trajet },
+  { path: '/tableau-de-bord/liste-litige', name: 'Litiges', component: Litiges },
+  { path: '/tableau-de-bord/assigne-role', name: 'AssignRole', component: AssigneRole }
+
 
 
 

@@ -14,10 +14,10 @@ export default [
         route: '/tableau-de-bord/liste-demandes',
       },
 
-      {
-        title: 'Demande annulée',
-        route: '/tableau-de-bord/demande-annulee',
-      },
+      // {
+      //   title: 'Demande annulée',
+      //   route: '/tableau-de-bord/demande-annulee',
+      // },
 
     ],
   },
@@ -69,6 +69,12 @@ export default [
         title: "Liste des Points d'arrêts",
         icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-pointarret'
+      },
+      {
+        title: 'Liste types point arret',
+        icon: 'MailIcon',
+        route: '/tableau-de-bord/liste-type-point-arret',
+
       },
       {
         title: "Affichage sur la carte ",
@@ -160,6 +166,18 @@ export default [
 
 
   },
+  {
+    title: 'Itineraire',
+    icon: 'FileTextIcon',
+    children: [
+      {
+        title: 'Gerener des Itineraires',
+        route: '/tableau-de-bord/generer-itineraire',
+      },
+
+
+    ],
+  },
  
   
 
@@ -180,11 +198,19 @@ export default [
         route: "/tableau-de-bord/liste-mode-deplacement"
       },
     ]
-
-
-
   },
- 
+  // {
+  //   title: 'Type point arret',
+  //   children: [
+  //     {
+  //       title: 'Liste des points arrets',
+  //       icon: 'MailIcon',
+  //       route: '/tableau-de-bord/liste-type-point-arret',
+
+  //     },
+  //   ],
+
+  // },
  
   
   
@@ -207,6 +233,11 @@ export default [
         icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-role'
       },
+      {
+        title: "Assigner Role",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/assigne-role'
+      },
     ]
   },
   {
@@ -218,6 +249,19 @@ export default [
         title: "Liste des clients usagers",
         icon: 'FileTextIcon',
         route: '/tableau-de-bord/liste-client'
+      },
+    ]
+
+  },
+  {
+    title: "Litige",
+    icon: "FiletextIcon",
+    children: [
+
+      {
+        title: "Liste des litiges",
+        icon: 'FileTextIcon',
+        route: '/tableau-de-bord/liste-litige'
       },
     ]
 

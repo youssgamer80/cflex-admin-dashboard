@@ -193,17 +193,7 @@ export default defineComponent({
           " La longitude :" +
           formState.lon
       );
-      // options.value.forEach(element =>{
-      //   if(formState.lat == element.value){
-
-      //     formState.nom = element.label
-      //     console.log("Trouvé "+ formState.nom)
-      //   }
-      //   // console.log("Chaque element")
-      //   // console.log(element.value)
-      // })
-      // console.log("Le Label "+ formState.nom)
-      // console.log("La latitude "+ formState.lat)
+    
     };
 
     const handleChange = (value) => {
@@ -270,7 +260,7 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://192.168.252.223:4001/api/zones")
+    fetch("http://192.168.252.206:4001/api/zones")
       .then((response) => response.json())
       .then((res) => {
         this.dataZone = res.data;

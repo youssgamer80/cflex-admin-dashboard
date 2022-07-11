@@ -107,7 +107,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4001/api/zones", {
+  return axios.get("http://192.168.252.206:4001/api/zones", {
     params,
   });
 };
@@ -157,7 +157,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://192.168.252.223:4001/api/zones/updateZone/${formState.id}`, {
+        .put(`http://192.168.252.206:4001/api/zones/updateZone/${formState.id}`, {
           libelle: formState.libelle,
 
           idTypeZoneFk: {
@@ -218,7 +218,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.252.223:4001/api/zones/deleteZone/${id}`,
+          `http://192.168.252.206:4001/api/zones/deleteZone/${id}`,
           {
             data: {
               statut: false,
@@ -291,7 +291,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://192.168.252.223:4001/api/zoneparents")
+    fetch("http://192.168.252.206:4001/api/zoneparents")
       .then(response => response.json())
       .then(res => {
         this.dataZoneParent = res.data
@@ -299,7 +299,7 @@ export default defineComponent({
         // console.log(this.dataZoneParent[0].zoneparent)
       })
 
-    fetch("http://192.168.252.223:4001/list")
+    fetch("http://192.168.252.206:4001/list")
       .then(response => response.json())
       .then(res => {
         this.dataTypeZone = res
@@ -308,7 +308,7 @@ export default defineComponent({
       })
 
 
-      fetch("http://192.168.252.223:4001/api/zones")
+      fetch("http://192.168.252.206:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataListZone = res.data

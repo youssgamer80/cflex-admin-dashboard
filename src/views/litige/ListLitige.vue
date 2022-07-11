@@ -1,75 +1,35 @@
 <template>
-  <a-typography-title :level="4">Liste Des Modes de deplacement</a-typography-title>
+  <a-typography-title :level="4">Liste Des Litiges</a-typography-title>
 
-  <SearchHeader_mode_deplacement @search="handleSearch" />
+  <SearchHeader_Litige @search="handleSearch" />
   <a-card :style="{
     padding: '24px',
     background: '#fff',
     textAlign: 'center',
     minHeight: '360px',
   }" :bordered="false" id="macarte">
-    <a-table :columns="columns" :row-key="keyZone" :data-source="dataSource" :pagination="pagination" :loading="loading"
+    <a-table :columns="columns" :row-key="keylitige" :data-source="dataSource" :pagination="pagination" :loading="loading"
       @change="handleTableChange">
-      <template #bodyCell="{ column, text, record }">
+      <template #bodyCell="{ column,  record }">
         <template v-if="column.dataIndex === 'libelle'">{{ record.libelle }}
         </template>
-        <template v-if="column.dataIndex === 'statut'">
-          <h1 v-if="text">Disponible</h1>
-          <h1 v-else>Indisponible</h1>
-        </template>
+         <template v-if="column.dataIndex === 'usager'"></template>
+          <template v-if="column.dataIndex === 'vehicule'"></template>
+           <template v-if="column.dataIndex === 'libelle'"></template>
+
         <template v-else-if="['action'].includes(column.dataIndex)">
           <div>
             <!--Début Modale Modifier type Transport-->
-            <a-modal v-model:visible="visible" title="Modification" @ok="onUpdate">
-
-
-              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
-
-
-
-                <a-form-item label="libelle" name="modedeplacement">
-                  <a-input v-model:value="formState.libelle" />
-                </a-form-item>
-
-                <!-- <a-form-item label="Type de zone">
-                  <a-select v-model:value="formState.idTypeZoneFk" placeholder="please select your zone">
-
-                    <a-select-option v-for="item in dataTypeZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item> -->
-
-                <!-- <a-form-item label="Zone parent">
-                  <a-select v-model:value="formState.idZoneparentFk" placeholder="please select your zone">
-
-                    <a-select-option v-for="item in dataZoneParent" v-bind:key="item.id" :value="item.id">{{
-                        item.zoneparent
-                    }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item> -->
-
-
-              </a-form>
-
-            </a-modal>
-
-            <edit-outlined :style="{ color: '#08f26e' }" @click="showModal(record.id, record.modeDeplacement)" />
-
-
-
-            <!--Début Modale Modifier type Transport-->
+      
+        
 
             <a-divider type="vertical" />
             <!--Début popup Supprimer type Transport-->
-            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez ce litige ?" @confirm="onDelete(record.id)">
               <a>
                 <delete-outlined :style="{ color: '#f73772' }" />
               </a>
-              <template>
-                <p>test</p>
-              </template>
+              
             </a-popconfirm>
             <!--Fin popup Supprimer type Transport-->
           </div>
@@ -83,16 +43,32 @@
 import { usePagination } from "vue-request";
 import { computed, defineComponent, ref, reactive } from "vue";
 import { message } from "ant-design-vue";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import { DeleteOutlined } from "@ant-design/icons-vue";
 
-import SearchHeader_mode_deplacement from "../../components/SearchHeader_mode_deplacement.vue";
+import SearchHeader_Litige from "../../components/SearchHeader_Litige.vue";
 import axios from "axios";
 const columns = [
-  {
-    title: "Nom",
-    dataIndex: "modeDeplacement",
+    {
+    title: "id",
+    dataIndex: "id",
     sorter: true,
   },
+ {
+    title: "usager",
+    dataIndex: "usager",
+    sorter: true,
+  },
+     {
+    title: "vehicule ciblé",
+    dataIndex: "vehicule",
+    sorter: true,
+  },
+  {
+    title: "description du litige",
+    dataIndex: "libelle",
+    sorter: true,
+  },
+  
   {
     title: "Actions",
     dataIndex: "action",
@@ -100,15 +76,15 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.206:4001/api/v1/ModeDeplacement/getModeDeplacements", {
+  return axios.get("", {
     params,
   });
 };
 
 export default defineComponent({
   components: {
-    SearchHeader_mode_deplacement,
-    EditOutlined,
+    SearchHeader_Litige,
+    // EditOutlined,
     DeleteOutlined,
   },
 
@@ -136,25 +112,7 @@ export default defineComponent({
   },
   setup() {
 
-    const onUpdate = async () => {
-
-
-
-      const resp = await axios
-        .put(`http://192.168.252.206:4001/api/v1/ModeDeplacement/updateModeDeplacement/${formState.id}`, {
-          modeDeplacement: formState.libelle,
-        });
-      if (resp.status === 200) {
-        visible.value = false;
-        message.success("Modification reussi");
-
-
-      } else {
-        message.error("impossible!!");
-      }
-
-
-    };
+   
 
 
     const {
@@ -247,8 +205,7 @@ export default defineComponent({
       formState,
 
       dataListModeDeplacement: [],
-      onUpdate,
-
+    
 
     };
   },
