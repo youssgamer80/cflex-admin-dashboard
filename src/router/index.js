@@ -58,7 +58,7 @@ const routes = [
   { path: '/tableau-de-bord/liste-ligne', name: 'liste-ligne', component: ListeLigne },
   { path: '/tableau-de-bord/liste-mode-deplacement', name: 'liste-mode-deplacement', component: ListeModeDeplacement },
   { path: '/tableau-de-bord/afficahgeCarteMap', name: 'affichageCarteMap', component: CarteMap_PointArret },
-  { path: '/tableau-de-bord/lignepointarret/:data', name: 'liasionLignePointAret', component: LignePointArretMap },
+  { path: '/tableau-de-bord/lignepointarret/:route/:idligne/:idzone/:libelleZone?/:NomZoneParent?/:iddepart?/:idarrivee?', name: 'liasionLignePointAret', component: LignePointArretMap },
   { path: '/tableau-de-bord/liste-client', name: 'listeclient', component: ListeClientC },
   { path: '/tableau-de-bord/liste-utilisateur', name: 'listeUtilisateur', component: Listeutilisateur },
   { path: '/tableau-de-bord/liste-role', name: 'listeRole', component: Role },

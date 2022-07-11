@@ -152,7 +152,7 @@ const columns2 = [
 ];
 // Methode pour la consomation de l'api d'affichage des tronçons
 const queryData = (params) => {
-  return axios.get("http://192.168.252.135:4001/api/v1/Troncon/getTroncons", {
+  return axios.get("http://192.168.252.206:4001/api/v1/Troncon/getTroncons", {
     params,
   });
 };
@@ -261,7 +261,7 @@ export default defineComponent({
         .addTo(formState.map);
 
       leaflet
-                            .marker([latB, lonB])
+        .marker([latB, lonB])
         .bindPopup("<b>LIEU :</b><br>" + nomB)
         .openPopup()
         .addTo(formState.map);
@@ -276,7 +276,7 @@ export default defineComponent({
     const onSubmit = async () => {
       visibleTroncon.value = false;
       const resp = await axios.put(
-        `http://192.168.252.206:4000/api/Trackergpss/updateTrackergps/${formState.id}`,
+        `http://192.168.252.206:4001/api/Trackergpss/updateTrackergps/${formState.id}`,
         {
           libelle: formState.libelle,
 
@@ -308,7 +308,7 @@ export default defineComponent({
       // console.log(id);
       visibleTroncon.value = true;
       const resTroncon = await axios.get(
-        `http://192.168.252.135:4001/api/troncon_typetransport/TronconTypeTransportByIdTroncon?idtroncon=${id}
+        `http://192.168.252.206:4001/api/troncon_typetransport/TronconTypeTransportByIdTroncon?idtroncon=${id}
       `
       );
       formState.dataSourceTronçons = resTroncon.data.data;
@@ -341,7 +341,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.252.135:4001/api/troncon_typetransport/deleteTronconTypeTransport/${id}`,
+          `http://192.168.252.206:4001/api/troncon_typetransport/deleteTronconTypeTransport/${id}`,
           {
             data: {
               statut: false,
@@ -443,7 +443,7 @@ export default defineComponent({
   },
 
   mounted() {
-    fetch("http://192.168.252.135:4001/vehicule/list").then((response) =>
+    fetch("http://192.168.252.206:4001/vehicule/list").then((response) =>
       console.log("API TRONCON ", response.json())
     );
     // .then((res) => {

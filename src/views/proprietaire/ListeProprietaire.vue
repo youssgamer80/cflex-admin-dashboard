@@ -2,24 +2,14 @@
   <a-typography-title :level="4">Liste proprietaire</a-typography-title>
 
   <SearchHeadeProprietaire @search="handleSearch" />
-  <a-card
-    :style="{
-      padding: '24px',
-      background: '#fff',
-      textAlign: 'center',
-      minHeight: '360px',
-    }"
-    :bordered="false"
-    id="macarte"
-  >
-    <a-table
-      :columns="columns"
-      :row-key="keyTypeTransport"
-      :data-source="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-    >
+  <a-card :style="{
+    padding: '24px',
+    background: '#fff',
+    textAlign: 'center',
+    minHeight: '360px',
+  }" :bordered="false" id="macarte">
+    <a-table :columns="columns" :row-key="keyTypeTransport" :data-source="dataSource" :pagination="pagination"
+      :loading="loading" @change="handleTableChange">
       <template #bodyCell="{ column, text, record }">
         <template v-if="column.dataIndex === 'nom'">{{ text }} </template>
         <template v-if="column.dataIndex === 'statut'">
@@ -30,19 +20,10 @@
           <div>
             <!--Début Modale Modifier proprietaire-->
 
-            <a-modal
-              v-model:visible="visible"
-              title="Modification"
-              @ok="onSubmit"
-            >
+            <a-modal v-model:visible="visible" title="Modification" @ok="onSubmit">
               <!--Formulaire modification  information du proprietaire-->
-              <a-form
-                name="basic"
-                autocomplete="off"
-                :label-col="{ span: 8 }"
-                :wrapper-col="{ span: 16 }"
-                @finish="onFinish"
-              >
+              <a-form name="basic" autocomplete="off" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
+                @finish="onFinish">
                 <a-form-item label="Nom" name="nom">
                   <a-input v-model:value="formState.nom" />
                 </a-form-item>
@@ -59,21 +40,16 @@
             </a-modal>
             <!--Fin Modale Modifier proprietaire-->
             <!--Début popup Supprimer proprietaire-->
-            <a-popconfirm
-              v-if="dataSource.length"
-              title="Voulez vous supprimez?"
-              @confirm="onDelete(record.id)"
-            >
-              <a><delete-outlined :style="{ color: '#f73772' }" /></a>
+            <a-popconfirm v-if="dataSource.length" title="Voulez vous supprimez?" @confirm="onDelete(record.id)">
+              <a>
+                <delete-outlined :style="{ color: '#f73772' }" />
+              </a>
             </a-popconfirm>
             <a-divider type="vertical" />
             <!--Fin popup Supprimer proprietaire-->
             <!--Début modal :Voir plus d'information sur le proprietaire et l'ensemble de ses véhicules-->
 
-            <eye-outlined
-              :style="{ color: '#f73772' }"
-              @click="ModalProprio(record.id)"
-            />
+            <eye-outlined :style="{ color: '#f73772' }" @click="ModalProprio(record.id)" />
             <!-- Fin modal: Voir plus d'information sur le proprietaire et l'ensemble de ses véhicules-->
           </div>
         </template>
@@ -81,28 +57,17 @@
     </a-table>
 
     <div>
-      <a-modal
-        v-model:visible="visibleProprio"
-        title="Liste des véhicules"
-        @ok="handleOk2"
-        width="1000px"
-      >
+      <a-modal v-model:visible="visibleProprio" title="Liste des véhicules" @ok="handleOk2" width="1000px">
         <!--Tableau d'affichage des véhicules d'un proprietaire-->
 
-        <a-table
-          :columns="columns2"
-          :row-key="keyTypeTransport"
-          :data-source="formState.dataSourceVehicule"
-          :pagination="pagination"
-          :loading="loading"
-          @change="handleTableChange"
-        >
+        <a-table :columns="columns2" :row-key="keyTypeTransport" :data-source="formState.dataSourceVehicule"
+          :pagination="pagination" :loading="loading" @change="handleTableChange">
           <template #bodyCell="{ column, text }">
-           
+
             <p v-if="column.dataIndex === 'marque'">{{ text }}</p>
-             <p v-if="column.dataIndex === 'immatriculation'">{{ text }}</p>
+            <p v-if="column.dataIndex === 'immatriculation'">{{ text }}</p>
             <p v-if="column.dataIndex === 'modele'"> {{ text }}</p>
-         <template v-else-if="['action'].includes(column.dataIndex)"></template>
+            <template v-else-if="['action'].includes(column.dataIndex)"></template>
           </template>
         </a-table>
       </a-modal>
@@ -172,8 +137,8 @@ const columns2 = [
     title: "Immatriculation",
     dataIndex: "immatriculation",
   },
-  
-  
+
+
   {
     title: "Nombre de place",
     dataIndex: "nbPlace",

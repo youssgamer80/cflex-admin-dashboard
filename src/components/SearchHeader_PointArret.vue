@@ -102,7 +102,7 @@ export default defineComponent({
 
       if (formState.nom != "" && formState.idZoneFk != "" && formState.lat != "" && formState.lon != "") {
         return axios
-          .post("http://192.168.252.223:4001/api/pointarrets/addPointArret", {
+          .post("http://192.168.252.206:4001/api/pointarrets/addPointArret", {
             nom: formState.nom,
             longitude: formState.lon,
             latitude: formState.lat,
@@ -126,26 +126,27 @@ export default defineComponent({
       }
 
 
-      return axios
-        .post("http://192.168.252.223:4001/api/pointarrets/addPointArret", {
-          nom: formState.nom,
-          longitude: formState.lon,
-          latitude: formState.lat,
-          idZoneFk: {
-            id: formState.idZoneFk
-          },
-          statut: true,
+      // return axios
+      //   .post("http://192.168.252.206:4001/api/pointarrets/addPointArret", {
+      //     nom: formState.nom,
+      //     longitude: formState.lon,
+      //     latitude: formState.lat,
+      //     idZoneFk: {
+      //       id: formState.idZoneFk
+      //     },
+      //     statut: true,
 
-        })
-        .then((resp) => {
-          if (resp.status === 200) {
-            visible.value = false;
-            message.success("Enregistrement reussit");
-          } else {
-            message.error("impossible!!");
-          }
-        });
+      //   })
+      //   .then((resp) => {
+      //     if (resp.status === 200) {
+      //       visible.value = false;
+      //       message.success("Enregistrement reussit");
+      //     } else {
+      //       message.error("impossible!!");
+      //     }
+      //   });
     };
+
     const formState = reactive({
       nom: "",
       idZoneFk: "",
@@ -154,6 +155,7 @@ export default defineComponent({
 
     });
 
+    let dataZone=[]
 
     let options = ref([]);
     let option = []
@@ -161,16 +163,21 @@ export default defineComponent({
     // let options = [];
 
     const choice = value => {
+
       console.log(option);
       formState.nom = value
       option.forEach(element => {
         if (formState.nom == element.label) {
           formState.lat = element.value.lat,
             formState.lon = element.value.lon
+            formState.city = element.value.city
 
         }
+
       })
-      console.log("Nom de l'element choisit "+formState.nom+" La latitude :"+formState.lat+ " La longitude :"+formState.lon)
+
+      console.log("dataZone",dataZone)
+      console.log("Nom de l'element choisit "+formState.nom+" La latitude :"+formState.lat+ " La longitude :"+formState.lon+" la zone est "+formState.city, "et l'id de la zone :",formState.id)
       // options.value.forEach(element =>{
       //   if(formState.lat == element.value){
 
@@ -206,7 +213,8 @@ export default defineComponent({
             option.push({
               value: {
                 lat: element.lat,
-                lon: element.lon
+                lon: element.lon,
+                city: element.address.city
               },
               label: element.display_name
             })
@@ -243,7 +251,7 @@ export default defineComponent({
       formState,
       filters: [],
       searchQuery: "",
-      dataZone: [],
+      dataZone,
 
 
 
@@ -259,7 +267,7 @@ export default defineComponent({
   mounted() {
     console.log("Component mounted");
 
-    fetch("http://192.168.252.223:4001/api/zones")
+    fetch("http://192.168.252.206:4001/api/zones")
       .then(response => response.json())
       .then(res => {
         this.dataZone = res.data

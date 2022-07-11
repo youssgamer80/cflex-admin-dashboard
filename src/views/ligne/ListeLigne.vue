@@ -23,7 +23,7 @@
 
 
             <edit-outlined :style="{ color: '#08f26e' }"
-              @click="showModal(record.id, record.nom, record.depart, record.depart_longitude, record.depart_latitude, record.arrivee, record.arrivee_longitude, record.arrivee_latitude, record.tarif, record.idZoneFk.id)" />
+              @click="showModal(record.id, record.nom, record.depart, record.depart_longitude, record.depart_latitude, record.arrivee, record.arrivee_longitude, record.arrivee_latitude, record.tarif, record.idZoneFk.id, record.idZoneFk.libelle)" />
 
             <!--FIN Modale Modifier LIGNE -->
 
@@ -157,7 +157,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://localhost:4001/api/lignes", {
+  return axios.get("http://192.168.252.206:4001/api/lignes", {
     params,
   });
 };
@@ -198,14 +198,14 @@ export default defineComponent({
     const ListPointArret = () => {
 
       console.log("idligne", formState.id, "idzone :", formState.idZoneFk)
-      router.push(`/tableau-de-bord/lignepointarret/Update&${formState.id}&${formState.idZoneFk}`)
+      router.push(`/tableau-de-bord/lignepointarret/Update/${formState.id}/${formState.idZoneFk}/${formState.libelleZone}`)
     }
 
     const onUpdateLigne = async () => {
 
 
       const resp = await axios
-        .put(`http://localhost:4001/api/lignes/updateligne/${formState.id}`, {
+        .put(`http://192.168.252.206:4001/api/lignes/updateligne/${formState.id}`, {
           nom: formState.nom,
           depart: formState.depart,
           tarif: formState.tarif,
@@ -264,7 +264,7 @@ export default defineComponent({
 
     const onDelete = (id) => {
       return axios
-        .delete(`http://localhost:4001/api/lignes/deleteligne/${id}`)
+        .delete(`http://192.168.252.206:4001/api/lignes/deleteligne/${id}`)
         .then((resp) => {
           if (resp.status === 200) {
             // console.log(typeof dataSource)
@@ -280,7 +280,7 @@ export default defineComponent({
 
     const visible = ref(false);
 
-    const showModal = (id, nom, depart, depart_longitude, depart_latitude, arrivee, arrivee_longitude, arrivee_latitude, tarif, idZoneFk) => {
+    const showModal = (id, nom, depart, depart_longitude, depart_latitude, arrivee, arrivee_longitude, arrivee_latitude, tarif, idZoneFk, libelleZone) => {
       formState.id = id;
       formState.nom = nom;
       formState.depart = depart;
@@ -291,6 +291,7 @@ export default defineComponent({
       formState.arrivee_latitude = arrivee_latitude;
       formState.tarif = tarif;
       formState.idZoneFk = idZoneFk;
+      formState.libelleZone = libelleZone;
 
       visible.value = true;
 
@@ -309,7 +310,8 @@ export default defineComponent({
       arrivee_longitude: '',
       arrivee_latitude: '',
       tarif: '',
-      idZoneFk: ''
+      idZoneFk: '',
+      libelleZone:''
     });
 
 
@@ -373,7 +375,7 @@ export default defineComponent({
 
     console.log("Component mounted");
 
-    fetch("http://localhost:4001/api/pointarrets")
+    fetch("http://192.168.252.206:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataPointArret = res.data
@@ -389,7 +391,7 @@ export default defineComponent({
 
     // Pour la liste des zones
 
-    fetch("http://localhost:4001/api/zones")
+    fetch("http://192.168.252.206:4001/api/zones")
       .then(response => response.json())
       .then(res => {
 
@@ -398,12 +400,10 @@ export default defineComponent({
       })
 
 
-    fetch("http://localhost:4001/api/lignes")
+    fetch("http://192.168.252.206:4001/api/lignes")
       .then(response => response.json())
       .then(res => {
         this.dataListLigne = res.data
-
-
       })
   },
 });

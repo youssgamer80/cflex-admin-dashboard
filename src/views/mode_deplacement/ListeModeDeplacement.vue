@@ -100,7 +100,7 @@ const columns = [
 ];
 
 const queryData = (params) => {
-  return axios.get("http://192.168.252.223:4001/api/v1/ModeDeplacement/getModeDeplacements", {
+  return axios.get("http://192.168.252.206:4001/api/v1/ModeDeplacement/getModeDeplacements", {
     params,
   });
 };
@@ -141,7 +141,7 @@ export default defineComponent({
 
 
       const resp = await axios
-        .put(`http://192.168.252.223:4001/api/v1/ModeDeplacement/updateModeDeplacement/${formState.id}`, {
+        .put(`http://192.168.252.206:4001/api/v1/ModeDeplacement/updateModeDeplacement/${formState.id}`, {
           modeDeplacement: formState.libelle,
         });
       if (resp.status === 200) {
@@ -192,7 +192,7 @@ export default defineComponent({
     const onDelete = (id) => {
       return axios
         .delete(
-          `http://192.168.252.223:4001/api/v1/ModeDeplacement/deleteModeDeplacement/${id}`,
+          `http://192.168.252.206:4001/api/v1/ModeDeplacement/deleteModeDeplacement/${id}`,
           {
             data: {
               statut: false,
@@ -276,7 +276,7 @@ export default defineComponent({
     //   })
 
 
-      fetch("http://192.168.252.223:4001/api/v1/ModeDeplacement/getModeDeplacements")
+      fetch("http://192.168.252.206:4001/api/v1/ModeDeplacement/getModeDeplacements")
       .then(response => response.json())
       .then(res => {
         this.dataListModeDeplacement = res.data

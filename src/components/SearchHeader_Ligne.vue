@@ -71,7 +71,8 @@
                 <a-space>
                   <a-select ref="select" v-model:value="formState.idZoneFk" style="width: 120px"
                     @change="handleChangeZone">
-                    <a-select-option v-for="item in dataZone" v-bind:key="item.id" :value="item.id">{{ item.libelle
+                    <a-select-option v-for="item in formState.dataZone" v-bind:key="item.id" :value="item.id">{{
+                        item.libelle
                     }}
                     </a-select-option>
 
@@ -119,16 +120,16 @@ export default defineComponent({
   data() {
     return {
       searchText: "",
+
+
     };
   },
 
   setup() {
 
 
+
     const router = useRouter()
-
-
-    const searchQuery = ref('')
 
 
     const handleChangeZone = value => {
@@ -139,17 +140,140 @@ export default defineComponent({
     const handleChangeDepart = value => {
       formState.depart = value;
       console.log(`selected depart : ${formState.depart}`);
+
+
+
+      formState.ListPointArret.forEach(element => {
+
+        if ((formState.depart) && formState.depart == element.nom) {
+
+          idZoneDepart = element.idZoneFk.id
+          NomZoneParentDepart = element.idZoneFk.idZoneparentFk.zoneparent
+          console.log("formState DEPART")
+          // console.log("NomZoneParentDepart", NomZoneParentDepart)
+          console.log("idZoneDepart", idZoneDepart)
+          console.log("idZoneFk", formState.idZoneFk)
+
+
+        }
+
+        if ((formState.arrivee) && formState.arrivee == element.nom) {
+
+          idZoneArrivee = element.idZoneFk.id
+          NomZoneParentArrivee = element.idZoneFk.idZoneparentFk.zoneparent
+          console.log("idZoneArrivee", idZoneArrivee)
+          console.log("idZoneFk", formState.idZoneFk)
+
+        }
+
+        if ((idZoneDepart) && (idZoneArrivee) && idZoneDepart == idZoneArrivee) {
+          formState.idZoneFk = idZoneArrivee
+          NomZoneParentDepart= null
+          console.log("ID ZONE", idZoneArrivee)
+          console.log("NomZoneParentDepart", NomZoneParentDepart)
+
+        } else {
+
+
+          if (NomZoneParentDepart == NomZoneParentArrivee) {
+            console.log("ZONE DIFFERENCE ")
+
+            formState.dataZone.forEach(element => {
+
+              // console.log("ZONE PARENT ",element.nom)
+              if (NomZoneParentDepart == element.libelle) {
+
+                formState.idZoneFk = element.id
+
+                console.log("ZONE PARENT TROUVE", formState.idZoneFk)
+
+              }
+
+            })
+          }
+          else {
+            formState.idZoneFk = ""
+          }
+        }
+
+
+      })
+
     };
 
 
     const handleChangeArrivee = value => {
       formState.arrivee = value;
       console.log(`selected arrivee : ${formState.arrivee}`);
+
+
+      formState.ListPointArret.forEach(element => {
+
+        if ((formState.depart) && formState.depart == element.nom) {
+
+          idZoneDepart = element.idZoneFk.id
+          NomZoneParentDepart = element.idZoneFk.idZoneparentFk.zoneparent
+          console.log("formState DEPART NON VIDE")
+          // console.log("NomZoneParent", NomZoneParentDepart)
+          console.log("idZoneDepart", idZoneDepart)
+          console.log("idZoneFk", formState.idZoneFk)
+
+        }
+
+        if ((formState.arrivee) && formState.arrivee == element.nom) {
+
+          idZoneArrivee = element.idZoneFk.id
+          NomZoneParentArrivee = element.idZoneFk.idZoneparentFk.zoneparent
+          console.log("idZoneArrivee", idZoneArrivee)
+          console.log("idZoneFk", formState.idZoneFk)
+
+        }
+
+        if ((idZoneDepart) && (idZoneArrivee) && idZoneDepart == idZoneArrivee) {
+          formState.idZoneFk = idZoneArrivee
+          console.log("ID ZONE", idZoneArrivee)
+          NomZoneParentDepart= null
+          console.log("NomZoneParentDepart", NomZoneParentDepart)
+
+
+        } else {
+
+
+          if (NomZoneParentDepart == NomZoneParentArrivee) {
+            console.log("ZONE DIFFERENCE ")
+
+            formState.dataZone.forEach(element => {
+
+              // console.log("ZONE PARENT ",element.nom)
+              if (NomZoneParentDepart == element.libelle) {
+
+                formState.idZoneFk = element.id
+
+                console.log("ZONE PARENT TROUVE", formState.idZoneFk)
+
+              }
+
+            })
+          }
+          else {
+            formState.idZoneFk = ""
+          }
+        }
+
+
+      })
+
+
+
     };
 
 
+    let idZoneDepart = ""
+    let idZoneArrivee = ""
+    let NomZoneParentDepart = ""
+    let NomZoneParentArrivee = ""
 
-    // let PointArretZone = [];
+
     const userName = ref("");
     const visible = ref(false);
     const visibleAddPoint = ref(false);
@@ -163,11 +287,11 @@ export default defineComponent({
 
 
 
-      console.log("NOM", formState.nom)
-      console.log("DEPART", formState.depart)
-      console.log("ARRIVEE", formState.arrivee)
-      console.log("TARIF", formState.tarif)
-      console.log("ZONE", formState.idZoneFk)
+      // console.log("NOM", formState.nom)
+      // console.log("DEPART", formState.depart)
+      // console.log("ARRIVEE", formState.arrivee)
+      // console.log("TARIF", formState.tarif)
+      // console.log("ZONE", formState.idZoneFk)
 
 
       if (formState.nom != "" && formState.depart != "" && formState.arrivee != "" && formState.tarif != "" && formState.idZoneFk != "") {
@@ -179,28 +303,49 @@ export default defineComponent({
             formState.iddepart = element.id
             formState.depart_longitude = element.longitude
             formState.depart_latitude = element.latitude
+
+            formState.dataDepartZoneLibelle = element.idZoneFk.libelle
+
           }
-        })
 
-
-        // Enregistrement de la longitude et latitude du point d'arrivee
-        formState.ListPointArret.forEach(element => {
-
+          // Enregistrement de la longitude et latitude du point d'arrivee
           if (formState.arrivee == element.nom) {
             formState.idarrivee = element.id
             formState.arrivee_longitude = element.longitude
             formState.arrivee_latitude = element.latitude
 
-            console.log("ARRIVE LONG:", formState.arrivee_longitude)
-            console.log("ARRIVE LAT:", formState.arrivee_latitude)
+
+            // console.log("ARRIVE LONG:", formState.arrivee_longitude)
+            // console.log("ARRIVE LAT:", formState.arrivee_latitude)
+            console.log("ELEMENT", element)
+
           }
+
+
         })
+
+
+
+        // formState.ListPointArret.forEach(element => {
+
+        //   if (formState.arrivee == element.nom) {
+        //     formState.idarrivee = element.id
+        //     formState.arrivee_longitude = element.longitude
+        //     formState.arrivee_latitude = element.latitude
+
+
+        //     // console.log("ARRIVE LONG:", formState.arrivee_longitude)
+        //     // console.log("ARRIVE LAT:", formState.arrivee_latitude)
+        //     console.log("ELEMENT", element)
+
+        //   }
+        // })
 
 
 
 
         const resp = await axios
-          .post("http://192.168.252.223:4001/api/lignes/addLigne", {
+          .post("http://192.168.252.206:4001/api/lignes/addLigne", {
             nom: formState.nom,
             depart: formState.depart,
             arrivee: formState.arrivee,
@@ -214,24 +359,36 @@ export default defineComponent({
           });
 
 
-        // console.log(resp)
+        console.log(resp)
         if (resp.status === 200) {
 
           console.log(resp)
           if (resp.data.data != null) {
-            
+
             visible.value = false;
             formState.id = resp.data.data.id
             message.success("Ligne ajouté");
 
+            formState.dataZone.forEach((element)=>{
 
-            router.push(`/tableau-de-bord/lignepointarret/Add&${formState.id}&${formState.idZoneFk}&${formState.iddepart}&${formState.idarrivee}`)
-            // console.log("router", router)
+              if(element.id == formState.idZoneFk){
+
+                formState.libelleZone= element.libelle
+               
+              }
+
+            })
+
+            // console.log("ROUTE ", formState.dataDepartZoneparent)
+            console.log("formState.libelleZone",formState.libelleZone)
+            // console.log(`/tableau-de-bord/lignepointarret/Add/${formState.id}/${formState.idZoneFk}/${formState.iddepart}/${formState.idarrivee}/${NomZoneParentDepart}`)
+            router.push(`/tableau-de-bord/lignepointarret/Add/${formState.id}/${formState.idZoneFk}/${formState.libelleZone}/${NomZoneParentDepart}/${formState.iddepart}/${formState.idarrivee}`)
+
             console.log(`Identifiant de la ligne crée : ${formState.id}`)
 
           }
           else {
-          message.error("Nom de ligne dejà existant");
+            message.error("Nom de ligne dejà existant");
 
           }
 
@@ -243,19 +400,7 @@ export default defineComponent({
 
 
 
-        // fetch(`http://192.168.252.223:4001/api/pointarrets/getPointArretByZone/{idzonefk}?idzone=${formState.idZoneFk}`)
-        //   .then(response => response.json())
-        //   .then(res => {
 
-        //     formState.PointArretZone = res.data
-        //     console.log("PAR ZONE")
-        //     console.log(formState.PointArretZone)
-
-
-        //   })
-        //   .catch(err => {
-        //     console.log(err)
-        //   })
 
 
       }
@@ -287,10 +432,14 @@ export default defineComponent({
 
       ListPointArret: [],
       PointArretName: [],
-      PointArretZone: [],
-
       iddepart: "",
-      idarrivee: ""
+      idarrivee: "",
+
+      dataDepartZoneLibelle: "",
+      dataZone: [],
+      libelleZone: ""
+
+
       // idZoneparentFk: ""
     });
 
@@ -305,7 +454,7 @@ export default defineComponent({
       onSubmitLigne,
       formState,
       filters: [],
-      dataZone: [],
+
 
       dataPointArret: [],
       idTypeZoneFk: "",
@@ -313,29 +462,28 @@ export default defineComponent({
       // handleChangeTypeTransport,
       handleChangeZone,
       // onSearch,
-      searchQuery,
 
       handleChangeDepart,
       handleChangeArrivee,
 
       // PointArretZone
+      idZoneDepart,
+      idZoneArrivee,
+      NomZoneParentDepart,
+      NomZoneParentArrivee,
 
 
     };
   },
   mounted() {
-    console.log("Component mounted");
 
-    console.log("NOM", this.formState.nom)
-      console.log("DEPART", this.formState.depart)
-      console.log("ARRIVEE", this.formState.arrivee)
-      console.log("TARIF", this.formState.tarif)
-      console.log("ZONE", this.formState.idZoneFk)
 
-    fetch("http://192.168.252.223:4001/api/zones")
+
+
+    fetch("http://192.168.252.206:4001/api/zones")
       .then(response => response.json())
       .then(res => {
-        this.dataZone = res.data
+        this.formState.dataZone = res.data
 
 
         // console.log(this.dataZone)
@@ -345,7 +493,7 @@ export default defineComponent({
       })
 
 
-    fetch("http://192.168.252.223:4001/api/pointarrets")
+    fetch("http://192.168.252.206:4001/api/pointarrets")
       .then(response => response.json())
       .then(res => {
         this.dataPointArret = res.data
