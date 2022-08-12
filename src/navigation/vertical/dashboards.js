@@ -4,7 +4,7 @@ import { Home, Circle } from 'react-feather'
 export default [
   {
     id: 'dashboards',
-    title: 'Dashboards',
+    title: 'Tableau de bord',
     icon: <Home size={20} />,
     // badge: 'light-warning',
     // badgeText: '2',
