@@ -25,7 +25,7 @@ const UserView = () => {
   // ** Hooks
   const { id } = useParams()
 
-  // ** Get suer on mount
+  // ** Get user on mount
   useEffect(() => {
     dispatch(getUser(parseInt(id)))
   }, [dispatch])
