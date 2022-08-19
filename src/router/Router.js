@@ -28,7 +28,9 @@ const Router = () => {
   const allRoutes = getRoutes(layout)
   const getHomeRoute = () => {
     const user = getUserData()
+    console.log('user', user)
     if (user) {
+      console.log('userRole', user.role)
       return getHomeRouteForLoggedInUser(user.role)
     } else {
       return '/login'
@@ -41,11 +43,7 @@ const Router = () => {
       index: true,
       element: <Navigate replace to={getHomeRoute()} />
     },
-    {
-      path: '/login',
-      element: <BlankLayout />,
-      children: [{ path: '/login', element: <Login /> }]
-    },
+
     {
       path: '/auth/not-auth',
       element: <BlankLayout />,

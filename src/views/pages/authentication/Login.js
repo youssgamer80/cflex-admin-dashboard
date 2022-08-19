@@ -31,7 +31,7 @@ import { Row, Col, Form, Input, Label, Alert, Button, CardText, CardTitle, Uncon
 // ** Styles
 import '@styles/react/pages/page-authentication.scss'
 
-const ToastContent = ({ t, name, role }) => {
+const ToastContent = ({ t, name }) => {
   return (
     <div className='d-flex'>
       <div className='me-1'>
@@ -42,15 +42,37 @@ const ToastContent = ({ t, name, role }) => {
           <h6>{name}</h6>
           <X size={12} className='cursor-pointer' onClick={() => toast.dismiss(t.id)} />
         </div>
-        <span>You have successfully logged in as an {role} user to Vuexy. Now you can start to explore. Enjoy!</span>
+        <span>Bienvenue !</span>
       </div>
     </div>
   )
 }
 
+const DangerToastContent = ({ t }) => {
+  return (
+    <div className='d-flex'>
+      <div className='me-1'>
+        <Avatar size='sm' color='danger' icon={<Coffee size={12} />} />
+      </div>
+      <div className='d-flex flex-column'>
+        <div className='d-flex justify-content-between'>
+          <h6>{name}</h6>
+          <X size={12} className='cursor-pointer' onClick={() => toast.dismiss(t.id)} />
+        </div>
+        <span>Une erreur est survenue, veuillez verifier votre email ou mot de passe</span>
+      </div>
+    </div>
+  )
+}
+
+// const defaultValues = {
+//   password: 'xxxx',
+//   loginEmail: 'monemail@exemple.com'
+// }
+
 const defaultValues = {
-  password: 'admin',
-  loginEmail: 'admin@demo.com'
+  password: '12345',
+  loginEmail: 'test3@gmail.com'
 }
 
 const Login = () => {
@@ -69,19 +91,37 @@ const Login = () => {
     source = require(`@src/assets/images/pages/${illustration}`).default
 
   const onSubmit = data => {
+    console.log({ email: data.loginEmail, password: data.password })
     if (Object.values(data).every(field => field.length > 0)) {
       useJwt
         .login({ email: data.loginEmail, password: data.password })
         .then(res => {
-          const data = { ...res.data.userData, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken }
+          if (res.data.roles[0] === 'ROLE_ADMIN') {
+            res.data.role = 'admin'
+            res.data.ability = [
+              {
+                action: 'manage',
+                subject: 'all'
+              }
+            ]
+          }
+          console.log(res.data)
+          const data = { ...res.data, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken }
           dispatch(handleLogin(data))
-          ability.update(res.data.userData.ability)
+          ability.update(res.data.ability)
+
           navigate(getHomeRouteForLoggedInUser(data.role))
           toast(t => (
-            <ToastContent t={t} role={data.role || 'admin'} name={data.fullName || data.username || 'John Doe'} />
+            <ToastContent t={t} name={data.prenom} />
           ))
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+          toast(t => (
+            <DangerToastContent t={t} />
+          ))
+
+        })
     } else {
       for (const key in data) {
         if (data[key].length === 0) {

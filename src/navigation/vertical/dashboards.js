@@ -8,7 +8,7 @@ export default [
     icon: <Home size={20} />,
     // badge: 'light-warning',
     // badgeText: '2',
-    navLink: '/dashboard/ecommerce'
+    navLink: '/dashboard'
     // children: [
     //   {
     //     id: 'analyticsDash',

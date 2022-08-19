@@ -1,10 +1,20 @@
 import axios from "axios"
-const mockRequests = true
+const mockRequests = false
+import { getUserData } from '../utility/Utils'
 
-const client = mockRequests ? axios : axios.create({
-    baseURL: 'http://xxxx:3000/api/',
-    timeout: 1000,
-    headers: { "Content-Type": "application/json" }
+const user = getUserData()
+const client = mockRequests ? axios : user ? axios.create({
+    baseURL: 'http://192.168.252.21:4001/api',
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${user.accesToken}`
+    }
+}) : axios.create({
+    baseURL: 'http://192.168.252.21:4001/api',
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-type": "Application/json"
+    }
 })
 
 export default client
