@@ -13,6 +13,7 @@ import ExtensionsRoutes from './Extensions'
 import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
 import Zone from './Zone'
+import ZonePointArret from  './zone-point-arret'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -51,7 +52,9 @@ const Routes = [
   ...FormRoutes,
   ...TablesRoutes,
   ...ChartsRoutes,
-  ...Zone
+  ...Zone, 
+  ... ZonePointArret
+
 ]
 
 const getRouteMeta = route => {

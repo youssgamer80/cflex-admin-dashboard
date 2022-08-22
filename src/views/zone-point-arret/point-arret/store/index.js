@@ -6,16 +6,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import client from '../../../../api/api'
 
 export const getAllData = createAsyncThunk('appUsers/getAllData', async () => {
-  const response = await client.get('/api/users/list/all-data')
-  return response.data
+  const response = await client.get('/pointarrets')
+  console.log(response)
+  return response.data.data
 })
 
 export const getData = createAsyncThunk('appUsers/getData', async params => {
-  const response = await client.get('/api/users/list/data', params)
+  const dispatch = useDispatch()
+  const response = await client.get('/pointarrets', params)
+   dispatch(handleLogin(data))
   return {
     params,
-    data: response.data.users,
-    totalPages: response.data.total
+    data: response.data.data,
+    totalPages: response.data.data.length
   }
 })
 
@@ -34,7 +37,7 @@ export const addUser = createAsyncThunk('appUsers/addUser', async (user, { dispa
 export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { dispatch, getState }) => {
   await client.delete('/apps/users/delete', { id })
   await dispatch(getData(getState().users.params))
-  await dispatch(getAllData()) 
+  await dispatch(getAllData())
   return id
 })
 
