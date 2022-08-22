@@ -12,10 +12,11 @@ export const getAllData = createAsyncThunk('appUsers/getAllData', async () => {
 
 export const getData = createAsyncThunk('appUsers/getData', async params => {
   const response = await client.get('/zones', params)
-  console.log(response)
-  console.log(params)
+  console.log('response', response.data.data.length)
   return {
-
+    params,
+    data: response.data.data,
+    totalPages: response.data.data.length
   }
 })
 
