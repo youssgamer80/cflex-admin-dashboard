@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 // ** Axios Imports
 // import axios from 'axios'
 import client from '../../../../api/api'
+//import { handleZone} from '@store/zone-point-arret'
 
 export const getAllData = createAsyncThunk('appUsers/getAllData', async () => {
   const response = await client.get('/api/users/list/all-data')
@@ -12,7 +13,7 @@ export const getAllData = createAsyncThunk('appUsers/getAllData', async () => {
 
 export const getData = createAsyncThunk('appUsers/getData', async params => {
   const response = await client.get('/zones', params)
-  console.log('response', response.data.data.length)
+  // await dispatch(handleZone(response.data.data))
   return {
     params,
     data: response.data.data,

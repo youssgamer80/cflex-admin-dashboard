@@ -22,6 +22,6 @@ export default [
         id: 'pointarret',
         title: 'Points d\'arrets',
         icon: <MapPin size={20} />,
-        navLink: '/apps/user/list'
+        navLink: '/apps/zone-point-arret/point-arret/list'
     }
 ]

@@ -14,6 +14,7 @@ import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
 import Zone from './Zone'
 import AdminRoutes from './Admin'
+import ZonePointArret from './zone-point-arret'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -53,7 +54,10 @@ const Routes = [
   ...TablesRoutes,
   ...ChartsRoutes,
   ...Zone,
-  ...AdminRoutes
+  ...AdminRoutes,
+
+  ...ZonePointArret
+
 ]
 
 const getRouteMeta = route => {
