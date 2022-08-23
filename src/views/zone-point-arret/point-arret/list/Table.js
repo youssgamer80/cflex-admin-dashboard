@@ -509,7 +509,7 @@ const UsersList = () => {
             </Col>
             <Col className='d-grid mb-1 mb-lg-0' lg={6} md={12}>
               <Button type='submit' className='me-2' color='primary'>
-                Enregistrer
+                Enregistrez
               </Button>
             </Col>
           </Row>
