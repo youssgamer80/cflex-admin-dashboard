@@ -28,7 +28,7 @@ export const getUser = createAsyncThunk('appUsers/getUser', async id => {
 })
 
 export const addUser = createAsyncThunk('appUsers/addUser', async (user, { dispatch, getState }) => {
-  await client.post('/apps/users/add-user', user)
+  await client.post('addPointArret', user)
   await dispatch(getData(getState().users.params))
   await dispatch(getAllData())
   return user

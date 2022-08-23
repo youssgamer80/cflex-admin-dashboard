@@ -21,8 +21,9 @@ import { useDispatch } from 'react-redux'
 
 const defaultValues = {
   Nom: '',
-  Zone: '',
-  TypeZone: ''
+  Longitude: '',
+  Latitude: '',
+  Zone: ''
 }
 
 const countryOptions = [
@@ -44,9 +45,6 @@ const checkIsValid = data => {
 const SidebarNewUsers = ({ open, toggleSidebar }) => {
   // ** States
   const [data, setData] = useState(null)
-  const [plan, setPlan] = useState('basic')
-  const [role, setRole] = useState('subscriber')
-
   // ** Store Vars
   const dispatch = useDispatch()
 
@@ -66,17 +64,11 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
       toggleSidebar()
       dispatch(
         addUser({
-          role,
-          avatar: '',
           status: 'active',
-          email: data.email,
-          currentPlan: plan,
-          billing: 'auto debit',
-          company: data.company,
-          contact: data.contact,
-          fullName: data.fullName,
-          username: data.username,
-          country: data.country.value
+          nom: data.nom,
+          longitude: data.longitude,
+          latitude: data.latitude,
+          zone: data.idZoneFk
         })
       )
     } else {
@@ -87,6 +79,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
           })
         }
         if (data[key] !== null && data[key].length === 0) {
+          console.log(data)
           setError(key, {
             type: 'manual'
           })
@@ -122,36 +115,41 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
             name='Nom'
             control={control}
             render={({ field }) => (
-              <Input id='fullName'  invalid={errors.fullName && true} {...field} />
+              <Input id='nom'  invalid={errors.nom && true} {...field} />
             )}
           />
         </div>
-      
         <div className='mb-1'>
-          <Label className='form-label' for='userEmail'>
-           Type Zone <span className='text-danger'>*</span>
+          <Label className='form-label' for='longitude'>
+          Longitude <span className='text-danger'>*</span>
           </Label>
           <Controller
-            name='email'
+            name='Longitude'
             control={control}
             render={({ field }) => (
-              <Input
-                type='email'
-                id='userEmail'
-               
-                invalid={errors.email && true}
-                {...field}
-              />
+              <Input id='longitude'  invalid={errors.longitude && true} {...field} />
             )}
           />
-        
         </div>
         <div className='mb-1'>
-          <Label className='form-label' for='country'>
+          <Label className='form-label' for='latitude'>
+          Latitude <span className='text-danger'>*</span>
+          </Label>
+          <Controller
+            name='Latitude'
+            control={control}
+            render={({ field }) => (
+              <Input id='latitude'  invalid={errors.latitude && true} {...field} />
+            )}
+          />
+        </div>
+       
+        <div className='mb-1'>
+          <Label className='form-label' for='zone'>
             Zone <span className='text-danger'>*</span>
           </Label>
           <Controller
-            name='country'
+            name='zone'
             control={control}
             render={({ field }) => (
               // <Input id='country' placeholder='Australia' invalid={errors.country && true} {...field} />
@@ -160,7 +158,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
                 classNamePrefix='select'
                 options={countryOptions}
                 theme={selectThemeColors}
-                className={classnames('react-select', { 'is-invalid': data !== null && data.country === null })}
+                className={classnames('react-select', { 'is-invalid': data !== null && data.zone === null })}
                 {...field}
               />
             )}

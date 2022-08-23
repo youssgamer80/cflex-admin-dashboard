@@ -38,7 +38,7 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 // ** Table Header
-const CustomHeader = ({  toggleSidebar,  handleFilter, searchTerm }) => {
+const CustomHeader = ({  toggleSidebar,  handleFilter,  handlePerPage, rowsPerPage, searchTerm }) => {
   // ** Converts table to CSV
  
 
@@ -47,7 +47,25 @@ const CustomHeader = ({  toggleSidebar,  handleFilter, searchTerm }) => {
   return (
     <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
       <Row>
-       
+      <Col xl='6' className='d-flex align-items-center p-0'>
+          <div className='d-flex align-items-center w-100'>
+            <label htmlFor='rows-per-page'>Show</label>
+            <Input
+              className='mx-50'
+              type='select'
+              id='rows-per-page'
+              value={rowsPerPage}
+              onChange={handlePerPage}
+              style={{ width: '5rem' }}
+            >
+              <option value='10'>10</option>
+              <option value='25'>25</option>
+              <option value='50'>50</option>
+              <option value='50'>100</option>
+            </Input>
+            <label htmlFor='rows-per-page'>Entries</label>
+          </div>
+        </Col>
         <Col
           xl='6'
           className='d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1'
