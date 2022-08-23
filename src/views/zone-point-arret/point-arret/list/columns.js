@@ -59,6 +59,22 @@ export const columns = [
     selector: row => row.idZoneFk.libelle,
     cell: row => <span className='text-capitalize'>{row.idZoneFk.libelle}</span>
   },
+  {
+    name: 'Longitude',
+    minWidth: '138px',
+    sortable: true,
+    sortField: 'longitude',
+    selector: row => row.longitude,
+    cell: row => <span className='text-capitalize'>{row.longitude}</span>
+  },
+  {
+    name: 'Latitude',
+    minWidth: '138px',
+    sortable: true,
+    sortField: 'latitude',
+    selector: row => row.latitude,
+    cell: row => <span className='text-capitalize'>{row.latitude}</span>
+  },
   
   {
     name: 'Status',

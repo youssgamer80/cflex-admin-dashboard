@@ -389,7 +389,6 @@ const UsersList = () => {
           />
         </div>
       </Card>
-
       <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
     </Fragment>
   )
