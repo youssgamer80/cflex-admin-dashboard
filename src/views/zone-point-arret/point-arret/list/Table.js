@@ -1,21 +1,19 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from 'react'
-
+import { useForm, Controller } from 'react-hook-form'
 // ** Invoice List Sidebar
-import Sidebar from './Sidebar'
 
 // ** Table Columns
 import { columns } from './columns'
-
 // ** Store & Actions
 import { getAllData, getData } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
-
+import Avatar from '@components/avatar'
 // ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { ChevronDown, Share, Printer, FileText, File, Grid, Copy } from 'react-feather'
+import { ChevronDown, Map, Share, Printer, FileText, File, Grid, Copy, Check, X } from 'react-feather'
 
 // ** Utils
 import { selectThemeColors } from '@utils'
@@ -23,6 +21,7 @@ import { selectThemeColors } from '@utils'
 // ** Reactstrap Imports
 import {
   Row,
+  Modal, ModalHeader, ModalBody, ModalFooter,
   Col,
   Card,
   Input,
@@ -30,7 +29,8 @@ import {
   Button,
   CardBody,
   CardTitle,
-  CardHeader
+  CardHeader,
+  Form
 } from 'reactstrap'
 
 // ** Styles
@@ -38,16 +38,16 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 // ** Table Header
-const CustomHeader = ({  toggleSidebar,  handleFilter, searchTerm }) => {
+const CustomHeader = ({ toggleSidebar, handleFilter, searchTerm }) => {
   // ** Converts table to CSV
- 
+
 
   // ** Downloads CSV
-  
+
   return (
     <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
       <Row>
-       
+
         <Col
           xl='6'
           className='d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1'
@@ -66,7 +66,7 @@ const CustomHeader = ({  toggleSidebar,  handleFilter, searchTerm }) => {
           </div>
 
           <div className='d-flex align-items-center table-header-actions'>
-            
+
 
             <Button className='add-new-user' color='primary' onClick={toggleSidebar}>
               Ajouter
@@ -89,13 +89,18 @@ const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [sortColumn, setSortColumn] = useState('id')
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Role' })
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
-
+  const [formModal, setFormModal] = useState(false)
+  const [zoneData, setZoneData] = useState(null)
   // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+  const toggleSidebar = () => setFormModal(!formModal)
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({})
 
   // ** Get data on mount
   useEffect(() => {
@@ -112,7 +117,9 @@ const UsersList = () => {
         currentPlan: currentPlan.value
       })
     )
+    setZoneData(JSON.parse(localStorage.getItem('zoneData')))
   }, [dispatch, store.data.length, sort, sortColumn, currentPage])
+
 
   // ** User filter options
   const roleOptions = [
@@ -253,6 +260,20 @@ const UsersList = () => {
     )
   }
 
+  const onSubmit = data => {
+    console.log("enregistrer un pa", data)
+    setFormModal(!formModal)
+  }
+  const zoneOptions = []
+  if (zoneData !== null) {
+    for (let i = 0; i < zoneData.length; i++) {
+      const countryOptionsJson = {}
+      countryOptionsJson['value'] = zoneData[i]['id']
+      countryOptionsJson['label'] = zoneData[i]['libelle']
+      zoneOptions.push(countryOptionsJson)
+
+    }
+  }
   return (
     <Fragment>
       <Card>
@@ -372,7 +393,128 @@ const UsersList = () => {
         </div>
       </Card>
 
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+
+      {/* <div>
+        <Modal isOpen={formModal} toggle={() => setFormModal(!formModal)} className='modal-dialog-centered modal-lg'>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <ModalHeader toggle={() => setFormModal(!formModal)}>Ajouter un point</ModalHeader>
+            <ModalBody className='px-sm-5 mx-50 pb-5'>
+
+              <div className='mb-2'>
+                <Label className='form-label' for='country'>
+                  Zone <span className='text-danger'>*</span>
+                </Label>
+                <Controller
+                  name='country'
+                  control={control}
+                  render={({ field }) => (
+                    // <Input id='country' placeholder='Australia' invalid={errors.country && true} {...field} />
+                    <Select
+                      isClearable={false}
+                      classNamePrefix='select'
+                      options={zoneOptions}
+                      theme={selectThemeColors}
+                      className={classnames('react-select', { 'is-invalid': zoneData !== null && zoneData.id === null })}
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
+              <div className='mb-2'>
+                <Label className='form-label' for='password'>Nom du point d'arret:</Label>
+                <Input type='text' id='nom' placeholder='nom' />
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button color='primary' onClick={() => setFormModal(!formModal)} type='submit'>
+                Enregistrer
+              </Button>{' '}
+            </ModalFooter>
+          </Form>
+        </Modal>
+      </div> */}
+
+      <Modal isOpen={formModal} toggle={() => setFormModal(!formModal)} className='modal-dialog-centered modal-lg'>
+        <ModalHeader className='bg-transparent' toggle={() => setFormModal(!formModal)}></ModalHeader>
+        <ModalBody className='px-sm-5 mx-50 pb-5'>
+          <div className='text-center mb-2'>
+            <h1 className='mb-1'>Ajouter un point d'arret</h1>
+          </div>
+          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
+            <Col xs={12}>
+              <Label className='form-label' for='username'>
+                Nom
+              </Label>
+              <Controller
+                name='libelle'
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} id='username' placeholder='indenie' invalid={errors.username && true} />
+                )}
+              />
+              {errors.username && <FormFeedback>Ajouter un point d'arret</FormFeedback>}
+            </Col>
+            <Col xs={12}>
+              <Label className='form-label' for='zone'>
+                Zone
+              </Label>
+
+              <Controller
+                name='zone'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    id='zone'
+                    isClearable={false}
+                    className='react-select'
+                    classNamePrefix='selChisect'
+                    options={zoneOptions}
+                    theme={selectThemeColors}
+                  />)}
+              />
+            </Col>
+            <Col md={6} xs={12}>
+              <Label className='form-label' for='tax-id'>
+                Longitude
+              </Label>
+
+
+              <Controller
+                name='longitude'
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} id='tax-id' placeholder='-3.4567567' />)}
+              />
+            </Col>
+            <Col md={6} xs={12}>
+              <Label className='form-label' for='number'>
+                Latitude
+              </Label>
+
+              <Controller
+                name='latitude'
+                control={control}
+                render={({ field }) => (
+                  <Input   {...field} id='contact' placeholder='4.34567' />)}
+              />
+            </Col>
+            <Col xs={12}>
+              <div className='d-flex align-items-center'>
+                <Avatar className='me-1' color='light-warning' width='32' height='32' icon={<Map size={14} />} />
+                <Label className='form-check-label fw-bolder' htmlFor='billing-switch'>
+                  Choisir sur la carte
+                </Label>
+              </div>
+            </Col>
+            <Col className='d-grid mb-1 mb-lg-0' lg={6} md={12}>
+              <Button type='submit' className='me-2' color='primary'>
+                Enregistrer
+              </Button>
+            </Col>
+          </Row>
+        </ModalBody>
+      </Modal>
     </Fragment>
   )
 }

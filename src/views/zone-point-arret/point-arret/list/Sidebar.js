@@ -1,17 +1,17 @@
+/* eslint no-var: 0 */
 // ** React Import
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** Custom Components
 import Sidebar from '@components/sidebar'
 
 // ** Utils
 import { selectThemeColors } from '@utils'
-
+import Avatar from '@components/avatar'
 // ** Third Party Components
 import Select from 'react-select'
 import classnames from 'classnames'
 import { useForm, Controller } from 'react-hook-form'
-
 // ** Reactstrap Imports
 import { Button, Label, FormText, Form, Input } from 'reactstrap'
 
@@ -25,17 +25,6 @@ const defaultValues = {
   TypeZone: ''
 }
 
-const countryOptions = [
-  {
-    name: 'Zone',
-    minWidth: '138px',
-    sortable: true,
-    sortField: 'zone',
-    selector: row => row.idZoneFk.libelle,
-    cell: row => <span className='text-capitalize'>{row.idZoneFk.libelle}</span>
-  }
-  
-]
 
 const checkIsValid = data => {
   return Object.values(data).every(field => (typeof field === 'object' ? field !== null : field.length > 0))
@@ -46,10 +35,19 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
   const [data, setData] = useState(null)
   const [plan, setPlan] = useState('basic')
   const [role, setRole] = useState('subscriber')
-
+  const [zoneData, setZoneData] = useState(null)
   // ** Store Vars
   const dispatch = useDispatch()
+  // ** Store Vars
 
+  // ** State
+
+  //** ComponentDidMount
+  useEffect(() => {
+
+    setZoneData(JSON.parse(localStorage.getItem('zoneData')))
+
+  }, [])
   // ** Vars
   const {
     control,
@@ -58,6 +56,21 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
     handleSubmit,
     formState: { errors }
   } = useForm({ defaultValues })
+
+
+  var countryOptions = []
+  console.log('dataxxx', zoneData)
+  if (zoneData !== null) {
+    for (let i = 0; i < zoneData.length; i++) {
+      const countryOptionsJson = {}
+      countryOptionsJson['value'] = zoneData[i]['id']
+      countryOptionsJson['label'] = zoneData[i]['libelle']
+      console.log("xxxx", countryOptionsJson)
+      countryOptions.push(countryOptionsJson)
+
+    }
+  }
+  console.log('countryOptions', countryOptions)
 
   // ** Function to handle form submit
   const onSubmit = data => {
@@ -116,20 +129,20 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div className='mb-1'>
           <Label className='form-label' for='nom'>
-           Nom <span className='text-danger'>*</span>
+            Nom <span className='text-danger'>*</span>
           </Label>
           <Controller
             name='Nom'
             control={control}
             render={({ field }) => (
-              <Input id='fullName'  invalid={errors.fullName && true} {...field} />
+              <Input id='fullName' invalid={errors.fullName && true} {...field} />
             )}
           />
         </div>
-      
+
         <div className='mb-1'>
           <Label className='form-label' for='userEmail'>
-           Type Zone <span className='text-danger'>*</span>
+            Type Zone <span className='text-danger'>*</span>
           </Label>
           <Controller
             name='email'
@@ -138,13 +151,13 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
               <Input
                 type='email'
                 id='userEmail'
-               
+
                 invalid={errors.email && true}
                 {...field}
               />
             )}
           />
-        
+
         </div>
         <div className='mb-1'>
           <Label className='form-label' for='country'>
@@ -166,7 +179,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
             )}
           />
         </div>
-     <Button type='submit' className='me-1' color='primary'>
+        <Button type='submit' className='me-1' color='primary'>
           Submit
         </Button>
         <Button type='reset' color='secondary' outline onClick={toggleSidebar}>

@@ -10,7 +10,7 @@ import { columns } from './columns'
 // ** Store & Actions
 import { getAllData, getData } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
-
+import { handleZone } from '@store/zone-point-arret'
 // ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
@@ -186,18 +186,22 @@ const UsersList = () => {
   // ** Get data on mount
   useEffect(() => {
     dispatch(getAllData())
+    const response = getData({
+      sort,
+      sortColumn,
+      q: searchTerm,
+      page: currentPage,
+      perPage: rowsPerPage,
+      role: currentRole.value,
+      status: currentStatus.value,
+      currentPlan: currentPlan.value
+    })
+
     dispatch(
-      getData({
-        sort,
-        sortColumn,
-        q: searchTerm,
-        page: currentPage,
-        perPage: rowsPerPage,
-        role: currentRole.value,
-        status: currentStatus.value,
-        currentPlan: currentPlan.value
-      })
+      response
     )
+    dispatch(handleZone(response))
+
   }, [dispatch, store.data.length, sort, sortColumn, currentPage])
 
   // ** User filter options

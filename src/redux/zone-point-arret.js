@@ -5,19 +5,19 @@ import { createSlice } from '@reduxjs/toolkit'
 
 
 const initialZonePointArret = () => {
-  const item = window.localStorage.getItem('zonePointArretData')
+  const item = window.localStorage.getItem('zoneData')
   //** Parse stored json or if none return initialValue
-  return item ? JSON.parse(item) : {}
+  return item ? item : {}
 }
 
 export const zonePointArretSlice = createSlice({
   name: 'zonePointArret',
   initialState: {
-    userData: initialZonePointArret()
+    zoneData: initialZonePointArret()
   },
   reducers: {
     handleZone: (state, action) => {
-      state.zone = action.payload
+      state.zoneData = action.payload
       localStorage.setItem('zoneData', JSON.stringify(action.payload))
     }
     // handleLogout: state => {
