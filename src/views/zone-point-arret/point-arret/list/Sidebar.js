@@ -7,7 +7,7 @@ import Sidebar from '@components/sidebar'
 
 // ** Utils
 import { selectThemeColors } from '@utils'
-import Avatar from '@components/avatar'
+
 // ** Third Party Components
 import Select from 'react-select'
 import classnames from 'classnames'

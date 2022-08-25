@@ -7,12 +7,14 @@ import chat from '@src/views/apps/chat/store'
 import users from '@src/views/apps/user/store'
 import email from '@src/views/apps/email/store'
 import kanban from '@src/views/apps/kanban/store'
+import pointArret from '@src/views/zone-point-arret/point-arret/store'
 import invoice from '@src/views/apps/invoice/store'
 import calendar from '@src/views/apps/calendar/store'
 import ecommerce from '@src/views/apps/ecommerce/store'
 import dataTables from '@src/views/tables/data-tables/store'
 import permissions from '@src/views/apps/roles-permissions/store'
 import zonePointArret from './zone-point-arret'
+
 
 const rootReducer = {
   auth,
@@ -28,7 +30,8 @@ const rootReducer = {
   ecommerce,
   dataTables,
   permissions,
-  zonePointArret
+  zonePointArret,
+  pointArret
 }
 
 export default rootReducer

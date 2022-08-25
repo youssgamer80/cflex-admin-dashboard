@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form'
 // ** Table Columns
 import { columns } from './columns'
 // ** Store & Actions
-import { getAllData, getData, addPointArret} from '../store'
+import { getAllData, getData, addPointArret } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '@components/avatar'
 // ** Third Party Components
@@ -38,7 +38,7 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 // ** Table Header
-const CustomHeader = ({ toggleSidebar, handleFilter, searchTerm, rowsPerPage, handlePerPage}) => {
+const CustomHeader = ({ toggleSidebar, handleFilter, searchTerm, rowsPerPage, handlePerPage }) => {
   // ** Converts table to CSV
 
 
@@ -47,7 +47,7 @@ const CustomHeader = ({ toggleSidebar, handleFilter, searchTerm, rowsPerPage, ha
   return (
     <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
       <Row>
-      <Col xl='6' className='d-flex align-items-center p-0'>
+        <Col xl='6' className='d-flex align-items-center p-0'>
           <div className='d-flex align-items-center w-100'>
             <label htmlFor='rows-per-page'>Show</label>
             <Input
@@ -72,7 +72,7 @@ const CustomHeader = ({ toggleSidebar, handleFilter, searchTerm, rowsPerPage, ha
         >
           <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
             <label className='mb-0' htmlFor='search-invoice'>
-              Search:
+              Rechercher
             </label>
             <Input
               id='search-invoice'
@@ -202,10 +202,28 @@ const UsersList = () => {
   // ** Function in get data on search query change
   const handleFilter = val => {
     setSearchTerm(val)
+
+    const filteredPersons = store.data.filter(
+      point => {
+        return (
+          point
+            .nom
+            .toLowerCase()
+            .includes(val.toLowerCase()) ||
+          point
+            .idZoneFk.libelle
+            .toLowerCase()
+            .includes(val.toLowerCase())
+        )
+      }
+    )
+    console.log('recherche', filteredPersons)
+
     dispatch(
       getData({
         sort,
         q: val,
+        data: filteredPersons,
         sortColumn,
         page: currentPage,
         perPage: rowsPerPage,
@@ -251,7 +269,7 @@ const UsersList = () => {
     const isFiltered = Object.keys(filters).some(function (k) {
       return filters[k].length > 0
     })
-    console.log('Strore', store.data)
+    // console.log('Strore', store.data)
     if (store.data.length > 0) {
       return store.data
     } else if (store.data.length === 0 && isFiltered) {
@@ -286,16 +304,17 @@ const UsersList = () => {
       const key = keys[i]
       if (key === 'zone') {
         obj['idZoneFk'] = {
-          id:data[key]["value"]
+          id: data[key]["value"]
         }
-      }  else {
+      } else {
         obj[key] = data[key]
       }
     }
-   obj["statut"] = true
-   
-    dispatch(addPointArret(obj)) 
+    obj["statut"] = true
+
+    dispatch(addPointArret(obj))
     setFormModal(!formModal)
+
   }
   const zoneOptions = []
   if (zoneData !== null) {
@@ -425,48 +444,6 @@ const UsersList = () => {
           />
         </div>
       </Card>
-
-
-      {/* <div>
-        <Modal isOpen={formModal} toggle={() => setFormModal(!formModal)} className='modal-dialog-centered modal-lg'>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <ModalHeader toggle={() => setFormModal(!formModal)}>Ajouter un point</ModalHeader>
-            <ModalBody className='px-sm-5 mx-50 pb-5'>
-
-              <div className='mb-2'>
-                <Label className='form-label' for='country'>
-                  Zone <span className='text-danger'>*</span>
-                </Label>
-                <Controller
-                  name='country'
-                  control={control}
-                  render={({ field }) => (
-                    // <Input id='country' placeholder='Australia' invalid={errors.country && true} {...field} />
-                    <Select
-                      isClearable={false}
-                      classNamePrefix='select'
-                      options={zoneOptions}
-                      theme={selectThemeColors}
-                      className={classnames('react-select', { 'is-invalid': zoneData !== null && zoneData.id === null })}
-                      {...field}
-                    />
-                  )}
-                />
-              </div>
-              <div className='mb-2'>
-                <Label className='form-label' for='password'>Nom du point d'arret:</Label>
-                <Input type='text' id='nom' placeholder='nom' />
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button color='primary' onClick={() => setFormModal(!formModal)} type='submit'>
-                Enregistrer
-              </Button>{' '}
-            </ModalFooter>
-          </Form>
-        </Modal>
-      </div> */}
-
       <Modal isOpen={formModal} toggle={() => setFormModal(!formModal)} className='modal-dialog-centered modal-lg'>
         <ModalHeader className='bg-transparent' toggle={() => setFormModal(!formModal)}></ModalHeader>
         <ModalBody className='px-sm-5 mx-50 pb-5'>

@@ -1,6 +1,6 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
+import toast from 'react-hot-toast'
 // ** Axios Imports
 // import axios from 'axios'
 import client from '../../../../api/api'
@@ -12,9 +12,16 @@ export const getAllData = createAsyncThunk('appUsers/getAllData', async () => {
 })
 
 export const getData = createAsyncThunk('appUsers/getData', async params => {
-  const dispatch = useDispatch()
   const response = await client.get('/pointarrets', params)
-   dispatch(handleLogin(data))
+  console.log(params.data)
+  if (params.q.length >= 2) {
+    return {
+      params,
+      data: params.data,
+      totalPages: params.data.length
+    }
+  }
+
   return {
     params,
     data: response.data.data,
@@ -28,14 +35,23 @@ export const getUser = createAsyncThunk('appUsers/getUser', async id => {
 })
 
 export const addPointArret = createAsyncThunk('appUsers/addUser', async (user, { dispatch, getState }) => {
-  await client.post('/pointarrets/addPointArret', user)
-  await dispatch(getData(getState().users.params))
-  await dispatch(getAllData())
-  return user
+
+  const response = await client.post('/pointarrets/addPointArret', user)
+  if (response.status === 200) {
+    await dispatch(getData(getState().users.params))
+    await dispatch(getAllData())
+    toast.success("Point d'arret ajouté !!!")
+    return user
+
+  } else {
+    toast.error("Une erreur est survenue !")
+    return {}
+  }
+
 })
 
 export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { dispatch, getState }) => {
-  await client.delete(`/pointarrets/deletePointArret/${ id }`, { id })
+  await client.delete(`/pointarrets/deletePointArret/${id}`, { id })
   await dispatch(getData(getState().users.params))
   await dispatch(getAllData())
   return id
@@ -45,7 +61,7 @@ export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { d
 // })
 
 
-export const appUsersSlice = createSlice({
+export const pointArretdataSlice = createSlice({
   name: 'appUsers',
   initialState: {
     data: [],
@@ -61,6 +77,7 @@ export const appUsersSlice = createSlice({
         state.allData = action.payload
       })
       .addCase(getData.fulfilled, (state, action) => {
+        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         state.data = action.payload.data
         state.params = action.payload.params
         state.total = action.payload.totalPages
@@ -71,4 +88,4 @@ export const appUsersSlice = createSlice({
   }
 })
 
-export default appUsersSlice.reducer
+export default pointArretdataSlice.reducer

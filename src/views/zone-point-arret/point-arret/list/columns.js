@@ -9,20 +9,19 @@ import { store } from '@store/store'
 import { getUser, deleteUser } from '../store'
 
 // ** Icons Imports
-import {MapPin,  Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive } from 'react-feather'
+import { MapPin, Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive } from 'react-feather'
 
 // ** Reactstrap Imports
-import {Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
 // ** Renders Client Columns
 const isAvatar = false
 const renderClient = row => {
-  console.log('statut', row.nom)
   if (isAvatar) {
     return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
   } else {
     return (
-<Avatar className='me-1' color='light-warning' width='32' height='32'  icon={<MapPin size={14} />} />
+      <Avatar className='me-1' color='light-warning' width='32' height='32' icon={<MapPin size={14} />} />
     )
   }
 }
@@ -50,7 +49,7 @@ export const columns = [
       </div>
     )
   },
- 
+
   {
     name: 'Zone',
     minWidth: '138px',
@@ -75,7 +74,7 @@ export const columns = [
     selector: row => row.latitude,
     cell: row => <span className='text-capitalize'>{row.latitude}</span>
   },
-  
+
   {
     name: 'Status',
     minWidth: '138px',
