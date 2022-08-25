@@ -27,19 +27,23 @@ export const getUser = createAsyncThunk('appUsers/getUser', async id => {
   return response.data.user
 })
 
-export const addUser = createAsyncThunk('appUsers/addUser', async (user, { dispatch, getState }) => {
-  await client.post('/apps/users/add-user', user)
+export const addPointArret = createAsyncThunk('appUsers/addUser', async (user, { dispatch, getState }) => {
+  await client.post('/pointarrets/addPointArret', user)
   await dispatch(getData(getState().users.params))
   await dispatch(getAllData())
   return user
 })
 
 export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { dispatch, getState }) => {
-  await client.delete('/apps/users/delete', { id })
+  await client.delete(`/pointarrets/deletePointArret/${ id }`, { id })
   await dispatch(getData(getState().users.params))
   await dispatch(getAllData())
   return id
 })
+// export const updatePointArret = createAsyncThunk('appUser/updateUser' , async(id , {dispatch , getState})=>{
+//   await client.update()
+// })
+
 
 export const appUsersSlice = createSlice({
   name: 'appUsers',
