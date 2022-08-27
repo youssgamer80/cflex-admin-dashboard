@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form'
 // ** Table Columns
 import { columns } from './columns'
 // ** Store & Actions
-import { getAllData, getData, addPointArret } from '../store'
+import { getAllDataPointArret, getDataPointArret, addPointArret } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '@components/avatar'
 // ** Third Party Components
@@ -99,7 +99,7 @@ const CustomHeader = ({ toggleSidebar, handleFilter, searchTerm, rowsPerPage, ha
 const UsersList = () => {
   // ** Store Vars
   const dispatch = useDispatch()
-  const store = useSelector(state => state.users)
+  const store = useSelector(state => state.pointArret)
 
   // ** States
   const [sort, setSort] = useState('desc')
@@ -107,9 +107,8 @@ const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [sortColumn, setSortColumn] = useState('id')
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Role' })
-  const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
-  const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
+  const [currentZone, setcurrentZone] = useState({ value: '', label: 'Selectionner un zone' })
+  const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Selectionner un statut', number: 0 })
   const [formModal, setFormModal] = useState(false)
   const [zoneData, setZoneData] = useState(null)
   // ** Function to toggle sidebar
@@ -122,17 +121,16 @@ const UsersList = () => {
 
   // ** Get data on mount
   useEffect(() => {
-    dispatch(getAllData())
+    dispatch(getAllDataPointArret())
     dispatch(
-      getData({
+      getDataPointArret({
         sort,
         sortColumn,
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
-        role: currentRole.value,
-        status: currentStatus.value,
-        currentPlan: currentPlan.value
+        role: currentZone.value,
+        status: currentStatus.value
       })
     )
     setZoneData(JSON.parse(localStorage.getItem('zoneData')))
@@ -140,42 +138,23 @@ const UsersList = () => {
 
 
   // ** User filter options
-  const roleOptions = [
-    { value: '', label: 'Select Role' },
-    { value: 'admin', label: 'Admin' },
-    { value: 'author', label: 'Author' },
-    { value: 'editor', label: 'Editor' },
-    { value: 'maintainer', label: 'Maintainer' },
-    { value: 'subscriber', label: 'Subscriber' }
-  ]
-
-  const planOptions = [
-    { value: '', label: 'Select Plan' },
-    { value: 'basic', label: 'Basic' },
-    { value: 'company', label: 'Company' },
-    { value: 'enterprise', label: 'Enterprise' },
-    { value: 'team', label: 'Team' }
-  ]
 
   const statusOptions = [
-    { value: '', label: 'Select Status', number: 0 },
-    { value: 'pending', label: 'Pending', number: 1 },
-    { value: 'active', label: 'Active', number: 2 },
-    { value: 'inactive', label: 'Inactive', number: 3 }
+    { value: true, label: 'Actif', number: 1 },
+    { value: false, label: 'Inactif', number: 2 }
   ]
 
   // ** Function in get data on page change
   const handlePagination = page => {
     dispatch(
-      getData({
+      getDataPointArret({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: rowsPerPage,
         page: page.selected + 1,
-        role: currentRole.value,
-        status: currentStatus.value,
-        currentPlan: currentPlan.value
+        role: currentZone.value,
+        status: currentStatus.value
       })
     )
     setCurrentPage(page.selected + 1)
@@ -185,14 +164,13 @@ const UsersList = () => {
   const handlePerPage = e => {
     const value = parseInt(e.currentTarget.value)
     dispatch(
-      getData({
+      getDataPointArret({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: value,
         page: currentPage,
-        role: currentRole.value,
-        currentPlan: currentPlan.value,
+        role: currentZone.value,
         status: currentStatus.value
       })
     )
@@ -220,16 +198,15 @@ const UsersList = () => {
     console.log('recherche', filteredPersons)
 
     dispatch(
-      getData({
+      getDataPointArret({
         sort,
         q: val,
         data: filteredPersons,
         sortColumn,
         page: currentPage,
         perPage: rowsPerPage,
-        role: currentRole.value,
-        status: currentStatus.value,
-        currentPlan: currentPlan.value
+        role: currentZone.value,
+        status: currentStatus.value
       })
     )
   }
@@ -260,8 +237,7 @@ const UsersList = () => {
   // ** Table data to render
   const dataToRender = () => {
     const filters = {
-      role: currentRole.value,
-      currentPlan: currentPlan.value,
+      role: currentZone.value,
       status: currentStatus.value,
       q: searchTerm
     }
@@ -283,15 +259,14 @@ const UsersList = () => {
     setSort(sortDirection)
     setSortColumn(column.sortField)
     dispatch(
-      getData({
+      getDataPointArret({
         sort,
         sortColumn,
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
-        role: currentRole.value,
-        status: currentStatus.value,
-        currentPlan: currentPlan.value
+        role: currentZone.value,
+        status: currentStatus.value
       })
     )
   }
@@ -330,56 +305,30 @@ const UsersList = () => {
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle tag='h4'>Filters</CardTitle>
+          <CardTitle tag='h4'>Filtres</CardTitle>
         </CardHeader>
         <CardBody>
           <Row>
             <Col md='4'>
-              <Label for='role-select'>Role</Label>
+              <Label for='role-select'>Zone</Label>
               <Select
                 isClearable={false}
-                value={currentRole}
-                options={roleOptions}
+                value={currentZone}
+                options={zoneOptions}
                 className='react-select'
                 classNamePrefix='select'
+                placeholder='Selectionner un zone'
                 theme={selectThemeColors}
                 onChange={data => {
-                  setCurrentRole(data)
+                  setcurrentZone(data)
                   dispatch(
-                    getData({
+                    getDataPointArret({
                       sort,
                       sortColumn,
                       q: searchTerm,
                       role: data.value,
                       page: currentPage,
                       perPage: rowsPerPage,
-                      status: currentStatus.value,
-                      currentPlan: currentPlan.value
-                    })
-                  )
-                }}
-              />
-            </Col>
-            <Col className='my-md-0 my-1' md='4'>
-              <Label for='plan-select'>Plan</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={planOptions}
-                value={currentPlan}
-                onChange={data => {
-                  setCurrentPlan(data)
-                  dispatch(
-                    getData({
-                      sort,
-                      sortColumn,
-                      q: searchTerm,
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      role: currentRole.value,
-                      currentPlan: data.value,
                       status: currentStatus.value
                     })
                   )
@@ -387,7 +336,7 @@ const UsersList = () => {
               />
             </Col>
             <Col md='4'>
-              <Label for='status-select'>Status</Label>
+              <Label for='status-select'>Statut</Label>
               <Select
                 theme={selectThemeColors}
                 isClearable={false}
@@ -396,17 +345,28 @@ const UsersList = () => {
                 options={statusOptions}
                 value={currentStatus}
                 onChange={data => {
+                  console.log(data.value)
                   setCurrentStatus(data)
+                  const filteredPersons = store.data.filter(
+                    point => {
+                      return (
+                        point
+                          .statut
+                        === data.value
+                      )
+                    }
+                  )
+                  console.log('============', store.data)
                   dispatch(
-                    getData({
+                    getDataPointArret({
                       sort,
                       sortColumn,
                       q: searchTerm,
+                      data: filteredPersons,
                       page: currentPage,
                       status: data.value,
                       perPage: rowsPerPage,
-                      role: currentRole.value,
-                      currentPlan: currentPlan.value
+                      role: currentZone.value
                     })
                   )
                 }}

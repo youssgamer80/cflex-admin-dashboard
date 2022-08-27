@@ -12,7 +12,6 @@ import UiElementRoutes from './UiElements'
 import ExtensionsRoutes from './Extensions'
 import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
-import Zone from './Zone'
 import AdminRoutes from './Admin'
 import ZonePointArret from './zone-point-arret'
 
@@ -53,7 +52,6 @@ const Routes = [
   ...FormRoutes,
   ...TablesRoutes,
   ...ChartsRoutes,
-  ...Zone,
   ...AdminRoutes,
 
   ...ZonePointArret

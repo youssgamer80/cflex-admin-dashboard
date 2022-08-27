@@ -13,7 +13,8 @@ import calendar from '@src/views/apps/calendar/store'
 import ecommerce from '@src/views/apps/ecommerce/store'
 import dataTables from '@src/views/tables/data-tables/store'
 import permissions from '@src/views/apps/roles-permissions/store'
-import zonePointArret from './zone-point-arret'
+import zone from '@src/views/zone-point-arret/zone/zone/store'
+// import zonePointArret from './zone-point-arret'
 
 
 const rootReducer = {
@@ -30,8 +31,10 @@ const rootReducer = {
   ecommerce,
   dataTables,
   permissions,
-  zonePointArret,
-  pointArret
+  // zonePointArret,
+  pointArret,
+  zone
+
 }
 
 export default rootReducer

@@ -9,7 +9,7 @@ export default [
         id: 'zone',
         title: 'Zone',
         icon: <StopCircle size={20} />,
-        navLink: '/apps/zone/list'
+        navLink: '/apps/zone-point-arret/zone'
     },
 
     // {

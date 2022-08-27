@@ -8,15 +8,14 @@ import Sidebar from './Sidebar'
 import { columns } from './columns'
 
 // ** Store & Actions
-import { getAllData, getData } from '../store'
+import { getAllDataZone, getDataZone } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
-import { handleZone } from '@store/zone-point-arret'
 // ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy } from 'react-feather'
-
+import { useForm, Controller } from 'react-hook-form'
 // ** Utils
 import { selectThemeColors } from '@utils'
 
@@ -34,7 +33,8 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
-  UncontrolledDropdown
+  UncontrolledDropdown,
+  Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
 
 // ** Styles
@@ -167,42 +167,44 @@ const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handle
 const UsersList = () => {
   // ** Store Vars
   const dispatch = useDispatch()
-  const store = useSelector(state => state.users)
-
+  const store = useSelector(state => state.zone)
+  console.log("xxxxxxxx", store)
   // ** States
   const [sort, setSort] = useState('desc')
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [sortColumn, setSortColumn] = useState('id')
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Role' })
+  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Selectionner un zone' })
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
-
+  const [formModal, setFormModal] = useState(false)
   // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+  const toggleSidebar = () => setFormModal(!formModal)
+
 
   // ** Get data on mount
   useEffect(() => {
-    dispatch(getAllData())
-    const response = getData({
-      sort,
-      sortColumn,
-      q: searchTerm,
-      page: currentPage,
-      perPage: rowsPerPage,
-      role: currentRole.value,
-      status: currentStatus.value,
-      currentPlan: currentPlan.value
-    })
-
+    dispatch(getAllDataZone())
     dispatch(
-      response
+      getDataZone({
+        sort,
+        sortColumn,
+        q: searchTerm,
+        page: currentPage,
+        perPage: rowsPerPage,
+        role: currentRole.value,
+        status: currentStatus.value,
+        currentPlan: currentPlan.value
+      })
     )
-    dispatch(handleZone(response))
 
   }, [dispatch, store.data.length, sort, sortColumn, currentPage])
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({})
 
   // ** User filter options
   const roleOptions = [
@@ -280,7 +282,26 @@ const UsersList = () => {
       })
     )
   }
+  const onSubmit = data => {
+    console.log("enregistrer un pa", data)
+    // const obj = {}
+    // const keys = Object.keys(data)
+    // for (let i = 0; i < keys.length; i++) {
+    //   const key = keys[i]
+    //   if (key === 'zone') {
+    //     obj['idZoneFk'] = {
+    //       id: data[key]["value"]
+    //     }
+    //   } else {
+    //     obj[key] = data[key]
+    //   }
+    // }
+    // obj["statut"] = true
 
+    // dispatch(addPointArret(obj))
+    setFormModal(!formModal)
+
+  }
   // ** Custom Pagination
   const CustomPagination = () => {
     const count = Number(Math.ceil(store.total / rowsPerPage))
@@ -462,7 +483,75 @@ const UsersList = () => {
         </div>
       </Card>
 
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+      <Modal isOpen={formModal} toggle={() => setFormModal(!formModal)} className='modal-dialog-centered modal-lg'>
+        <ModalHeader className='bg-transparent' toggle={() => setFormModal(!formModal)}></ModalHeader>
+        <ModalBody className='px-sm-5 mx-50 pb-5'>
+          <div className='text-center mb-2'>
+            <h1 className='mb-1'>Ajouter un point d'arret</h1>
+          </div>
+          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
+            <Col xs={12}>
+              <Label className='form-label' for='username'>
+                Nom
+              </Label>
+              <Controller
+                name='nom'
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} id='username' placeholder='indenie' invalid={errors.username && true} />
+                )}
+              />
+              {errors.username && <FormFeedback>Ajouter une Zone</FormFeedback>}
+            </Col>
+            <Col md={6} xs={12}>
+              <Label className='form-label' for='zone'>
+                Zone
+              </Label>
+
+              <Controller
+                name='zone'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    id='zone'
+                    isClearable={false}
+                    className='react-select'
+                    classNamePrefix='selChisect'
+                    options={statusOptions}
+                    theme={selectThemeColors}
+                  />)}
+              />
+            </Col>
+            <Col md={6} xs={12}>
+              <Label className='form-label' for='zone'>
+                Zone
+              </Label>
+
+              <Controller
+                name='zone'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    id='zone'
+                    isClearable={false}
+                    className='react-select'
+                    classNamePrefix='selChisect'
+                    options={statusOptions}
+                    theme={selectThemeColors}
+                  />)}
+              />
+            </Col>
+            <Col className='d-grid mb-1 mb-lg-0' lg={6} md={12}>
+              <Button type='submit' className='me-2' color='primary'>
+                Enregistrer
+              </Button>
+            </Col>
+          </Row>
+        </ModalBody>
+      </Modal>
+
     </Fragment>
   )
 }

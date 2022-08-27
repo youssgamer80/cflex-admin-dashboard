@@ -13,7 +13,7 @@ import { StopCircle } from 'react-feather'
 // ** Styles
 import '@styles/react/apps/app-users.scss'
 
-const UsersList = () => {
+const ZoneList = () => {
   return (
     <div className='app-user-list'>
       <Row>
@@ -32,4 +32,4 @@ const UsersList = () => {
   )
 }
 
-export default UsersList
+export default ZoneList

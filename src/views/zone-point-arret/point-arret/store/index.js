@@ -5,15 +5,14 @@ import toast from 'react-hot-toast'
 // import axios from 'axios'
 import client from '../../../../api/api'
 
-export const getAllData = createAsyncThunk('appUsers/getAllData', async () => {
+export const getAllDataPointArret = createAsyncThunk('pointArrets/getAllDataPointArret', async () => {
   const response = await client.get('/pointarrets')
   console.log(response)
   return response.data.data
 })
 
-export const getData = createAsyncThunk('appUsers/getData', async params => {
+export const getDataPointArret = createAsyncThunk('pointArrets/getDataPointArret', async params => {
   const response = await client.get('/pointarrets', params)
-  console.log(params.data)
   if (params.q.length >= 2) {
     return {
       params,
@@ -29,17 +28,18 @@ export const getData = createAsyncThunk('appUsers/getData', async params => {
   }
 })
 
-export const getUser = createAsyncThunk('appUsers/getUser', async id => {
-  const response = await client.get('/api/users/user', { id })
-  return response.data.user
+export const getUser = createAsyncThunk('pointArrets/getUser', async id => {
+  const response = await client.get(`/pointarrets/${id}`, { id })
+  console.log('xxxxxx', response)
+  return response.data.data
 })
 
-export const addPointArret = createAsyncThunk('appUsers/addUser', async (user, { dispatch, getState }) => {
+export const addPointArret = createAsyncThunk('pointArrets/addPointArret', async (user, { dispatch, getState }) => {
 
   const response = await client.post('/pointarrets/addPointArret', user)
   if (response.status === 200) {
-    await dispatch(getData(getState().users.params))
-    await dispatch(getAllData())
+    await dispatch(getDataPointArret(getState().users.params))
+    await dispatch(getAllDataPointArret())
     toast.success("Point d'arret ajouté !!!")
     return user
 
@@ -50,10 +50,10 @@ export const addPointArret = createAsyncThunk('appUsers/addUser', async (user, {
 
 })
 
-export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { dispatch, getState }) => {
+export const deleteUser = createAsyncThunk('pointArrets/deleteUser', async (id, { dispatch, getState }) => {
   await client.delete(`/pointarrets/deletePointArret/${id}`, { id })
-  await dispatch(getData(getState().users.params))
-  await dispatch(getAllData())
+  await dispatch(getDataPointArret(getState().users.params))
+  await dispatch(getAllDataPointArret())
   return id
 })
 // export const updatePointArret = createAsyncThunk('appUser/updateUser' , async(id , {dispatch , getState})=>{
@@ -61,8 +61,8 @@ export const deleteUser = createAsyncThunk('appUsers/deleteUser', async (id, { d
 // })
 
 
-export const pointArretdataSlice = createSlice({
-  name: 'appUsers',
+export const pointArretsSlice = createSlice({
+  name: 'pointArrets',
   initialState: {
     data: [],
     total: 1,
@@ -73,11 +73,10 @@ export const pointArretdataSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(getAllData.fulfilled, (state, action) => {
+      .addCase(getAllDataPointArret.fulfilled, (state, action) => {
         state.allData = action.payload
       })
-      .addCase(getData.fulfilled, (state, action) => {
-        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+      .addCase(getDataPointArret.fulfilled, (state, action) => {
         state.data = action.payload.data
         state.params = action.payload.params
         state.total = action.payload.totalPages
@@ -88,4 +87,4 @@ export const pointArretdataSlice = createSlice({
   }
 })
 
-export default pointArretdataSlice.reducer
+export default pointArretsSlice.reducer

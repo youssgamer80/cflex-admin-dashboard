@@ -1,9 +1,9 @@
 // ** React Imports
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 // ** Reactstrap Imports
 import { Row, Col } from 'reactstrap'
-
+import { useDispatch } from 'react-redux'
 // ** Context
 import { ThemeColors } from '@src/utility/context/ThemeColors'
 
@@ -24,13 +24,31 @@ import CardBrowserStates from '@src/views/ui-elements/cards/advance/CardBrowserS
 import '@styles/react/libs/charts/apex-charts.scss'
 import '@styles/base/pages/dashboard-ecommerce.scss'
 
+import { getAllDataZone, getDataZone } from '@src/views/zone-point-arret/zone/zone/store'
+import { getAllDataPointArret, getDataPointArret } from '@src/views/zone-point-arret/point-arret/store'
+
 const EcommerceDashboard = () => {
+  const dispatch = useDispatch()
   // ** Context
   const { colors } = useContext(ThemeColors)
 
   // ** vars
   const trackBgColor = '#e9ecef'
 
+  useEffect(() => {
+    //Init zone data
+    dispatch(getAllDataZone())
+    dispatch(
+      getDataZone({
+      })
+    )
+    // init pointArret
+    dispatch(getAllDataPointArret())
+    dispatch(
+      getDataPointArret({
+      })
+    )
+  })
   return (
     <div id='dashboard-ecommerce'>
       <Row className='match-height'>
