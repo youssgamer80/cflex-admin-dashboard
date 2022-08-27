@@ -30,29 +30,26 @@ export const getDataPointArret = createAsyncThunk('pointArrets/getDataPointArret
 
 export const getUser = createAsyncThunk('pointArrets/getUser', async id => {
   const response = await client.get(`/pointarrets/${id}`, { id })
-  console.log('xxxxxx', response)
   return response.data.data
 })
 
 export const addPointArret = createAsyncThunk('pointArrets/addPointArret', async (user, { dispatch, getState }) => {
 
-  const response = await client.post('/pointarrets/addPointArret', user)
-  if (response.status === 200) {
-    await dispatch(getDataPointArret(getState().users.params))
-    await dispatch(getAllDataPointArret())
-    toast.success("Point d'arret ajouté !!!")
-    return user
-
-  } else {
-    toast.error("Une erreur est survenue !")
-    return {}
-  }
-
+  await client.post('/pointarrets/addPointArret', user).then((res) => {
+    if (res.status === 200) {
+      dispatch(getDataPointArret(getState().pointArret.params))
+      dispatch(getAllDataPointArret())
+      toast.success("Point d'arret ajouté !!!")
+    } else {
+      toast.error("Une erreur est survenue, veuillez réessayer")
+    }
+  })
+  return user
 })
 
-export const deleteUser = createAsyncThunk('pointArrets/deleteUser', async (id, { dispatch, getState }) => {
+export const deletePointArret = createAsyncThunk('pointArrets/deleteUser', async (id, { dispatch, getState }) => {
   await client.delete(`/pointarrets/deletePointArret/${id}`, { id })
-  await dispatch(getDataPointArret(getState().users.params))
+  await dispatch(getDataPointArret(getState().pointArret.params))
   await dispatch(getAllDataPointArret())
   return id
 })

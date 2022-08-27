@@ -14,7 +14,7 @@ import { StopCircle } from 'react-feather'
 import '@styles/react/apps/app-users.scss'
 
 const ZoneList = () => {
-  const storeZone = useSelector(state => state.zone)
+  const storeZoneParents = useSelector(state => state.zoneParent)
   return (
     <div className='app-user-list'>
       <Row>
@@ -22,9 +22,9 @@ const ZoneList = () => {
         <Col lg='12' sm='12'>
           <StatsHorizontal
             color='warning'
-            statTitle='Zones'
+            statTitle='Zones Parents'
             icon={<StopCircle size={20} />}
-            renderStats={<h3 className='fw-bolder mb-75'>{storeZone.allData.length}</h3>}
+            renderStats={<h3 className='fw-bolder mb-75'>{storeZoneParents.allData.length}</h3>}
           />
         </Col>
       </Row>

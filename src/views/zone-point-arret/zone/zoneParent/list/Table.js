@@ -6,17 +6,15 @@ import Sidebar from './Sidebar'
 
 // ** Table Columns
 import { columns } from './columns'
-import { store } from '@store/store'
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-import classnames from 'classnames'
+
 // ** Store & Actions
-import { getAllDataZone, getDataZone, deleteZone, addZone } from '../store'
+import { getAllDataZoneParent, getDataZoneParent, addZoneParent } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
+// ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, MoreVertical, Trash2, Eye, Check, X } from 'react-feather'
+import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, Check, X } from 'react-feather'
 import { useForm, Controller } from 'react-hook-form'
 // ** Utils
 import { selectThemeColors } from '@utils'
@@ -36,8 +34,7 @@ import {
   DropdownItem,
   DropdownToggle,
   UncontrolledDropdown,
-  Modal, ModalHeader, ModalBody, ModalFooter,
-  FormFeedback
+  Modal, ModalHeader, ModalBody, ModalFooter, FormFeedback
 } from 'reactstrap'
 
 // ** Styles
@@ -45,14 +42,14 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 // ** Table Header
-const CustomHeader = ({ storeData, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
   // ** Converts table to CSV
   function convertArrayOfObjectsToCSV(array) {
     let result
 
     const columnDelimiter = ','
     const lineDelimiter = '\n'
-    const keys = Object.keys(storeData.data[0])
+    const keys = Object.keys(store.data[0])
 
     result = ''
     result += keys.join(columnDelimiter)
@@ -138,7 +135,7 @@ const CustomHeader = ({ storeData, toggleSidebar, handlePerPage, rowsPerPage, ha
                   <Printer className='font-small-4 me-50' />
                   <span className='align-middle'>Print</span>
                 </DropdownItem>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(storeData.data)}>
+                <DropdownItem className='w-100' onClick={() => downloadCSV(store.data)}>
                   <FileText className='font-small-4 me-50' />
                   <span className='align-middle'>CSV</span>
                 </DropdownItem>
@@ -170,9 +167,8 @@ const CustomHeader = ({ storeData, toggleSidebar, handlePerPage, rowsPerPage, ha
 const UsersList = () => {
   // ** Store Vars
   const dispatch = useDispatch()
-  const storeData = useSelector(state => state.zone)
-  const storeDataZoneParent = useSelector(state => state.zoneParent)
-  const storeDataTypesZone = useSelector(state => state.typesZone)
+  const store = useSelector(state => state.zoneParent)
+
   // ** States
   const [sort, setSort] = useState('desc')
   const [searchTerm, setSearchTerm] = useState('')
@@ -183,47 +179,15 @@ const UsersList = () => {
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
   const [formModal, setFormModal] = useState(false)
-  const [update, setUpdate] = useState(false)
-  const [currentZonesData, setCurrentZonesData] = useState(null)
-  // const [show, setShow] = useState(false)
   // ** Function to toggle sidebar
+  const toggleSidebar = () => setFormModal(!formModal)
 
-  const MySwal = withReactContent(Swal)
-
-  const handleSuspendedClick = (row) => {
-    return MySwal.fire({
-      title: 'Êtes vous sûr?',
-      text: `De vouloir supprimer ${row.libelle}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Oui, je suis sûr',
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-outline-danger ms-1'
-      },
-      buttonsStyling: false
-    }).then(function (result) {
-      if (result.value) {
-        console.log(result.value)
-        store.dispatch(deleteZone(row.id))
-        MySwal.fire({
-          icon: 'success',
-          title: 'Supprimé !',
-          text: `La zone ${row.libelle} a bien été supprimée`,
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        })
-
-      }
-    })
-  }
 
   // ** Get data on mount
   useEffect(() => {
-    dispatch(getAllDataZone())
+    dispatch(getAllDataZoneParent())
     dispatch(
-      getDataZone({
+      getDataZoneParent({
         sort,
         sortColumn,
         q: searchTerm,
@@ -235,47 +199,46 @@ const UsersList = () => {
       })
     )
 
-  }, [dispatch, storeData.data.length, sort, sortColumn, currentPage])
+  }, [dispatch, store.data.length, sort, sortColumn, currentPage])
   const {
-    control,
     reset,
-    handleSubmit,
+    control,
     setError,
-    setValue,
+    handleSubmit,
     formState: { errors }
-  } = useForm({ defaultValues: {} })
-  const toggleSidebar = () => {
-    reset()
-    setFormModal(!formModal)
-  }
+  } = useForm({})
+
   // ** User filter options
-  const zoneParentOptions = []
-  if (storeDataZoneParent.allData !== null) {
-    for (let i = 0; i < storeDataZoneParent.allData.length; i++) {
-      const countryOptionsJson = {}
-      countryOptionsJson['value'] = storeDataZoneParent.allData[i]['id']
-      countryOptionsJson['label'] = storeDataZoneParent.allData[i]['zoneparent']
-      zoneParentOptions.push(countryOptionsJson)
+  const roleOptions = [
+    { value: '', label: 'Select Role' },
+    { value: 'admin', label: 'Admin' },
+    { value: 'author', label: 'Author' },
+    { value: 'editor', label: 'Editor' },
+    { value: 'maintainer', label: 'Maintainer' },
+    { value: 'subscriber', label: 'Subscriber' }
+  ]
 
-    }
+  const planOptions = [
+    { value: '', label: 'Select Plan' },
+    { value: 'basic', label: 'Basic' },
+    { value: 'company', label: 'Company' },
+    { value: 'enterprise', label: 'Enterprise' },
+    { value: 'team', label: 'Team' }
+  ]
+
+  const statusOptions = [
+    { value: '', label: 'Select Status', number: 0 },
+    { value: 'pending', label: 'Pending', number: 1 },
+    { value: 'active', label: 'Active', number: 2 },
+    { value: 'inactive', label: 'Inactive', number: 3 }
+  ]
+  const checkIsValid = data => {
+    return Object.values(data).every(field => (field !== undefined))
   }
-
-  const TypesZoneOptions = []
-  if (storeDataTypesZone.allData !== null) {
-    for (let i = 0; i < storeDataTypesZone.allData.length; i++) {
-      const countryOptionsJson = {}
-      countryOptionsJson['value'] = storeDataTypesZone.allData[i]['id']
-      countryOptionsJson['label'] = storeDataTypesZone.allData[i]['libelle']
-      TypesZoneOptions.push(countryOptionsJson)
-
-    }
-  }
-
-
   // ** Function in get data on page change
   const handlePagination = page => {
     dispatch(
-      getDataZone({
+      getDataZoneParent({
         sort,
         sortColumn,
         q: searchTerm,
@@ -293,7 +256,7 @@ const UsersList = () => {
   const handlePerPage = e => {
     const value = parseInt(e.currentTarget.value)
     dispatch(
-      getDataZone({
+      getDataZoneParent({
         sort,
         sortColumn,
         q: searchTerm,
@@ -311,7 +274,7 @@ const UsersList = () => {
   const handleFilter = val => {
     setSearchTerm(val)
     dispatch(
-      getDataZone({
+      getDataZoneParent({
         sort,
         q: val,
         sortColumn,
@@ -323,33 +286,10 @@ const UsersList = () => {
       })
     )
   }
-
-  const checkIsValid = data => {
-    return Object.values(data).every(field => (field !== undefined))
-  }
-  const [data, setData] = useState({})
-
   const onSubmit = data => {
-    setData(data)
     console.log("enregistrer un pa", data)
     if (checkIsValid(data)) {
-      const obj = {}
-      const keys = Object.keys(data)
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i]
-        if (key === 'idTypeZoneFk') {
-          obj[key] = {
-            id: data[key]["value"]
-          }
-        } else if (key === 'idZoneparentFk') {
-          obj[key] = {
-            id: data[key]["value"]
-          }
-        } else {
-          obj[key] = data[key]
-        }
-      }
-      dispatch(addZone(obj))
+      dispatch(addZoneParent(data))
       setFormModal(!formModal)
       reset()
     } else {
@@ -365,7 +305,7 @@ const UsersList = () => {
   }
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(storeData.total / rowsPerPage))
+    const count = Number(Math.ceil(store.total / rowsPerPage))
 
     return (
       <ReactPaginate
@@ -399,12 +339,12 @@ const UsersList = () => {
       return filters[k].length > 0
     })
 
-    if (storeData.data.length > 0) {
-      return storeData.data
-    } else if (storeData.data.length === 0 && isFiltered) {
+    if (store.data.length > 0) {
+      return store.data
+    } else if (store.data.length === 0 && isFiltered) {
       return []
     } else {
-      return storeData.allData.slice(0, rowsPerPage)
+      return store.allData.slice(0, rowsPerPage)
     }
   }
 
@@ -412,7 +352,7 @@ const UsersList = () => {
     setSort(sortDirection)
     setSortColumn(column.sortField)
     dispatch(
-      getDataZone({
+      getDataZoneParent({
         sort,
         sortColumn,
         q: searchTerm,
@@ -424,55 +364,7 @@ const UsersList = () => {
       })
     )
   }
-  const handleEditClick = data => {
-    console.log(data)
-    const keys = Object.keys(data)
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
-      if (key === 'idTypeZoneFk' || key === 'idZoneparentFk') {
-        setCurrentZonesData(data)
-        setValue(key, { id: data[key].id })
-      } else {
-        setValue(key, data[key])
-      }
-    }
-    setFormModal(!formModal)
-    setUpdate(true)
-  }
-  const updatedColumns = [
-    ...columns,
-    {
-      name: 'Actions',
-      minWidth: '100px',
-      cell: row => (
-        <div className='column-action'>
-          <UncontrolledDropdown>
-            <DropdownToggle tag='div' className='btn btn-sm'>
-              <MoreVertical size={14} className='cursor-pointer' />
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem tag='a' className='w-100' onClick={() => handleEditClick(row)}>
-                <Eye size={14} className='me-50' />
-                <span className='align-middle'>Voir</span>
-              </DropdownItem>
-              <DropdownItem
-                tag='a'
-                className='w-100'
-                onClick={e => {
-                  e.preventDefault()
-                  handleSuspendedClick(row)
 
-                }}
-              >
-                <Trash2 size={14} className='me-50' />
-                <span className='align-middle'>Supprimer</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-      )
-    }
-  ]
   return (
     <Fragment>
       <Card>
@@ -486,14 +378,14 @@ const UsersList = () => {
               <Select
                 isClearable={false}
                 value={currentRole}
-                options={zoneParentOptions}
+                options={roleOptions}
                 className='react-select'
                 classNamePrefix='select'
                 theme={selectThemeColors}
                 onChange={data => {
                   setCurrentRole(data)
                   dispatch(
-                    getDataZone({
+                    getDataZoneParent({
                       sort,
                       sortColumn,
                       q: searchTerm,
@@ -514,12 +406,12 @@ const UsersList = () => {
                 isClearable={false}
                 className='react-select'
                 classNamePrefix='select'
-                options={zoneParentOptions}
+                options={planOptions}
                 value={currentPlan}
                 onChange={data => {
                   setCurrentPlan(data)
                   dispatch(
-                    getDataZone({
+                    getDataZoneParent({
                       sort,
                       sortColumn,
                       q: searchTerm,
@@ -540,12 +432,12 @@ const UsersList = () => {
                 isClearable={false}
                 className='react-select'
                 classNamePrefix='select'
-                options={zoneParentOptions}
+                options={statusOptions}
                 value={currentStatus}
                 onChange={data => {
                   setCurrentStatus(data)
                   dispatch(
-                    getDataZone({
+                    getDataZoneParent({
                       sort,
                       sortColumn,
                       q: searchTerm,
@@ -572,7 +464,7 @@ const UsersList = () => {
             pagination
             responsive
             paginationServer
-            columns={updatedColumns}
+            columns={columns}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className='react-dataTable'
@@ -596,65 +488,21 @@ const UsersList = () => {
         <ModalHeader className='bg-transparent' toggle={() => setFormModal(!formModal)}></ModalHeader>
         <ModalBody className='px-sm-5 mx-50 pb-5'>
           <div className='text-center mb-2'>
-            <h1 className='mb-1'>{update ? 'Modifier une zone' : 'Ajouter une zone'}</h1>
+            <h1 className='mb-1'>Ajouter une zone parent</h1>
           </div>
-          <Row tag='form' className='gy-1 pt-75' onSubmit={!update ? console.log("") : handleSubmit(onSubmit)}>
+          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col xs={12}>
               <Label className='form-label' for='username'>
-                Zone
+                Zone parent
               </Label>
               <Controller
-                name='libelle'
+                name='zoneparent'
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} id='username' placeholder='zone' invalid={errors.libelle && true} />
+                  <Input {...field} id='username' placeholder='zone parent' invalid={errors.zoneparent && true} />
                 )}
               />
-              {errors.libelle && <FormFeedback>Ajouter une Zone</FormFeedback>}
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='zone'>
-                Type Zone
-              </Label>
-
-              <Controller
-                name='idTypeZoneFk'
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    id='idTypeZoneFk'
-                    value={TypesZoneOptions[TypesZoneOptions.findIndex(i => i.value === currentZonesData['idTypeZoneFk'].id)]}
-                    isClearable={false}
-                    className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idTypeZoneFk === undefined : true })}
-                    classNamePrefix='selChisect'
-                    options={TypesZoneOptions}
-                    theme={selectThemeColors}
-                  />)}
-              />
-              {errors.idTypeZoneFk && <FormFeedback>Veuillez selectionner un type de zone</FormFeedback>}
-            </Col>
-            <Col md={6} xs={12}>
-              <Label className='form-label' for='zone'>
-                Zone Parent
-              </Label>
-
-              <Controller
-                name='idZoneparentFk'
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    id='idZoneparentFk'
-                    value={zoneParentOptions[zoneParentOptions.findIndex(i => i.value === currentZonesData['idZoneparentFk'].id)]}
-                    isClearable={false}
-                    className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idZoneparentFk === undefined : true })}
-                    classNamePrefix='selChisect'
-                    options={zoneParentOptions}
-                    theme={selectThemeColors}
-                  />)}
-              />
-              {errors.idZoneparentFk && <FormFeedback>Veuillez selectionner une zone parent</FormFeedback>}
+              {errors.zoneparent && <FormFeedback>Veuillez saisir la zone parent !</FormFeedback>}
             </Col>
             <Col xs={12}>
               <div className='d-flex align-items-center'>
@@ -682,7 +530,7 @@ const UsersList = () => {
                 </Label>
               </div>
             </Col>
-            <Col className='d-grid mb-1 mb-lg-0' lg={6} md={12}>
+            <Col className='d-grid mb-1 mb-lg-0' xs={12}>
               <Button type='submit' className='me-2' color='primary'>
                 Enregistrer
               </Button>

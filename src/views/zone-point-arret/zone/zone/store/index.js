@@ -1,10 +1,7 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
-// ** Axios Imports
-// import axios from 'axios'
+import toast from 'react-hot-toast'
 import client from '@src/api/api'
-//import { handleZone } from '@store/zone-point-arret'
 
 export const getAllDataZone = createAsyncThunk('zones/getAllDataZone', async () => {
   const response = await client.get('/zones')
@@ -22,21 +19,28 @@ export const getDataZone = createAsyncThunk('zones/getDataPointArret', async par
   }
 })
 
-export const getUser = createAsyncThunk('zones/getUser', async id => {
-  const response = await client.get('/api/users/user', { id })
-  return response.data.user
+export const getZone = createAsyncThunk('zones/getUser', async id => {
+  console.log("get")
+  const response = await client.get(`/zones/${id}`)
+  return response.data.data
 })
 
-export const addUser = createAsyncThunk('zones/addUser', async (user, { dispatch, getState }) => {
-  await client.post('/apps/users/add-user', user)
-  await dispatch(getDataPointArret(getState().users.params))
-  await dispatch(getAllDataZone())
+export const addZone = createAsyncThunk('zones/addUser', async (user, { dispatch, getState }) => {
+  await client.post('/zones/addZone', user).then((res) => {
+    if (res.status === 200) {
+      dispatch(getDataZone(getState().zone.params))
+      dispatch(getAllDataZone())
+      toast.success("Zone ajoutée !!!")
+    } else {
+      toast.error("Une erreur est survenue, veuillez réessayer")
+    }
+  })
   return user
 })
 
-export const deleteUser = createAsyncThunk('zones/deleteUser', async (id, { dispatch, getState }) => {
-  await client.delete('/apps/users/delete', { id })
-  await dispatch(getDataPointArret(getState().users.params))
+export const deleteZone = createAsyncThunk('zones/deleteUser', async (id, { dispatch, getState }) => {
+  await client.delete(`/zones/deleteZone/${id}`, { statut: false })
+  await dispatch(getDataZone(getState().zone.params))
   await dispatch(getAllDataZone())
   return id
 })
@@ -48,7 +52,7 @@ export const appUsersSlice = createSlice({
     total: 1,
     params: {},
     allData: [],
-    selectedUser: null
+    selectedZone: null
   },
   reducers: {},
   extraReducers: builder => {
@@ -61,8 +65,8 @@ export const appUsersSlice = createSlice({
         state.params = action.payload.params
         state.total = action.payload.totalPages
       })
-      .addCase(getUser.fulfilled, (state, action) => {
-        state.selectedUser = action.payload
+      .addCase(getZone.fulfilled, (state, action) => {
+        state.selectedZone = action.payload
       })
   }
 })

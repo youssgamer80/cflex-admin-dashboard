@@ -26,7 +26,8 @@ import '@styles/base/pages/dashboard-ecommerce.scss'
 
 import { getAllDataZone, getDataZone } from '@src/views/zone-point-arret/zone/zone/store'
 import { getAllDataPointArret, getDataPointArret } from '@src/views/zone-point-arret/point-arret/store'
-
+import { getAllDataTypesZone, getDataTypesZone } from '@src/views/zone-point-arret/zone/typesZone/store'
+import { getAllDataZoneParent, getDataZoneParent } from '@src/views/zone-point-arret/zone/zoneParent/store'
 const EcommerceDashboard = () => {
   const dispatch = useDispatch()
   // ** Context
@@ -46,6 +47,20 @@ const EcommerceDashboard = () => {
     dispatch(getAllDataPointArret())
     dispatch(
       getDataPointArret({
+      })
+    )
+
+    // init types zone
+    dispatch(getAllDataTypesZone())
+    dispatch(
+      getDataTypesZone({
+      })
+    )
+
+    // init zones parent
+    dispatch(getAllDataZoneParent())
+    dispatch(
+      getDataZoneParent({
       })
     )
   })

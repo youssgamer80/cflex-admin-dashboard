@@ -11,6 +11,8 @@ import { Row, Col, TabContent, TabPane } from 'reactstrap'
 import Tabs from './Tabs'
 import Breadcrumbs from '@components/breadcrumbs'
 import ZoneList from './zone/list/zone'
+import ZoneParent from './zoneParent/list/zoneParent'
+import TypesZone from './typesZone/list/typesZone'
 
 
 // ** Styles
@@ -41,6 +43,16 @@ const Zone = () => {
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId='1'>
                                 <ZoneList />
+                            </TabPane>
+                        </TabContent>
+                        <TabContent activeTab={activeTab}>
+                            <TabPane tabId='2'>
+                                <ZoneParent />
+                            </TabPane>
+                        </TabContent>
+                        <TabContent activeTab={activeTab}>
+                            <TabPane tabId='3'>
+                                <TypesZone />
                             </TabPane>
                         </TabContent>
                     </Col>

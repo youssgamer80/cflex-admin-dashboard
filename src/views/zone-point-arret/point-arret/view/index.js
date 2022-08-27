@@ -19,7 +19,8 @@ import '@styles/react/apps/app-users.scss'
 
 const UserView = () => {
   // ** Store Vars
-  const store = useSelector(state => state.users)
+  const store = useSelector(state => state.pointArret)
+  console.log(store)
   const dispatch = useDispatch()
 
   // ** Hooks

@@ -14,6 +14,8 @@ import ecommerce from '@src/views/apps/ecommerce/store'
 import dataTables from '@src/views/tables/data-tables/store'
 import permissions from '@src/views/apps/roles-permissions/store'
 import zone from '@src/views/zone-point-arret/zone/zone/store'
+import zoneParent from '@src/views/zone-point-arret/zone/zoneParent/store'
+import typesZone from '@src/views/zone-point-arret/zone/typesZone/store'
 // import zonePointArret from './zone-point-arret'
 
 
@@ -33,7 +35,9 @@ const rootReducer = {
   permissions,
   // zonePointArret,
   pointArret,
-  zone
+  zone,
+  zoneParent,
+  typesZone
 
 }
 

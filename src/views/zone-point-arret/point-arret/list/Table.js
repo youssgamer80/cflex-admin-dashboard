@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 
 // ** Table Columns
 import { columns } from './columns'
+import classnames from 'classnames'
 // ** Store & Actions
 import { getAllDataPointArret, getDataPointArret, addPointArret } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,7 +31,8 @@ import {
   CardBody,
   CardTitle,
   CardHeader,
-  Form
+  Form,
+  FormFeedback
 } from 'reactstrap'
 
 // ** Styles
@@ -100,6 +102,7 @@ const UsersList = () => {
   // ** Store Vars
   const dispatch = useDispatch()
   const store = useSelector(state => state.pointArret)
+  const storeZone = useSelector(state => state.zone)
 
   // ** States
   const [sort, setSort] = useState('desc')
@@ -110,11 +113,12 @@ const UsersList = () => {
   const [currentZone, setcurrentZone] = useState({ value: '', label: 'Selectionner un zone' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Selectionner un statut', number: 0 })
   const [formModal, setFormModal] = useState(false)
-  const [zoneData, setZoneData] = useState(null)
+  const [data, setData] = useState({})
   // ** Function to toggle sidebar
   const toggleSidebar = () => setFormModal(!formModal)
   const {
     control,
+    setError,
     handleSubmit,
     formState: { errors }
   } = useForm({})
@@ -133,7 +137,6 @@ const UsersList = () => {
         status: currentStatus.value
       })
     )
-    setZoneData(JSON.parse(localStorage.getItem('zoneData')))
   }, [dispatch, store.data.length, sort, sortColumn, currentPage])
 
 
@@ -270,33 +273,68 @@ const UsersList = () => {
       })
     )
   }
-
-  const onSubmit = data => {
-    console.log("enregistrer un pa", data)
-    const obj = {}
+  const checkIsValid = data => {
+    let isValid = true
     const keys = Object.keys(data)
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i]
-      if (key === 'zone') {
-        obj['idZoneFk'] = {
-          id: data[key]["value"]
+      if (key === 'latitude' || key === 'longitude') {
+        if (!(!isNaN(data[key]) && data[key].toString().indexOf('.') !== -1)) {
+          isValid = false
         }
+      } else if (data[key] === undefined) {
+        isValid = false
       } else {
-        obj[key] = data[key]
+        if (data[key].length === 0) {
+          isValid = false
+        }
       }
     }
-    obj["statut"] = true
-
-    dispatch(addPointArret(obj))
-    setFormModal(!formModal)
-
+    return isValid
+  }
+  const onSubmit = data => {
+    // console.log("enregistrer un pa", data)
+    setData(data)
+    if (checkIsValid(data)) {
+      const obj = {}
+      const keys = Object.keys(data)
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i]
+        if (key === 'zone') {
+          obj['idZoneFk'] = {
+            id: data[key]["value"]
+          }
+        } else {
+          obj[key] = data[key]
+        }
+      }
+      obj["statut"] = true
+      dispatch(addPointArret(obj))
+      console.log("enregistrer un pa", obj)
+      setFormModal(!formModal)
+    } else {
+      for (const key in data) {
+        if (data[key] === undefined) {
+          setError(key, {
+            type: key
+          })
+        }
+        if (key === 'latitude' || key === 'longitude') {
+          if (!(!isNaN(data[key]) && data[key].toString().indexOf('.') !== -1)) {
+            setError(key, {
+              type: key
+            })
+          }
+        }
+      }
+    }
   }
   const zoneOptions = []
-  if (zoneData !== null) {
-    for (let i = 0; i < zoneData.length; i++) {
+  if (storeZone.allData !== null) {
+    for (let i = 0; i < storeZone.allData.length; i++) {
       const countryOptionsJson = {}
-      countryOptionsJson['value'] = zoneData[i]['id']
-      countryOptionsJson['label'] = zoneData[i]['libelle']
+      countryOptionsJson['value'] = storeZone.allData[i]['id']
+      countryOptionsJson['label'] = storeZone.allData[i]['libelle']
       zoneOptions.push(countryOptionsJson)
 
     }
@@ -419,10 +457,10 @@ const UsersList = () => {
                 name='nom'
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} id='username' placeholder='indenie' invalid={errors.username && true} />
+                  <Input {...field} id='username' placeholder='indenie' invalid={errors.nom && true} />
                 )}
               />
-              {errors.username && <FormFeedback>Ajouter un point d'arret</FormFeedback>}
+              {errors.nom && <FormFeedback>Veuillez saisir le nom du point d'arret</FormFeedback>}
             </Col>
             <Col xs={12}>
               <Label className='form-label' for='zone'>
@@ -437,12 +475,13 @@ const UsersList = () => {
                     {...field}
                     id='zone'
                     isClearable={false}
-                    className='react-select'
                     classNamePrefix='selChisect'
                     options={zoneOptions}
                     theme={selectThemeColors}
+                    className={classnames('react-select', { 'is-invalid': data !== undefined ? data.zone === undefined : true })}
                   />)}
               />
+              {errors.zone && <FormFeedback>Veuillez selectionner une zone</FormFeedback>}
             </Col>
             <Col md={6} xs={12}>
               <Label className='form-label' for='tax-id'>
@@ -454,8 +493,9 @@ const UsersList = () => {
                 name='longitude'
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} id='tax-id' placeholder='-3.4567567' />)}
+                  <Input {...field} id='tax-id' placeholder='-3.4567567' invalid={errors.longitude && true} />)}
               />
+              {errors.longitude && <FormFeedback>Entrez une longitude correcte</FormFeedback>}
             </Col>
             <Col md={6} xs={12}>
               <Label className='form-label' for='number'>
@@ -466,8 +506,9 @@ const UsersList = () => {
                 name='latitude'
                 control={control}
                 render={({ field }) => (
-                  <Input   {...field} id='contact' placeholder='4.34567' />)}
+                  <Input   {...field} id='contact' placeholder='4.34567' invalid={errors.latitude && true} />)}
               />
+              {errors.latitude && <FormFeedback>Entrez une latitude correcte</FormFeedback>}
             </Col>
             <Col xs={12}>
               <div className='d-flex align-items-center'>
@@ -490,4 +531,3 @@ const UsersList = () => {
 }
 
 export default UsersList
-//commit

@@ -16,6 +16,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { Button, Label, FormText, Form, Input } from 'reactstrap'
 
 // ** Store & Actions
+import { addZoneParent } from '../store'
 import { useDispatch } from 'react-redux'
 
 const defaultValues = {
@@ -82,7 +83,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
     if (checkIsValid(data)) {
       toggleSidebar()
       dispatch(
-        addUser({
+        addZoneParent({
           role,
           avatar: '',
           status: 'active',
