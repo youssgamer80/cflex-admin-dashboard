@@ -6,10 +6,8 @@ import Avatar from '@components/avatar'
 
 // ** Store & Actions
 import { store } from '@store/store'
-import Swal from 'sweetalert2'
-import { getUser, deleteUser } from '../store'
-import withReactContent from 'sweetalert2-react-content'
-// ** Icons Imports
+import { getUser } from '../store'
+
 import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive } from 'react-feather'
 
 // ** Reactstrap Imports
@@ -18,7 +16,6 @@ import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem
 // ** Renders Client Columns
 const isAvatar = false
 
-const MySwal = withReactContent(Swal)
 
 const renderClient = row => {
   if (isAvatar) {
@@ -34,32 +31,7 @@ const renderClient = row => {
     )
   }
 }
-const handleSuspendedClick = (row) => {
-  return MySwal.fire({
-    title: 'Êtes vous sûr?',
-    text: `De vouloir supprimer ${row.libelle}`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Oui, je suis sûr',
-    customClass: {
-      confirmButton: 'btn btn-primary',
-      cancelButton: 'btn btn-outline-danger ms-1'
-    },
-    buttonsStyling: false
-  }).then(function (result) {
-    if (result.value) {
-      store.dispatch(deleteUser(row))
-      MySwal.fire({
-        icon: 'success',
-        title: 'Supprimé !',
-        text: `La zone ${row.libelle} a bien été supprimée`,
-        customClass: {
-          confirmButton: 'btn btn-success'
-        }
-      })
-    }
-  })
-}
+
 // ** Renders Role Columns
 // const renderRole = row => {
 //   const roleObj = {
@@ -128,47 +100,6 @@ export const columns = [
       <Badge className='text-capitalize' color={row.statut ? 'light-success' : 'light-secondary'} pill>
         {row.statut ? 'Active' : 'Inactive'}
       </Badge>
-    )
-  },
-  {
-    name: 'Actions',
-    minWidth: '100px',
-    cell: row => (
-      <div className='column-action'>
-        <UncontrolledDropdown>
-          <DropdownToggle tag='div' className='btn btn-sm'>
-            <MoreVertical size={14} className='cursor-pointer' />
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem
-              tag={Link}
-              className='w-100'
-              to={`/apps/user/view/${row.id}`}
-              onClick={() => store.dispatch(getUser(row.id))}
-            >
-              <FileText size={14} className='me-50' />
-              <span className='align-middle'>Details</span>
-            </DropdownItem>
-            <DropdownItem tag='a' href='/' className='w-100' onClick={e => e.preventDefault()}>
-              <Archive size={14} className='me-50' />
-              <span className='align-middle'>Edit</span>
-            </DropdownItem>
-            <DropdownItem
-              tag='a'
-              href='/'
-              className='w-100'
-              onClick={e => {
-                e.preventDefault()
-                handleSuspendedClick(row)
-
-              }}
-            >
-              <Trash2 size={14} className='me-50' />
-              <span className='align-middle'>Delete</span>
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </div>
     )
   }
 ]

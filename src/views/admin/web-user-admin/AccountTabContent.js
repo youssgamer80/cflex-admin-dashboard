@@ -6,10 +6,12 @@ import Select from 'react-select'
 import Cleave from 'cleave.js/react'
 import { useForm, Controller } from 'react-hook-form'
 import 'cleave.js/dist/addons/cleave-phone.us'
-
+import { yupResolver } from '@hookform/resolvers/yup'
+import classnames from 'classnames'
+import toast from 'react-hot-toast'
 // ** Reactstrap Imports
 import { Toast, ToastBody, ToastHeader, Row, Col, Form, Card, Input, Label, Button, CardBody, CardTitle, CardHeader, FormFeedback } from 'reactstrap'
-
+import * as yup from 'yup'
 // ** Utils
 import { selectThemeColors } from '@utils'
 import avatar from '@src/assets/images/avatars/avatar-blank.png'
@@ -18,31 +20,43 @@ import InputPasswordToggle from '@components/input-password-toggle'
 import DeleteAccount from './DeleteAccount'
 import useJwt from '@src/auth/jwt/useJwt'
 
-const close = (
-  <button type='button' className='ms-1 btn-close'>
-    <span>×</span>
-  </button>
-)
 
 const countryOptions = [
   { value: 'admin', label: 'Admin' },
   { value: 'user', label: 'User' }
 ]
+const showErrors = (field, valueLen, min) => {
+  if (valueLen === 0) {
+    return `${field} obligatoire`
+  } else if (valueLen > 0 && valueLen < min) {
+    return `${field} au moins ${min} charactères`
+  } else {
+    return ''
+  }
+}
 
 
 const AccountTabs = () => {
+  const SignupSchema = yup.object().shape({
+    password: yup
+      .string()
+      .min(8, obj => showErrors('le mot de passe doit contenir', obj.value.length, obj.min))
+      .required(),
+    telephone: yup
+      .string()
+      .min(10, obj => showErrors('le numéro de téléphone doit contenir', obj.value.length, obj.min))
+      .required()
+  })
   // ** Hooks
-  const defaultValues = {
-    lastName: '',
-    firstName: ''
-  }
   const {
     control,
+    reset,
     setError,
     handleSubmit,
     formState: { errors }
-  } = useForm({ defaultValues })
-
+  } = useForm({
+    resolver: yupResolver(SignupSchema)
+  })
   // ** States
   const [setAvatar] = useState(null)
 
@@ -54,11 +68,14 @@ const AccountTabs = () => {
     }
     reader.readAsDataURL(files[0])
   }
-
+  const checkIsValid = data => {
+    return Object.values(data).every(field => (field !== undefined))
+  }
+  const [data, setData] = useState({})
   const onSubmit = data => {
-
-    console.log(Object.values(data).every(field => field.length > 0))
-    if (Object.values(data).length > 0) {
+    console.log(data)
+    setData(data)
+    if (checkIsValid(data)) {
 
       const obj = {}
       const keys = Object.keys(data)
@@ -78,29 +95,26 @@ const AccountTabs = () => {
       console.log(obj)
       useJwt.register(obj).then(res => {
         console.log(res)
-        if (res.data.status === 200) {
-          <Toast>
-            <ToastHeader close={close} icon='success'>Vuexy</ToastHeader>
-            <ToastBody>
-              Utilisateur créé avec succès !
-            </ToastBody>
-          </Toast>
+        if (res.status === 200) {
+          toast.success("Utilisateur créé !!!")
+          reset()
         }
       }).catch(err => {
         console.log(err)
+        toast.error("Une erreur est survenue, veuillez réessayer")
 
       })
 
       return null
     } else {
       for (const key in data) {
-        if (data[key].length === 0) {
+        if (data[key] === undefined) {
           setError(key, {
-            type: 'manual'
+            type: key
           })
         }
       }
-      console.log(errors)
+      console.log('jj', errors)
     }
   }
 
@@ -140,13 +154,13 @@ const AccountTabs = () => {
                   Nom
                 </Label>
                 <Controller
-                  name='lastName'
+                  name='nom'
                   control={control}
                   render={({ field }) => (
-                    <Input id='lastName' placeholder='Doe' invalid={errors.lastName && true} {...field} />
+                    <Input id='lastName' placeholder='Doe' invalid={errors.nom && true} {...field} />
                   )}
                 />
-                {errors.lastName && <FormFeedback>Please enter a valid Last Name</FormFeedback>}
+                {errors.nom && <FormFeedback>Veuillez saisir un nom valide</FormFeedback>}
               </Col>
 
               <Col sm='6' className='mb-1'>
@@ -154,13 +168,13 @@ const AccountTabs = () => {
                   Prénoms
                 </Label>
                 <Controller
-                  name='firstName'
+                  name='prenom'
                   control={control}
                   render={({ field }) => (
-                    <Input id='firstName' placeholder='John' invalid={errors.firstName && true} {...field} />
+                    <Input id='firstName' placeholder='John' invalid={errors.prenom && true} {...field} />
                   )}
                 />
-                {errors && errors.firstName && <FormFeedback>Please enter a valid First Name</FormFeedback>}
+                {errors && errors.prenom && <FormFeedback>Veuillez saisir un prenom valide</FormFeedback>}
               </Col>
 
               <Col sm='6' className='mb-1'>
@@ -190,11 +204,11 @@ const AccountTabs = () => {
                       className='form-control'
                       placeholder='07 00 00 00 00'
                       options={{ phone: true }}
-                      invalid={errors.lastName && true}
+                      invalid={errors.telephone && true}
                       {...field} />
                   )}
                 />
-
+                {errors && errors.telephone && <FormFeedback>{errors.telephone.message}</FormFeedback>}
               </Col>
 
               <Col sm='6' className='mb-1'>
@@ -229,14 +243,18 @@ const AccountTabs = () => {
                     <Select
                       id='role'
                       isClearable={false}
-                      className='react-select'
+                      className={classnames('select', { 'is-invalid': data !== undefined ? data.role === undefined : true })}
                       classNamePrefix='select'
                       options={countryOptions}
                       theme={selectThemeColors}
+                      invalid={errors.role && true}
                       {...field}
                     />
                   )}
                 />
+                {errors.role && (
+                  <FormFeedback className='d-block'>Veuillez selectionner un role</FormFeedback>
+                )}
               </Col>
 
 
@@ -249,7 +267,7 @@ const AccountTabs = () => {
           </Form>
         </CardBody>
       </Card>
-      <DeleteAccount />
+      {/* <DeleteAccount /> */}
     </Fragment>
   )
 }
