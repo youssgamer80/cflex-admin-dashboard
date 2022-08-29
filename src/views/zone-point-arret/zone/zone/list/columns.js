@@ -42,11 +42,16 @@ const renderRole = row => {
     Ville: {
       class: 'text-info',
       icon: Edit2
+    },
+    Region: {
+      class: 'text-info',
+      icon: Edit2
     }
 
   }
 
-  const Icon = row.idTypeZoneFk.libelle ? roleObj[row.idTypeZoneFk.libelle].icon : Edit2
+  // const Icon = row.idTypeZoneFk.libelle ? roleObj[row.idTypeZoneFk.libelle].icon : Edit2
+  const Icon = row.idTypeZoneFk.libelle ? roleObj['Region'].icon : Edit2
 
   return (
     <span className='text-truncate text-capitalize align-middle'>

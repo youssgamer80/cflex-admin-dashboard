@@ -269,11 +269,26 @@ const UsersList = () => {
   // ** Function in get data on search query change
   const handleFilter = val => {
     setSearchTerm(val)
+    const filteredPersons = store.filter(
+      point => {
+        return (
+          point
+            .nom
+            .toLowerCase()
+            .includes(val.toLowerCase()) ||
+          point
+            .idZoneFk.libelle
+            .toLowerCase()
+            .includes(val.toLowerCase())
+        )
+      }
+    )
     dispatch(
       getDataTypesZone({
         sort,
         q: val,
         sortColumn,
+        data: filteredPersons,
         page: currentPage,
         perPage: rowsPerPage,
         role: currentRole.value,

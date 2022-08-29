@@ -11,12 +11,12 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import classnames from 'classnames'
 // ** Store & Actions
-import { getAllDataZone, getDataZone, deleteZone, addZone } from '../store'
+import { getAllDataZone, getDataZone, deleteZone, addZone, updateZone, selectZone } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, MoreVertical, Trash2, Eye, Check, X } from 'react-feather'
+import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, MoreVertical, Trash2, Eye, Check, X, Upload } from 'react-feather'
 import { useForm, Controller } from 'react-hook-form'
 // ** Utils
 import { selectThemeColors } from '@utils'
@@ -116,7 +116,7 @@ const CustomHeader = ({ storeData, toggleSidebar, handlePerPage, rowsPerPage, ha
         >
           <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
             <label className='mb-0' htmlFor='search-invoice'>
-              Search:
+              Rechercher:
             </label>
             <Input
               id='search-invoice'
@@ -179,12 +179,14 @@ const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [sortColumn, setSortColumn] = useState('id')
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Selectionner un zone' })
-  const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
-  const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
+  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Selectionner une zone' })
+  const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Selectionner une zone parent' })
+  const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Selectionner un statut', number: 0 })
   const [formModal, setFormModal] = useState(false)
   const [update, setUpdate] = useState(false)
-  const [currentZonesData, setCurrentZonesData] = useState(null)
+  const [currentTypeZoneData, setCurrentTypeZoneData] = useState(null)
+  const [currentZoneParentData, setCurrentZoneParentData] = useState(null)
+  const [updateStatut, setUpdateStatut] = useState(null)
   // const [show, setShow] = useState(false)
   // ** Function to toggle sidebar
 
@@ -246,6 +248,8 @@ const UsersList = () => {
   } = useForm({ defaultValues: {} })
   const toggleSidebar = () => {
     reset()
+    setUpdate(false)
+    setUpdateStatut(true)
     setFormModal(!formModal)
   }
   // ** User filter options
@@ -309,12 +313,31 @@ const UsersList = () => {
 
   // ** Function in get data on search query change
   const handleFilter = val => {
+    const filtered = storeData.data.filter(
+      zone => {
+        return (
+          zone
+            .libelle
+            .toLowerCase()
+            .includes(val.toLowerCase()) ||
+          zone
+            .idTypeZoneFk.libelle
+            .toLowerCase()
+            .includes(val.toLowerCase()) ||
+          zone
+            .idZoneparentFk.zoneparent
+            .toLowerCase()
+            .includes(val.toLowerCase())
+        )
+      }
+    )
     setSearchTerm(val)
     dispatch(
       getDataZone({
         sort,
         q: val,
         sortColumn,
+        data: filtered,
         page: currentPage,
         perPage: rowsPerPage,
         role: currentRole.value,
@@ -330,26 +353,41 @@ const UsersList = () => {
   const [data, setData] = useState({})
 
   const onSubmit = data => {
+    console.log('update', update)
     setData(data)
-    console.log("enregistrer un pa", data)
-    if (checkIsValid(data)) {
+
+    if (checkIsValid(data) || (currentTypeZoneData !== undefined && currentZoneParentData !== undefined && update)) {
+      console.log("zone eentré", data)
       const obj = {}
       const keys = Object.keys(data)
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i]
         if (key === 'idTypeZoneFk') {
-          obj[key] = {
-            id: data[key]["value"]
+          if (!update) {
+            obj[key] = {
+              id: data[key]["value"]
+            }
+          } else {
+            obj[key] = {
+              id: currentTypeZoneData.value
+            }
           }
         } else if (key === 'idZoneparentFk') {
-          obj[key] = {
-            id: data[key]["value"]
+          if (!update) {
+            obj[key] = {
+              id: data[key]["value"]
+            }
+          } else {
+            obj[key] = {
+              id: currentZoneParentData.value
+            }
           }
         } else {
           obj[key] = data[key]
         }
       }
-      dispatch(addZone(obj))
+      console.log("zone envoyé", obj)
+      update ? dispatch(updateZone(obj)) : dispatch(addZone(obj))
       setFormModal(!formModal)
       reset()
     } else {
@@ -425,13 +463,19 @@ const UsersList = () => {
     )
   }
   const handleEditClick = data => {
-    console.log(data)
+    dispatch(selectZone(data))
+    console.log(storeData.selected)
     const keys = Object.keys(data)
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i]
-      if (key === 'idTypeZoneFk' || key === 'idZoneparentFk') {
-        setCurrentZonesData(data)
-        setValue(key, { id: data[key].id })
+      if (key === 'idTypeZoneFk') {
+        setCurrentTypeZoneData({ value: data.idTypeZoneFk.id, label: data.idTypeZoneFk.libelle })
+        // setCurrentZonesData(data)
+      } else if (key === 'idZoneparentFk') {
+        setCurrentZoneParentData({ value: data.idZoneparentFk.id, label: data.idZoneparentFk.zoneparent })
+        // setCurrentZonesData(data)
+      } else if (key === 'statut') {
+        setUpdateStatut(data[key])
       } else {
         setValue(key, data[key])
       }
@@ -477,12 +521,12 @@ const UsersList = () => {
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle tag='h4'>Filters</CardTitle>
+          <CardTitle tag='h4'>Filtres</CardTitle>
         </CardHeader>
         <CardBody>
           <Row>
             <Col md='4'>
-              <Label for='role-select'>Role</Label>
+              <Label for='role-select'>Type Zone</Label>
               <Select
                 isClearable={false}
                 value={currentRole}
@@ -508,7 +552,7 @@ const UsersList = () => {
               />
             </Col>
             <Col className='my-md-0 my-1' md='4'>
-              <Label for='plan-select'>Plan</Label>
+              <Label for='plan-select'>Zones Parent</Label>
               <Select
                 theme={selectThemeColors}
                 isClearable={false}
@@ -534,7 +578,7 @@ const UsersList = () => {
               />
             </Col>
             <Col md='4'>
-              <Label for='status-select'>Status</Label>
+              <Label for='status-select'>Statut</Label>
               <Select
                 theme={selectThemeColors}
                 isClearable={false}
@@ -598,7 +642,7 @@ const UsersList = () => {
           <div className='text-center mb-2'>
             <h1 className='mb-1'>{update ? 'Modifier une zone' : 'Ajouter une zone'}</h1>
           </div>
-          <Row tag='form' className='gy-1 pt-75' onSubmit={!update ? console.log("") : handleSubmit(onSubmit)}>
+          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col xs={12}>
               <Label className='form-label' for='username'>
                 Zone
@@ -617,43 +661,77 @@ const UsersList = () => {
                 Type Zone
               </Label>
 
-              <Controller
+              {update ? <Controller
                 name='idTypeZoneFk'
                 control={control}
                 render={({ field }) => (
                   <Select
                     {...field}
                     id='idTypeZoneFk'
-                    value={TypesZoneOptions[TypesZoneOptions.findIndex(i => i.value === currentZonesData['idTypeZoneFk'].id)]}
+                    value={currentTypeZoneData}
+                    isClearable={false}
+                    className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idTypeZoneFk === undefined : true })}
+                    classNamePrefix='selChisect'
+                    options={TypesZoneOptions}
+                    onChange={(item) => {
+                      console.log('item', item)
+                      setCurrentTypeZoneData(item)
+                    }}
+                    theme={selectThemeColors}
+                  />)}
+              /> : <Controller
+                name='idTypeZoneFk'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    id='idTypeZoneFk'
                     isClearable={false}
                     className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idTypeZoneFk === undefined : true })}
                     classNamePrefix='selChisect'
                     options={TypesZoneOptions}
                     theme={selectThemeColors}
                   />)}
-              />
+              />}
               {errors.idTypeZoneFk && <FormFeedback>Veuillez selectionner un type de zone</FormFeedback>}
             </Col>
             <Col md={6} xs={12}>
               <Label className='form-label' for='zone'>
                 Zone Parent
               </Label>
-
-              <Controller
+              {update ? <Controller
                 name='idZoneparentFk'
                 control={control}
                 render={({ field }) => (
                   <Select
                     {...field}
                     id='idZoneparentFk'
-                    value={zoneParentOptions[zoneParentOptions.findIndex(i => i.value === currentZonesData['idZoneparentFk'].id)]}
+                    value={currentZoneParentData}
+                    isClearable={false}
+                    label={storeData.selected.idZoneparentFk.zoneparent}
+                    className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idZoneparentFk === undefined : true })}
+                    classNamePrefix='selChisect'
+                    options={zoneParentOptions}
+                    onChange={(item) => {
+                      console.log('item', item)
+                      setCurrentZoneParentData(item)
+                    }}
+                    theme={selectThemeColors}
+                  />)}
+              /> : <Controller
+                name='idZoneparentFk'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    id='idZoneparentFk'
                     isClearable={false}
                     className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idZoneparentFk === undefined : true })}
                     classNamePrefix='selChisect'
                     options={zoneParentOptions}
                     theme={selectThemeColors}
                   />)}
-              />
+              />}
               {errors.idZoneparentFk && <FormFeedback>Veuillez selectionner une zone parent</FormFeedback>}
             </Col>
             <Col xs={12}>
@@ -663,9 +741,9 @@ const UsersList = () => {
                   <Controller
                     name='statut'
                     control={control}
-                    defaultValue={true}
+                    defaultValue={update ? updateStatut : true}
                     render={({ field }) => (
-                      <Input {...field} type='switch' defaultChecked id='billing-switch' name='billing-switch' />
+                      <Input {...field} type='switch' defaultChecked={update ? updateStatut : true} id='billing-switch' name='billing-switch' />
                     )}
                   />
                   <Label className='form-check-label' htmlFor='billing-switch'>

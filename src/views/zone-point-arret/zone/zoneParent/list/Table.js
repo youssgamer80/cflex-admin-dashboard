@@ -232,9 +232,7 @@ const UsersList = () => {
     { value: 'active', label: 'Active', number: 2 },
     { value: 'inactive', label: 'Inactive', number: 3 }
   ]
-  const checkIsValid = data => {
-    return Object.values(data).every(field => (field !== undefined))
-  }
+
   // ** Function in get data on page change
   const handlePagination = page => {
     dispatch(
@@ -285,6 +283,9 @@ const UsersList = () => {
         currentPlan: currentPlan.value
       })
     )
+  }
+  const checkIsValid = data => {
+    return Object.values(data).every(field => (field !== undefined))
   }
   const onSubmit = data => {
     console.log("enregistrer un pa", data)
