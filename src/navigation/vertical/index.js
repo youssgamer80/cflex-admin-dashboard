@@ -11,7 +11,8 @@ import dashboards from './dashboards'
 import admin from './admin'
 
 import pointarretItineraire from './pointarret-itineraire'
+import tronconsItineraire from './troncons-itineraires'
 
 // ** Merge & Export
 // export default [...dashboards, ...pointarretItineraire, ...apps, ...pages, ...uiElements, ...forms, ...tables, ...charts, ...others]
-export default [...dashboards, ...pointarretItineraire, ...admin]
+export default [...dashboards, ...pointarretItineraire, ...tronconsItineraire, ...admin]

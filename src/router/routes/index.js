@@ -14,6 +14,7 @@ import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
 import AdminRoutes from './Admin'
 import ZonePointArret from './zone-point-arret'
+import Troncons from './troncons-itineraires'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -53,8 +54,8 @@ const Routes = [
   ...TablesRoutes,
   ...ChartsRoutes,
   ...AdminRoutes,
-
-  ...ZonePointArret
+  ...ZonePointArret,
+  ...Troncons
 
 ]
 

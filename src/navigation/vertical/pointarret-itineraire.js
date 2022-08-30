@@ -3,7 +3,7 @@ import { Mail, MessageSquare, CheckSquare, TrendingUp, StopCircle, FileText, Cir
 
 export default [
     {
-        header: 'Points d\'arrets & itineraires'
+        header: 'Points d\'arrets & zones'
     },
     {
         id: 'zone',
