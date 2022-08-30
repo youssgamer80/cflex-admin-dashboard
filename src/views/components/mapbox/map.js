@@ -50,7 +50,7 @@ const ChartjsLineChart = () => {
           <ReactMapGL
             {...viewport}
             mapboxAccessToken='pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w3Z2c1aXd2MDQ0OTN1bjFoYTF1cGY3dyJ9.U_ryriPZlR1MnPFvn5NESQ'
-            mapStyle="mapbox://styles/virgil98/cl4fnwybg001g14liyk70nf2w"
+            mapStyle="mapbox://styles/virgil98/cl@@4fnwybg001g14liyk70nf2w"
             onViewportChange={viewport => {
               setViewport(viewport)
             }}
