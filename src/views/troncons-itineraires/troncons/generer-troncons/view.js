@@ -1,8 +1,8 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 // ** Store & Actions
 // import { getAllData, getData } from '../store'
-import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 // ** Third Party Components
 import Select from 'react-select'
@@ -11,19 +11,25 @@ import DataTable from 'react-data-table-component'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy } from 'react-feather'
 import makeAnimated from 'react-select/animated'
 import Map from '@src/views/components/mapbox/map'
+import classnames from 'classnames'
 // ** Utils
 import { selectThemeColors } from '@utils'
-
+import { useForm, Controller } from 'react-hook-form'
+import Cleave from 'cleave.js/react'
 
 // ** Reactstrap Imports
 import {
     Row,
     Col,
     Card,
+    Form,
+    Input,
     Label,
+    Button,
     CardBody,
     CardTitle,
-    CardHeader
+    CardHeader,
+    FormFeedback
 } from 'reactstrap'
 
 // ** Styles
@@ -34,41 +40,16 @@ const animatedComponents = makeAnimated()
 
 const UsersList = () => {
     // ** Store Vars
-    const dispatch = useDispatch()
-    // const store = useSelector(state => state.users)
-    // ** States
+    // const dispatch = useDispatch()
+    const storePointArret = useSelector(state => state.pointArret)
+    const pointsOptions = []
     // const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Role' })
-    const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
-
+    const [currentPoint1, setCurrentPoint1] = useState({ value: '', label: 'Selectionner le départ' })
+    const [currentPoint2, setCurrentPoint2] = useState({ value: '', label: "Selectionner l'arrivée" })
+    const [data, setData] = useState({})
     // ** Function to toggle sidebar
-
-    // ** Get data on mount
-    // useEffect(() => {
-    //     dispatch(getAllData())
-    //     dispatch(
-    //         getData({
-    //             sort,
-    //             sortColumn,
-    //             q: searchTerm,
-    //             page: currentPage,
-    //             perPage: rowsPerPage,
-    //             role: currentRole.value,
-    //             status: currentStatus.value,
-    //             currentPlan: currentPlan.value
-    //         })
-    //     )
-    // }, [dispatch, store.data.length, sort, sortColumn, currentPage])
-
     // ** User filter options
-    const roleOptions = [
-        { value: '', label: 'Select Role' },
-        { value: 'admin', label: 'Admin' },
-        { value: 'author', label: 'Author' },
-        { value: 'editor', label: 'Editor' },
-        { value: 'maintainer', label: 'Maintainer' },
-        { value: 'subscriber', label: 'Subscriber' }
-    ]
+
     const colorOptions = [
         { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
         { value: 'blue', label: 'Blue', color: '#0052CC', isFixed: true },
@@ -85,97 +66,201 @@ const UsersList = () => {
         { value: 'enterprise', label: 'Enterprise' },
         { value: 'team', label: 'Team' }
     ]
+    // ** Get data on mount
+    if (storePointArret.allData !== null) {
+        for (let i = 0; i < storePointArret.allData.length; i++) {
+            const countryOptionsJson = {}
+            countryOptionsJson['value'] = storePointArret.allData[i].id
+            countryOptionsJson['label'] = storePointArret.allData[i].nom
+            pointsOptions.push(countryOptionsJson)
+
+        }
+    }
+    useEffect(() => {
+
+    })
+
+
+    const {
+        control,
+        // reset,
+        handleSubmit,
+        setError,
+        // setValue,
+        formState: { errors }
+    } = useForm({ defaultValues: {} })
+
+
+    const onSubmit = data => {
+        const data2 = data
+        setData(data)
+        delete data2['idZoneFk']
+        delete data2['arrivee']
+        delete data2['depart']
+
+
+        if (Object.values(data2).every(field => field !== undefined && currentPoint2 !== currentPoint1)) {
+        } else {
+            for (const key in data) {
+                if (data[key] === undefined) {
+                    setError(key, {
+                        type: 'manual'
+                    })
+                }
+                if (currentPoint2.value.length < 2 || currentPoint1.value.length < 2) {
+                    console.log(data2)
+                    setError(key, {
+                        type: 'manual'
+                    })
+                }
+            }
+        }
+    }
+
     return (
         <Fragment>
-            <Card>
-                <CardHeader>
-                    <CardTitle tag='h4'>Points</CardTitle>
-                </CardHeader>
-                <CardBody>
-                    <Row>
-                        <Col md='6'>
-                            <Label for='role-select'>Role</Label>
-                            <Select
-                                isClearable={false}
-                                value={currentRole}
-                                options={roleOptions}
-                                className='react-select'
-                                classNamePrefix='select'
-                                theme={selectThemeColors}
-                                onChange={data => {
-                                    setCurrentRole(data)
-                                    dispatch(
-                                        getData({
-                                            sort,
-                                            sortColumn,
-                                            q: searchTerm,
-                                            role: data.value,
-                                            page: currentPage,
-                                            perPage: rowsPerPage,
-                                            status: currentStatus.value,
-                                            currentPlan: currentPlan.value
-                                        })
-                                    )
-                                }}
-                            />
-                        </Col>
-                        <Col className='my-md-0 my-1' md='6'>
-                            <Label for='plan-select'>Plan</Label>
-                            <Select
-                                theme={selectThemeColors}
-                                isClearable={false}
-                                className='react-select'
-                                classNamePrefix='select'
-                                options={planOptions}
-                                value={currentPlan}
-                                onChange={data => {
-                                    setCurrentPlan(data)
-                                    dispatch(
-                                        getData({
-                                            sort,
-                                            sortColumn,
-                                            q: searchTerm,
-                                            page: currentPage,
-                                            perPage: rowsPerPage,
-                                            role: currentRole.value,
-                                            currentPlan: data.value,
-                                            status: currentStatus.value
-                                        })
-                                    )
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                </CardBody>
-            </Card>
+            <div>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle tag='h4'>Ligne</CardTitle>
+                        </CardHeader>
+                        <CardBody>
+                            <Row className='gy-1 pt-75'>
+                                <Col md={6} xs={12}>
+                                    <Label className='form-label' for='depart'>Départ</Label>
+                                    <Controller
+                                        name='depart'
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                id='depart'
+                                                isClearable={false}
+                                                options={pointsOptions}
+                                                className={classnames('react-select', { 'is-invalid': data !== undefined ? data.depart === undefined : true })}
+                                                classNamePrefix='select'
+                                                theme={selectThemeColors}
+                                                onChange={data => {
 
-            <Card>
-                <CardHeader>
-                    <CardTitle tag='h4'>Options</CardTitle>
-                </CardHeader>
 
-                <CardBody>
-                    <Row>
-                        <Col className='mb-1' md='12' sm='12'>
-                            <Label className='form-label'>Animated Select</Label>
-                            <Select
-                                isClearable={false}
-                                theme={selectThemeColors}
-                                closeMenuOnSelect={false}
-                                components={animatedComponents}
-                                defaultValue={[colorOptions[4], colorOptions[5]]}
-                                isMulti
-                                options={colorOptions}
-                                className='react-select'
-                                classNamePrefix='select'
-                            />
-                        </Col>
-                    </Row>
-                </CardBody>
-            </Card>
+                                                    setCurrentPoint1(data)
 
-            <Map />
 
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                    {errors.depart && <FormFeedback>Veuillez selectionner le point de départ !!!</FormFeedback>}
+                                </Col>
+                                <Col md={6} xs={12}>
+                                    <Label for='plan-select'>Arrivée</Label>
+
+                                    <Controller
+                                        name='arrivee'
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                id="arrivee"
+                                                theme={selectThemeColors}
+                                                isClearable={false}
+                                                className={classnames('react-select', { 'is-invalid': data !== undefined ? data.arrivee === undefined : true })}
+                                                classNamePrefix='select'
+                                                options={pointsOptions}
+                                                onChange={data => {
+
+                                                    setCurrentPoint2(data)
+
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                    {errors.depart && <FormFeedback>Veuillez selectionner le point d'arrivée !!!</FormFeedback>}
+                                </Col>
+                                <Col md={6} xs={12}>
+                                    <Label className='form-label' for='nom'>
+                                        Nom de la ligne
+                                    </Label>
+                                    <Controller
+                                        name='nom'
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input {...field} id='nom' placeholder='ligne' invalid={errors.nom && true} />
+                                        )}
+                                    />
+                                    {errors.nom && <FormFeedback>Ajouter une Zone</FormFeedback>}
+                                </Col>
+
+                                <Col md={6} xs={12}>
+                                    <Label for='numeral-formatting'>Tarif de la ligne</Label>
+                                    <Controller
+                                        name='tarif'
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input {...field} className='form-control' placeholder='Tarif ' id='tarif' invalid={errors.tarif && true} type='number' />
+                                        )}
+                                    />
+                                    {errors.tarif && <FormFeedback>Veuillez définir un tarif pour la ligne</FormFeedback>}
+                                </Col>
+                                <Col md={6} xs={12}>
+                                    <Label for='plan-select'>Zone</Label>
+
+                                    <Controller
+                                        name='idZoneFk'
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                theme={selectThemeColors}
+                                                isClearable={false}
+                                                className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idZoneFk === undefined : true })}
+                                                classNamePrefix='select'
+                                                options={planOptions}
+                                                onChange={data => {
+                                                    console.log(data)
+
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                    {errors.idZoneFk && <FormFeedback>Veuillez selectionner la zone !!!</FormFeedback>}
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle tag='h4'>Selectionner les points de la ligne</CardTitle>
+                        </CardHeader>
+
+                        <CardBody>
+                            <Row>
+                                <Col className='mb-1' md='12' sm='12'>
+                                    <Label className='form-label'>Veuillez les selectionner dans l'ordre</Label>
+                                    <Select
+                                        isClearable={false}
+                                        theme={selectThemeColors}
+                                        closeMenuOnSelect={false}
+                                        components={animatedComponents}
+                                        defaultValue={[colorOptions[4], colorOptions[5]]}
+                                        isMulti
+                                        options={colorOptions}
+                                        classNamePrefix='select'
+                                    />
+                                </Col>
+                                <Col sm='12'>
+                                    <Button type='submit' className='btn-next delivery-address' color='primary'>
+                                        Générer les Tronçons
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Form>
+                <Map />
+            </div>
         </Fragment>
     )
 }

@@ -74,6 +74,7 @@ export const pointArretsSlice = createSlice({
         state.allData = action.payload
       })
       .addCase(getDataPointArret.fulfilled, (state, action) => {
+        console.log("xxxxxxx", action.payload)
         state.data = action.payload.data
         state.params = action.payload.params
         state.total = action.payload.totalPages

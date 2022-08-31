@@ -16,7 +16,7 @@ const Tabs = ({ activeTab, toggleTab }) => {
       <NavItem>
         <NavLink active={activeTab === '2'} onClick={() => toggleTab('2')}>
           <Lock size={18} className='me-50' />
-          <span className='fw-bold'>Zones parents</span>
+          <span className='fw-bold'>Générer Tronçons</span>
         </NavLink>
       </NavItem>
       <NavItem>

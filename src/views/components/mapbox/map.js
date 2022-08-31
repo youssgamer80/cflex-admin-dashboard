@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
-import ReactMapGL, { Marker, Popup } from "react-map-gl"
-import * as parkDate from "./parks.json"
-import avatar from '@src/assets/images/icons/point_arret.png'
+import { useRef, useState, useEffect } from "react"
+import mapboxgl from 'mapbox-gl'// import * as parkDate from "./parks.json"
+// import avatar from '@src/assets/images/icons/point_arret.png'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import './index.css'
 import {
   Row,
   Col,
@@ -14,28 +14,38 @@ import {
   CardTitle,
   CardHeader
 } from 'reactstrap'
+
+mapboxgl.accessToken =
+  'pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w3Z2c1aXd2MDQ0OTN1bjFoYTF1cGY3dyJ9.U_ryriPZlR1MnPFvn5NESQ'
 const ChartjsLineChart = () => {
-  const [viewport, setViewport] = useState({
-    latitude: 45.4211,
-    longitude: -75.6903,
-    height: "450vh",
-    width: "450vh",
-    zoom: 10
-  })
-  const [selectedPark, setSelectedPark] = useState(null)
+  const mapContainerRef = useRef(null)
 
+  const [lng, setLng] = useState(-3.9810149)
+  const [lat, setLat] = useState(5.2973998)
+  const [zooM, setZoom] = useState(14)
+
+  // Initialize map when component mounts
   useEffect(() => {
-    const listener = e => {
-      if (e.key === "Escape") {
-        setSelectedPark(null)
-      }
-    }
-    window.addEventListener("keydown", listener)
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: 'mapbox://styles/virgil98/cl4fnwybg001g14liyk70nf2w',
+      center: [lng, lat],
+      zoom: zooM
+    })
 
-    return () => {
-      window.removeEventListener("keydown", listener)
-    }
+    // Add navigation control (the +/- zoom buttons)
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+
+    map.on('move', () => {
+      setLng(map.getCenter().lng.toFixed(4))
+      setLat(map.getCenter().lat.toFixed(4))
+      setZoom(map.getZoom().toFixed(2))
+    })
+
+    // Clean up on unmount
+    return () => map.remove()
   }, [])
+
   return (
     <Card>
       <CardHeader className='d-flex justify-content-between align-items-sm-center align-items-start flex-sm-row flex-column'>
@@ -47,48 +57,14 @@ const ChartjsLineChart = () => {
       </CardHeader>
       <CardBody>
         <div style={{ height: '450px' }}>
-          <ReactMapGL
-            {...viewport}
-            mapboxAccessToken='pk.eyJ1IjoidmlyZ2lsOTgiLCJhIjoiY2w3Z2c1aXd2MDQ0OTN1bjFoYTF1cGY3dyJ9.U_ryriPZlR1MnPFvn5NESQ'
-            mapStyle="mapbox://styles/virgil98/cl@@4fnwybg001g14liyk70nf2w"
-            onViewportChange={viewport => {
-              setViewport(viewport)
-            }}
-          >
-            {parkDate.features.map(park => (
-              <Marker
-                key={park.properties.PARK_ID}
-                latitude={park.geometry.coordinates[1]}
-                longitude={park.geometry.coordinates[0]}
-              >
-                <img src={avatar} alt="Skate Park Icon" height="30" />
-                {/* <button
-                  className="marker-btn"
-                  onClick={e => {
-                    e.preventDefault()
-                    setSelectedPark(park)
-                  }}
-                >
-                  
-                </button> */}
-              </Marker>
-            ))}
-
-            {selectedPark ? (
-              <Popup
-                latitude={selectedPark.geometry.coordinates[1]}
-                longitude={selectedPark.geometry.coordinates[0]}
-                onClose={() => {
-                  setSelectedPark(null)
-                }}
-              >
-                <div>
-                  <h2>{selectedPark.properties.NAME}</h2>
-                  <p>{selectedPark.properties.DESCRIPTIO}</p>
-                </div>
-              </Popup>
-            ) : <p>rien</p>}
-          </ReactMapGL>        </div>
+          <div>
+            <div className='sidebarStyle'>
+              <div>
+                Longitude: {lng} | Latitude: {lat} | Zoom: {zooM}
+              </div>
+            </div>
+            <div className='map-container' ref={mapContainerRef} />
+          </div>      </div>
       </CardBody>
     </Card>
   )

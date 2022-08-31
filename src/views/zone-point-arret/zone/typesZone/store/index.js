@@ -8,7 +8,6 @@ import client from '@src/api/api'
 
 export const getAllDataTypesZone = createAsyncThunk('typesZone/getAllDataTypesZone', async () => {
   const response = await client.get('/typezone')
-  console.log("xxxxxxx", response.data)
   return response.data
 })
 

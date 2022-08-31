@@ -30,7 +30,7 @@ const Zone = () => {
 
     return (
         <Fragment>
-            <Breadcrumbs title='Zones' data={[{ title: "Points d'arrets & zones" }, { title: 'Zones' }]} />
+            <Breadcrumbs title='troncons-itineraires' data={[{ title: "Tronçons & Itinéraires" }, { title: 'Tronçons' }]} />
             {data !== null ? (
                 <Row>
                     <Col xs={12}>
