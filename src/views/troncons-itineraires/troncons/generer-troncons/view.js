@@ -101,8 +101,8 @@ const UsersList = () => {
 
         if (Object.values(data2).every(field => field !== undefined && currentPoint2 !== currentPoint1)) {
         } else {
-            for (const key in data) {
-                if (data[key] === undefined) {
+            for (const key in data2) {
+                if (data2[key] === undefined) {
                     setError(key, {
                         type: 'manual'
                     })
