@@ -16,6 +16,7 @@ import permissions from '@src/views/apps/roles-permissions/store'
 import zone from '@src/views/zone-point-arret/zone/zone/store'
 import zoneParent from '@src/views/zone-point-arret/zone/zoneParent/store'
 import typesZone from '@src/views/zone-point-arret/zone/typesZone/store'
+import genererTroncon from '@src/views/troncons-itineraires/troncons/generer-troncons/store'
 // import zonePointArret from './zone-point-arret'
 
 
@@ -37,7 +38,8 @@ const rootReducer = {
   pointArret,
   zone,
   zoneParent,
-  typesZone
+  typesZone,
+  genererTroncon
 
 }
 

@@ -1,8 +1,8 @@
 // ** React Imports
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState } from 'react'
 // ** Store & Actions
 // import { getAllData, getData } from '../store'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 // ** Third Party Components
 import Select from 'react-select'
@@ -11,6 +11,7 @@ import DataTable from 'react-data-table-component'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy } from 'react-feather'
 import makeAnimated from 'react-select/animated'
 import Map from '@src/views/components/mapbox/map'
+import { selectPointLigne } from './store'
 import classnames from 'classnames'
 // ** Utils
 import { selectThemeColors } from '@utils'
@@ -39,34 +40,23 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 const animatedComponents = makeAnimated()
 
 const UsersList = () => {
+    const dispatch = useDispatch()
     // ** Store Vars
-    // const dispatch = useDispatch()
+    const store = useSelector(state => state.genererTroncon)
     const storePointArret = useSelector(state => state.pointArret)
+    const storeZone = useSelector(state => state.zone)
     const pointsOptions = []
+    const zonesOptions = []
+    const pointsArretsLigne = []
     // const [sidebarOpen, setSidebarOpen] = useState(false)
     const [currentPoint1, setCurrentPoint1] = useState({ value: '', label: 'Selectionner le départ' })
     const [currentPoint2, setCurrentPoint2] = useState({ value: '', label: "Selectionner l'arrivée" })
-    const [data, setData] = useState({})
-    // ** Function to toggle sidebar
-    // ** User filter options
+    const [currentZone, setCurrentZone] = useState({ value: '', label: "Selectionner Zone" })
+    // const [currentPointsLigne, setCurrentPointsLigne] = useState({
+    //     features: []
+    // })
+    const [currentData, setData] = useState({})
 
-    const colorOptions = [
-        { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
-        { value: 'blue', label: 'Blue', color: '#0052CC', isFixed: true },
-        { value: 'purple', label: 'Purple', color: '#5243AA', isFixed: true },
-        { value: 'red', label: 'Red', color: '#FF5630', isFixed: false },
-        { value: 'orange', label: 'Orange', color: '#FF8B00', isFixed: false },
-        { value: 'yellow', label: 'Yellow', color: '#FFC400', isFixed: false }
-    ]
-
-    const planOptions = [
-        { value: '', label: 'Select Plan' },
-        { value: 'basic', label: 'Basic' },
-        { value: 'company', label: 'Company' },
-        { value: 'enterprise', label: 'Enterprise' },
-        { value: 'team', label: 'Team' }
-    ]
-    // ** Get data on mount
     if (storePointArret.allData !== null) {
         for (let i = 0; i < storePointArret.allData.length; i++) {
             const countryOptionsJson = {}
@@ -76,10 +66,46 @@ const UsersList = () => {
 
         }
     }
-    useEffect(() => {
+    if (storeZone.allData !== null) {
+        for (let i = 0; i < storeZone.allData.length; i++) {
+            const countryOptionsJson = {}
+            countryOptionsJson['value'] = storeZone.allData[i].id
+            countryOptionsJson['label'] = storeZone.allData[i].nom
+            zonesOptions.push(countryOptionsJson)
 
-    })
+        }
+    }
+    if (storePointArret.allData !== null) {
+        for (let i = 0; i < storePointArret.allData.length; i++) {
+            const countryOptionsJson = {}
+            countryOptionsJson['value'] = storePointArret.allData[i].id
+            countryOptionsJson['label'] = storePointArret.allData[i].nom
+            countryOptionsJson['color'] = '#FB5A00'
+            countryOptionsJson['isFixed'] = true
+            countryOptionsJson['longitude'] = storePointArret.allData[i].longitude
+            countryOptionsJson['latitude'] = storePointArret.allData[i].latitude
+            pointsArretsLigne.push(countryOptionsJson)
 
+        }
+    }
+
+    const addOnMap = points => {
+        const featuresArray = []
+
+        for (let i = 0; i < points.length; i++) {
+            const point = points[i]
+            const countryOptionsJson = {
+                location: point.label,
+                city: point.label,
+                state: point.label,
+                coordinates: [point.longitude, point.latitude]
+            }
+            featuresArray.push(countryOptionsJson)
+        }
+
+        dispatch(selectPointLigne(featuresArray))
+
+    }
 
     const {
         control,
@@ -92,23 +118,40 @@ const UsersList = () => {
 
 
     const onSubmit = data => {
-        const data2 = data
         setData(data)
-        delete data2['idZoneFk']
-        delete data2['arrivee']
-        delete data2['depart']
 
 
-        if (Object.values(data2).every(field => field !== undefined && currentPoint2 !== currentPoint1)) {
+        const filtersObject = {
+            nom: data.nom,
+            tarif: data.tarif
+        }
+
+        if (Object.values(filtersObject).every(field => field !== undefined) && (currentPoint2 !== currentPoint1) && currentPoint1.value.length > 1 && currentPoint2.value.length > 1 && currentZone.value.length > 1) {
+
+
+            // const sendData = {
+            //     nom: data.nom,
+            //     depart: currentPoint1.value,
+            //     arrivee: currentPoint2.value,
+            //     tarif: data.tarif,
+            //     idZoneFk: {
+            //         id: currentPoint1.value
+            //     }
+
+            // }
+            console.log('xxxxx', data)
+
         } else {
-            for (const key in data2) {
-                if (data2[key] === undefined) {
-                    setError(key, {
-                        type: 'manual'
-                    })
+            for (const key in data) {
+                if (key === 'nom' || key === 'tarif') {
+                    if (data[key] === undefined) {
+                        setError(key, {
+                            type: 'manual'
+                        })
+                    }
                 }
                 if (currentPoint2.value.length < 2 || currentPoint1.value.length < 2) {
-                    console.log(data2)
+
                     setError(key, {
                         type: 'manual'
                     })
@@ -138,15 +181,11 @@ const UsersList = () => {
                                                 id='depart'
                                                 isClearable={false}
                                                 options={pointsOptions}
-                                                className={classnames('react-select', { 'is-invalid': data !== undefined ? data.depart === undefined : true })}
+                                                className={classnames('react-select', { 'is-invalid': currentData !== undefined ? currentData.depart === undefined : true })}
                                                 classNamePrefix='select'
                                                 theme={selectThemeColors}
                                                 onChange={data => {
-
-
                                                     setCurrentPoint1(data)
-
-
                                                 }}
                                             />
                                         )}
@@ -165,7 +204,7 @@ const UsersList = () => {
                                                 id="arrivee"
                                                 theme={selectThemeColors}
                                                 isClearable={false}
-                                                className={classnames('react-select', { 'is-invalid': data !== undefined ? data.arrivee === undefined : true })}
+                                                className={classnames('react-select', { 'is-invalid': currentData !== undefined ? currentData.arrivee === undefined : true })}
                                                 classNamePrefix='select'
                                                 options={pointsOptions}
                                                 onChange={data => {
@@ -214,11 +253,11 @@ const UsersList = () => {
                                                 {...field}
                                                 theme={selectThemeColors}
                                                 isClearable={false}
-                                                className={classnames('react-select', { 'is-invalid': data !== undefined ? data.idZoneFk === undefined : true })}
+                                                className={classnames('react-select', { 'is-invalid': currentData !== undefined ? currentData.idZoneFk === undefined : true })}
                                                 classNamePrefix='select'
-                                                options={planOptions}
+                                                options={zonesOptions}
                                                 onChange={data => {
-                                                    console.log(data)
+                                                    setCurrentZone(data)
 
                                                 }}
                                             />
@@ -244,10 +283,13 @@ const UsersList = () => {
                                         theme={selectThemeColors}
                                         closeMenuOnSelect={false}
                                         components={animatedComponents}
-                                        defaultValue={[colorOptions[4], colorOptions[5]]}
                                         isMulti
-                                        options={colorOptions}
+                                        options={pointsArretsLigne}
+                                        onChange={data => {
+                                            addOnMap(data)
+                                        }}
                                         classNamePrefix='select'
+                                        className='react-select'
                                     />
                                 </Col>
                                 <Col sm='12'>
@@ -259,7 +301,7 @@ const UsersList = () => {
                         </CardBody>
                     </Card>
                 </Form>
-                <Map />
+                <Map points={store.selected} />
             </div>
         </Fragment>
     )
